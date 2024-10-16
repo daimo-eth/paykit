@@ -4,13 +4,12 @@
  */
 
 import {
+  Connector,
+  CreateConnectorFn,
   type UseConnectParameters,
   useConnect as wagmiUseConnect,
-  CreateConnectorFn,
-  Connector,
 } from "wagmi";
-import { useContext } from "../components/ConnectKit";
-import { useLastConnector } from "./useLastConnector";
+import { useContext } from "../components/DaimoPay";
 
 export function useConnect({ ...props }: UseConnectParameters = {}) {
   const context = useContext();

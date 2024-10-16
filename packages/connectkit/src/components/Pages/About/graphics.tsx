@@ -1,6 +1,6 @@
-import { motion, EasingFunction } from "framer-motion";
-import styled from "./../../../styles/styled";
+import { EasingFunction, motion } from "framer-motion";
 import { keyframes } from "styled-components";
+import styled from "./../../../styles/styled";
 
 export type Easing =
   | [number, number, number, number]

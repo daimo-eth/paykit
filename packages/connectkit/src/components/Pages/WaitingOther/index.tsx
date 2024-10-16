@@ -1,31 +1,18 @@
 import React, { useEffect } from "react";
-import { useContext, ROUTES } from "../../ConnectKit";
+import { useContext } from "../../DaimoPay";
 
 import {
-  LearnMoreContainer,
-  LearnMoreButton,
-  InfoBox,
-  InfoBoxButtons,
-} from "./styles";
-import {
-  PageContent,
-  Disclaimer,
+  ModalBody,
   ModalContent,
   ModalH1,
-  ModalBody,
+  PageContent
 } from "../../Common/Modal/styles";
-import WalletIcon from "../../../assets/wallet";
 
-import useLocales from "../../../hooks/useLocales";
-import ConnectorList from "../../Common/ConnectorList";
-import useIsMobile from "../../../hooks/useIsMobile";
-import Button from "../../Common/Button";
-import styled from "../../../styles/styled";
 import { AnimatePresence, motion } from "framer-motion";
 import { css } from "styled-components";
+import styled from "../../../styles/styled";
 import CircleSpinner from "../../Spinners/CircleSpinner";
 import SquircleSpinner from "../../Spinners/SquircleSpinner";
-import defaultTheme from "../../../constants/defaultTheme";
 
 const WaitingOther: React.FC = () => {
   const { triggerResize, paymentInfo } = useContext();

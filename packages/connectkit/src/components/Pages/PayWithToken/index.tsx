@@ -1,25 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { useContext, ROUTES } from "../../ConnectKit";
+import { ROUTES, useContext } from "../../DaimoPay";
 
 import {
-  PageContent,
-  Disclaimer,
   ModalContent,
   ModalH1,
-  ModalBody,
+  PageContent
 } from "../../Common/Modal/styles";
-import WalletIcon from "../../../assets/wallet";
 
-import styled from "../../../styles/styled";
 import { AnimatePresence, motion } from "framer-motion";
 import { css } from "styled-components";
-import { PaymentOption } from "../../../utils/getPaymentInfo";
-import CircleSpinner from "../../Spinners/CircleSpinner";
-import SquircleSpinner from "../../Spinners/SquircleSpinner";
-import defaultTheme from "../../../constants/defaultTheme";
 import { ConnectorChainMismatchError, useChainId, useSwitchChain } from "wagmi";
 import { chainToLogo } from "../../../assets/chains";
+import styled from "../../../styles/styled";
+import { PaymentOption } from "../../../utils/getPaymentInfo";
 import Button from "../../Common/Button";
+import CircleSpinner from "../../Spinners/CircleSpinner";
 
 enum PayState {
   RequestingPayment = "Requesting Payment",

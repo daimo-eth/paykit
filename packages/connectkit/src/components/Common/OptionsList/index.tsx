@@ -1,17 +1,17 @@
+import { motion } from "framer-motion";
+import { useEffect } from "react";
+import { keyframes } from "styled-components";
+import styled from "../../../styles/styled";
+import { useContext } from "../../DaimoPay";
+import { ScrollArea } from "../ScrollArea";
 import {
-  OptionIcon,
   OptionButton,
+  OptionIcon,
   OptionLabel,
-  OptionTitle,
   OptionSubtitle,
+  OptionTitle,
   OptionsContainer,
 } from "./styles";
-import { ScrollArea } from "../ScrollArea";
-import styled from "../../../styles/styled";
-import { motion } from "framer-motion";
-import { keyframes } from "styled-components";
-import { useEffect } from "react";
-import { useContext } from "../../ConnectKit";
 
 interface Option {
   id: string;

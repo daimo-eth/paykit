@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
-import { MoreIndicator, ScrollAreaContainer, ScrollContainer } from "./styles";
 import useIsMobile from "../../../hooks/useIsMobile";
+import { MoreIndicator, ScrollAreaContainer, ScrollContainer } from "./styles";
 
 const ArrowDown = () => (
   <svg

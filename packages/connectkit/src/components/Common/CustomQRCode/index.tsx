@@ -1,17 +1,17 @@
-import { CustomQRCodeProps } from "./types";
 import {
-  QRCodeContainer,
   LogoContainer,
   LogoIcon,
-  QRPlaceholder,
+  QRCodeContainer,
   QRCodeContent,
+  QRPlaceholder,
 } from "./styles";
+import { CustomQRCodeProps } from "./types";
 
-import Tooltip from "../Tooltip";
 import { AnimatePresence, motion } from "framer-motion";
+import Tooltip from "../Tooltip";
 
-import { QRCode } from "./QRCode";
 import useWindowSize from "../../../hooks/useWindowSize";
+import { QRCode } from "./QRCode";
 
 function CustomQRCode({
   value,

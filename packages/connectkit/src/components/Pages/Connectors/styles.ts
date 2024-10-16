@@ -1,5 +1,5 @@
-import styled from "./../../../styles/styled";
 import { keyframes } from "styled-components";
+import styled from "./../../../styles/styled";
 
 import { motion } from "framer-motion";
 import { ModalBody } from "../../Common/Modal/styles";

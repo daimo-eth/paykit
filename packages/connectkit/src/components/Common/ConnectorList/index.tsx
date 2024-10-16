@@ -1,10 +1,10 @@
-import { useContext, ROUTES } from "../../ConnectKit";
+import { ROUTES, useContext } from "../../DaimoPay";
 
 import {
-  ConnectorsContainer,
   ConnectorButton,
-  ConnectorLabel,
   ConnectorIcon,
+  ConnectorLabel,
+  ConnectorsContainer,
   RecentlyUsedTag,
 } from "./styles";
 
@@ -14,14 +14,14 @@ import useIsMobile from "../../../hooks/useIsMobile";
 import { ScrollArea } from "../../Common/ScrollArea";
 import Alert from "../Alert";
 
-import { WalletProps, useWallets } from "../../../wallets/useWallets";
+import { useConnect } from "../../../hooks/useConnect";
+import { useLastConnector } from "../../../hooks/useLastConnector";
 import {
   detectBrowser,
   isCoinbaseWalletConnector,
   isWalletConnectConnector,
 } from "../../../utils";
-import { useLastConnector } from "../../../hooks/useLastConnector";
-import { useConnect } from "../../../hooks/useConnect";
+import { WalletProps, useWallets } from "../../../wallets/useWallets";
 
 const ConnectorList = () => {
   const context = useContext();

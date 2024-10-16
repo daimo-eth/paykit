@@ -1,5 +1,5 @@
-import { useEffect, useState, useLayoutEffect } from "react";
-import { useContext } from "../components/ConnectKit";
+import { useEffect, useLayoutEffect, useState } from "react";
+import { useContext } from "../components/DaimoPay";
 
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;

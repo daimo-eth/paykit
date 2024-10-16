@@ -1,6 +1,4 @@
-import { useAccount } from "wagmi";
-import { ROUTES, useContext } from "../components/ConnectKit";
-import { useSIWE } from "../siwe";
+import { ROUTES, useContext } from "../components/DaimoPay";
 import {
   useConnectCallback,
   useConnectCallbackProps,
@@ -15,8 +13,6 @@ export const useModal = ({ onConnect, onDisconnect }: UseModalProps = {}) => {
     onConnect,
     onDisconnect,
   });
-
-  const { signIn } = useSIWE();
 
   const close = () => {
     context.setOpen(false);
@@ -45,9 +41,5 @@ export const useModal = ({ onConnect, onDisconnect }: UseModalProps = {}) => {
     // Connected Routes
     openProfile: () => gotoAndOpen(ROUTES.PROFILE),
     openSwitchNetworks: () => gotoAndOpen(ROUTES.SWITCHNETWORKS),
-    openSIWE: (triggerSIWE?: boolean) => {
-      gotoAndOpen(ROUTES.SIGNINWITHETHEREUM);
-      if (triggerSIWE) signIn();
-    },
   };
 };

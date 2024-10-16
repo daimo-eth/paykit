@@ -1,11 +1,11 @@
-import { CreateConnectorFn } from "wagmi";
 import {
-  injected,
-  walletConnect,
   coinbaseWallet,
   CoinbaseWalletParameters,
+  injected,
   safe,
+  walletConnect,
 } from "@wagmi/connectors";
+import { CreateConnectorFn } from "wagmi";
 
 type DefaultConnectorsProps = {
   app: {

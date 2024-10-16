@@ -1,38 +1,37 @@
+import { Buffer } from "buffer";
 import React, {
   createContext,
   createElement,
+  ReactNode,
   useEffect,
   useState,
-  ReactNode,
 } from "react";
-import { Buffer } from "buffer";
 import {
+  CustomAvatarProps,
   CustomTheme,
   Languages,
   Mode,
   Theme,
-  CustomAvatarProps,
 } from "../types";
 
 import defaultTheme from "../styles/defaultTheme";
 
-import ConnectKitModal from "../components/ConnectModal";
+import { DaimoPayOrderMode } from "@daimo/common";
 import { ThemeProvider } from "styled-components";
-import { useThemeFont } from "../hooks/useGoogleFont";
-import { SIWEContext } from "./../siwe";
+import { useAccount, WagmiContext } from "wagmi";
+import { REQUIRED_CHAINS } from "../defaultConfig";
+import { useChainIsSupported } from "../hooks/useChainIsSupported";
 import { useChains } from "../hooks/useChains";
 import {
   useConnectCallback,
   useConnectCallbackProps,
 } from "../hooks/useConnectCallback";
-import { isFamily } from "../utils/wallets";
 import { useConnector } from "../hooks/useConnectors";
-import { WagmiContext, useAccount } from "wagmi";
-import { Web3ContextProvider } from "./contexts/web3";
-import { useChainIsSupported } from "../hooks/useChainIsSupported";
+import { useThemeFont } from "../hooks/useGoogleFont";
 import { getPaymentInfo, PaymentInfo } from "../utils/getPaymentInfo";
-import { REQUIRED_CHAINS } from "../defaultConfig";
-import { DaimoPayOrderMode } from "@daimo/common";
+import { isFamily } from "../utils/wallets";
+import DaimoPayModal from "./ConnectModal";
+import { Web3ContextProvider } from "./contexts/web3";
 
 export enum ROUTES {
   SELECT_METHOD = "daimoPaySelectMethod",
@@ -49,7 +48,6 @@ export enum ROUTES {
   DOWNLOAD = "download",
   PROFILE = "profile",
   SWITCHNETWORKS = "switchNetworks",
-  SIGNINWITHETHEREUM = "signInWithEthereum",
 }
 
 type Connector = {
@@ -74,8 +72,7 @@ type ContextValue = {
   connector: Connector;
   setConnector: React.Dispatch<React.SetStateAction<Connector>>;
   errorMessage: Error;
-  options?: ConnectKitOptions;
-  signInWithEthereum: boolean;
+  options?: DaimoPayOptions;
   debugMode?: boolean;
   log: (...props: any) => void;
   displayError: (message: string | React.ReactNode | null, code?: any) => void;
@@ -86,7 +83,7 @@ type ContextValue = {
 
 export const Context = createContext<ContextValue | null>(null);
 
-export type ConnectKitOptions = {
+export type DaimoPayOptions = {
   language?: Languages;
   hideBalance?: boolean;
   hideTooltips?: boolean;
@@ -94,7 +91,7 @@ export type ConnectKitOptions = {
   hideNoWalletCTA?: boolean;
   hideRecentBadge?: boolean;
   walletConnectCTA?: "link" | "modal" | "both";
-  avoidLayoutShift?: boolean; // Avoids layout shift when the ConnectKit modal is open by adding padding to the body
+  avoidLayoutShift?: boolean; // Avoids layout shift when the DaimoPay modal is open by adding padding to the body
   embedGoogleFonts?: boolean; // Automatically embeds Google Font of the current theme. Does not work with custom themes
   truncateLongENSAddress?: boolean;
   walletConnectName?: string;
@@ -106,20 +103,19 @@ export type ConnectKitOptions = {
   enforceSupportedChains?: boolean;
   ethereumOnboardingUrl?: string;
   walletOnboardingUrl?: string;
-  disableSiweRedirect?: boolean; // Disable redirect to SIWE page after a wallet is connected
   overlayBlur?: number; // Blur the background when the modal is open
 };
 
-type ConnectKitProviderProps = {
+type DaimoPayProviderProps = {
   children?: React.ReactNode;
   theme?: Theme;
   mode?: Mode;
   customTheme?: CustomTheme;
-  options?: ConnectKitOptions;
+  options?: DaimoPayOptions;
   debugMode?: boolean;
 } & useConnectCallbackProps;
 
-export const ConnectKitProvider = ({
+export const DaimoPayProvider = ({
   children,
   theme = "auto",
   mode = "auto",
@@ -128,17 +124,17 @@ export const ConnectKitProvider = ({
   onConnect,
   onDisconnect,
   debugMode = false,
-}: ConnectKitProviderProps) => {
-  // ConnectKitProvider must be within a WagmiProvider
+}: DaimoPayProviderProps) => {
+  // DaimoPayProvider must be within a WagmiProvider
   if (!React.useContext(WagmiContext)) {
-    throw Error("ConnectKitProvider must be within a WagmiProvider");
+    throw Error("DaimoPayProvider must be within a WagmiProvider");
   }
 
-  // Only allow for mounting ConnectKitProvider once, so we avoid weird global
+  // Only allow for mounting DaimoPayProvider once, so we avoid weird global
   // state collisions.
   if (React.useContext(Context)) {
     throw new Error(
-      "Multiple, nested usages of ConnectKitProvider detected. Please use only one.",
+      "Multiple, nested usages of DaimoPayProvider detected. Please use only one.",
     );
   }
 
@@ -160,7 +156,7 @@ export const ConnectKitProvider = ({
   const injectedConnector = useConnector("injected");
 
   // Default config options
-  const defaultOptions: ConnectKitOptions = {
+  const defaultOptions: DaimoPayOptions = {
     language: "en-US",
     hideBalance: false,
     hideTooltips: false,
@@ -180,10 +176,9 @@ export const ConnectKitProvider = ({
     enforceSupportedChains: false,
     ethereumOnboardingUrl: undefined,
     walletOnboardingUrl: undefined,
-    disableSiweRedirect: false,
   };
 
-  const opts: ConnectKitOptions = Object.assign({}, defaultOptions, options);
+  const opts: DaimoPayOptions = Object.assign({}, defaultOptions, options);
 
   if (typeof window !== "undefined") {
     // Buffer Polyfill, needed for bundlers that don't provide Node polyfills (e.g CRA, Vite, etc.)
@@ -273,7 +268,6 @@ export const ConnectKitProvider = ({
     loadPayment,
     connector,
     setConnector,
-    signInWithEthereum: React.useContext(SIWEContext)?.enabled ?? false,
     onConnect,
     // Other configuration
     options: opts,
@@ -282,10 +276,10 @@ export const ConnectKitProvider = ({
     log,
     displayError: (message: string | React.ReactNode | null, code?: any) => {
       setErrorMessage(message);
-      console.log("---------CONNECTKIT DEBUG---------");
+      console.log("---------DAIMOPAY DEBUG---------");
       console.log(message);
       if (code) console.table(code);
-      console.log("---------/CONNECTKIT DEBUG---------");
+      console.log("---------/DAIMOPAY DEBUG---------");
     },
     resize,
     triggerResize: () => onResize((prev) => prev + 1),
@@ -298,7 +292,7 @@ export const ConnectKitProvider = ({
     <Web3ContextProvider enabled={open}>
       <ThemeProvider theme={defaultTheme}>
         {children}
-        <ConnectKitModal
+        <DaimoPayModal
           lang={ckLang}
           theme={ckTheme}
           mode={mode}
@@ -311,6 +305,6 @@ export const ConnectKitProvider = ({
 
 export const useContext = () => {
   const context = React.useContext(Context);
-  if (!context) throw Error("ConnectKit Hook must be inside a Provider.");
+  if (!context) throw Error("DaimoPay Hook must be inside a Provider.");
   return context;
 };

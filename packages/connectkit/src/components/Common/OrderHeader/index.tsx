@@ -1,19 +1,17 @@
+import { DaimoPayOrderMode } from "@daimo/common";
 import { motion } from "framer-motion";
+import { useState } from "react";
 import {
   Arbitrum,
+  Base,
   Ethereum,
   Optimism,
-  Base,
   Polygon,
 } from "../../../assets/chains";
 import { USDC } from "../../../assets/coins";
-import FitText from "../FitText";
-import styled from "../../../styles/styled";
 import defaultTheme from "../../../constants/defaultTheme";
-import { useContext } from "../../ConnectKit";
-import { useState } from "react";
-import assert from "assert";
-import { DaimoPayOrderMode } from "@daimo/common";
+import styled from "../../../styles/styled";
+import { useContext } from "../../DaimoPay";
 import Button from "../Button";
 
 const CoinLogos = ({ $size = 24 }: { $size?: number }) => {

@@ -7,46 +7,43 @@ import Portal from "../Portal";
 
 import {
   flattenChildren,
-  isWalletConnectConnector,
   isMobile,
+  isWalletConnectConnector,
 } from "../../../utils";
 
 import {
-  Container,
+  BackButton,
+  BackgroundOverlay,
   BoxContainer,
+  CloseButton,
+  Container,
+  ControllerContainer,
+  Disclaimer,
+  DisclaimerBackground,
+  ErrorMessage,
+  InfoButton,
+  InnerContainer,
   ModalContainer,
+  ModalHeading,
   PageContainer,
   PageContents,
-  ControllerContainer,
-  InnerContainer,
-  BackgroundOverlay,
-  CloseButton,
-  BackButton,
-  InfoButton,
-  ModalHeading,
-  TextWithHr,
-  ErrorMessage,
-  DisclaimerBackground,
-  Disclaimer,
-  SiweButton,
-  SignInTooltip,
+  TextWithHr
 } from "./styles";
 
-import { ROUTES, useContext } from "../../ConnectKit";
 import useLockBodyScroll from "../../../hooks/useLockBodyScroll";
+import { ROUTES, useContext } from "../../DaimoPay";
 
+import { getChainName } from "@daimo/contract";
 import { useTransition } from "react-transition-state";
-import FocusTrap from "../../../hooks/useFocusTrap";
-import usePrevious from "../../../hooks/usePrevious";
-import { CustomTheme } from "../../../types";
-import { useThemeContext } from "../../ConnectKitThemeProvider/ConnectKitThemeProvider";
 import { useAccount, useSwitchChain } from "wagmi";
 import { AuthIcon } from "../../../assets/icons";
-import { useSIWE } from "../../../siwe";
+import FocusTrap from "../../../hooks/useFocusTrap";
 import useLocales from "../../../hooks/useLocales";
-import FitText from "../FitText";
+import usePrevious from "../../../hooks/usePrevious";
+import { CustomTheme } from "../../../types";
 import { useWallet } from "../../../wallets/useWallets";
-import { getChainName } from "@daimo/contract";
+import { useThemeContext } from "../../DaimoPayThemeProvider/DaimoPayThemeProvider";
+import FitText from "../FitText";
 
 const ProfileIcon = ({ isSignedIn }: { isSignedIn?: boolean }) => (
   <div style={{ position: "relative" }}>
@@ -206,7 +203,6 @@ const Modal: React.FC<ModalProps> = ({
   const context = useContext();
   const themeContext = useThemeContext();
   const mobile = isMobile();
-  const { isSignedIn, reset } = useSIWE();
   const { daimoPayOrder, selectedExternalOption, selectedTokenOption } =
     context.paymentInfo;
 
@@ -295,7 +291,7 @@ const Modal: React.FC<ModalProps> = ({
   const ref = useRef<any>(null);
   useEffect(() => {
     if (ref.current) updateBounds(ref.current);
-  }, [chain, switchChain, mobile, isSignedIn, context.options, context.resize]);
+  }, [chain, switchChain, mobile, context.options, context.resize]);
 
   useEffect(() => {
     if (!mounted) {
@@ -351,10 +347,6 @@ const Modal: React.FC<ModalProps> = ({
         return locales.profileScreen_heading;
       case ROUTES.SWITCHNETWORKS:
         return locales.switchNetworkScreen_heading;
-      case ROUTES.SIGNINWITHETHEREUM:
-        return isSignedIn
-          ? locales.signInWithEthereumScreen_signedIn_heading
-          : locales.signInWithEthereumScreen_signedOut_heading;
       case ROUTES.SELECT_METHOD:
         return daimoPayOrder?.metadata.intent;
       case ROUTES.SELECT_TOKEN:
@@ -498,57 +490,6 @@ const Modal: React.FC<ModalProps> = ({
                     >
                       <BackIcon />
                     </BackButton>
-                  ) : context.route === ROUTES.PROFILE &&
-                    context.signInWithEthereum ? (
-                    <>
-                      {!isSignedIn && !context.options?.hideTooltips && (
-                        <motion.div
-                          style={{
-                            position: "absolute",
-                            inset: 0,
-                            pointerEvents: "none",
-                          }}
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{
-                            opacity: 1,
-                            scale: 1,
-                            transition: { delay: 0.5, duration: 0.2 },
-                          }}
-                          exit={{
-                            opacity: 0,
-                            scale: 0.6,
-                            transition: {
-                              delay: 0,
-                              duration: mobile ? 0 : 0.1,
-                            },
-                          }}
-                        >
-                          <SignInTooltip>
-                            {locales.signInWithEthereumScreen_tooltip}
-                          </SignInTooltip>
-                        </motion.div>
-                      )}
-                      <SiweButton
-                        disabled={inTransition}
-                        aria-label={
-                          locales.signInWithEthereumScreen_signedOut_heading
-                        }
-                        key="siweButton"
-                        onClick={() => {
-                          reset();
-                          context.setRoute(ROUTES.SIGNINWITHETHEREUM);
-                        }}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{
-                          duration: mobile ? 0 : 0.1,
-                          delay: mobile ? 0.01 : 0,
-                        }}
-                      >
-                        <ProfileIcon isSignedIn={isSignedIn} />
-                      </SiweButton>
-                    </>
                   ) : (
                     onInfo &&
                     !context.options?.hideQuestionMarkCTA && (
@@ -588,7 +529,7 @@ const Modal: React.FC<ModalProps> = ({
                     //alignItems: 'center',
                     justifyContent: "center",
                   }}
-                  key={`${context.route}-${isSignedIn ? "signedIn" : ""}`}
+                  key={`${context.route}`}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}

@@ -1,9 +1,9 @@
 import {
-  LogoContainer,
+  ExpiringSpinner,
   Logo,
+  LogoContainer,
   Spinner,
   SpinnerContainer,
-  ExpiringSpinner,
 } from "./styles";
 
 import { AnimatePresence } from "framer-motion";

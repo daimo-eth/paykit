@@ -1,21 +1,21 @@
-import React from "react";
-import { ButtonProps } from "./types";
-import {
-  ButtonContainer,
-  InnerContainer,
-  IconContainer,
-  Arrow,
-  ArrowLine,
-  ArrowChevron,
-  DownloadArrow,
-  DownloadArrowInner,
-  ButtonContainerInner,
-  SpinnerContainer,
-} from "./styles";
 import { AnimatePresence } from "framer-motion";
+import React from "react";
 import { flattenChildren } from "../../../utils";
 import FitText from "../FitText";
 import { Spinner } from "../Spinner";
+import {
+  Arrow,
+  ArrowChevron,
+  ArrowLine,
+  ButtonContainer,
+  ButtonContainerInner,
+  DownloadArrow,
+  DownloadArrowInner,
+  IconContainer,
+  InnerContainer,
+  SpinnerContainer,
+} from "./styles";
+import { ButtonProps } from "./types";
 
 const transition = {
   duration: 0.4,

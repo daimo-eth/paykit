@@ -1,7 +1,7 @@
 "use client";
 
+import { DaimoPayButton } from "@daimo/pay";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
-import { ConnectKitButton } from "@daimo/pay";
 
 function App() {
   const account = useAccount();
@@ -12,7 +12,7 @@ function App() {
     <>
       <div>
         <h2>Account</h2>
-        <ConnectKitButton payId="99ThKggytB4LJcSQfmJr7P1aBuPKtFQXnMdHYGWwZVLM" />
+        <DaimoPayButton payId="99ThKggytB4LJcSQfmJr7P1aBuPKtFQXnMdHYGWwZVLM" />
 
         <div>
           status: {account.status}

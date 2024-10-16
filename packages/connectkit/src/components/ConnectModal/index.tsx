@@ -1,27 +1,26 @@
 import { useEffect } from "react";
 import { useAccount } from "wagmi";
-import { ROUTES, useContext } from "../ConnectKit";
 import { CustomTheme, Languages, Mode, Theme } from "../../types";
 import Modal from "../Common/Modal";
+import { ROUTES, useContext } from "../DaimoPay";
 
-import Onboarding from "../Pages/Onboarding";
 import About from "../Pages/About";
 import Connectors from "../Pages/Connectors";
-import MobileConnectors from "../Pages/MobileConnectors";
-import ConnectUsing from "./ConnectUsing";
 import DownloadApp from "../Pages/DownloadApp";
+import MobileConnectors from "../Pages/MobileConnectors";
+import Onboarding from "../Pages/Onboarding";
 import Profile from "../Pages/Profile";
 import SwitchNetworks from "../Pages/SwitchNetworks";
-import SignInWithEthereum from "../Pages/SignInWithEthereum";
+import ConnectUsing from "./ConnectUsing";
 
-import { getAppIcon, getAppName } from "../../defaultConfig";
-import { ConnectKitThemeProvider } from "../ConnectKitThemeProvider/ConnectKitThemeProvider";
+import { getAppName } from "../../defaultConfig";
 import { useChainIsSupported } from "../../hooks/useChainIsSupported";
+import { DaimoPayThemeProvider } from "../DaimoPayThemeProvider/DaimoPayThemeProvider";
+import Confirmation from "../Pages/Confirmation";
+import PayWithToken from "../Pages/PayWithToken";
 import SelectMethod from "../Pages/SelectMethod";
 import SelectToken from "../Pages/SelectToken";
 import WaitingOther from "../Pages/WaitingOther";
-import Confirmation from "../Pages/Confirmation";
-import PayWithToken from "../Pages/PayWithToken";
 
 const customThemeDefault: object = {};
 
@@ -58,9 +57,7 @@ const ConnectModal: React.FC<{
   const showInfoButton = closeable && context.route !== ROUTES.PROFILE;
 
   const onBack = () => {
-    if (context.route === ROUTES.SIGNINWITHETHEREUM) {
-      context.setRoute(ROUTES.PROFILE);
-    } else if (context.route === ROUTES.SWITCHNETWORKS) {
+    if (context.route === ROUTES.SWITCHNETWORKS) {
       context.setRoute(ROUTES.PROFILE);
     } else if (context.route === ROUTES.DOWNLOAD) {
       context.setRoute(ROUTES.CONNECT);
@@ -74,7 +71,9 @@ const ConnectModal: React.FC<{
     } else if (context.route === ROUTES.PAY_WITH_TOKEN) {
       setSelectedTokenOption(undefined);
       context.setRoute(ROUTES.SELECT_TOKEN);
-    } else {
+    } else if (context.route === ROUTES.ONBOARDING) {
+      context.setRoute(ROUTES.CONNECTORS);
+    }else {
       context.setRoute(ROUTES.SELECT_METHOD);
     }
   };
@@ -94,12 +93,19 @@ const ConnectModal: React.FC<{
     connect: <ConnectUsing />,
     profile: <Profile />,
     switchNetworks: <SwitchNetworks />,
-    signInWithEthereum: <SignInWithEthereum />,
   };
 
   function hide() {
     context.setOpen(false);
   }
+
+  useEffect(() => {
+    if (context.route === ROUTES.CONNECT || context.route === ROUTES.CONNECTORS || context.route === ROUTES.MOBILECONNECTORS) {
+      if (isConnected) {
+        context.setRoute(ROUTES.SELECT_TOKEN);
+      }
+    }
+  }, [isConnected, context.route]);
 
   useEffect(() => context.setMode(mode), [mode]);
   useEffect(() => context.setTheme(theme), [theme]);
@@ -133,11 +139,7 @@ const ConnectModal: React.FC<{
   }, [context.open]);
 
   return (
-    <ConnectKitThemeProvider
-      theme={theme}
-      customTheme={customTheme}
-      mode={mode}
-    >
+    <DaimoPayThemeProvider theme={theme} customTheme={customTheme} mode={mode}>
       <Modal
         open={context.open}
         pages={pages}
@@ -146,7 +148,7 @@ const ConnectModal: React.FC<{
         onInfo={undefined}
         onBack={showBackButton ? onBack : undefined}
       />
-    </ConnectKitThemeProvider>
+    </DaimoPayThemeProvider>
   );
 };
 

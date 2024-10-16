@@ -2,26 +2,21 @@ import {
   assert,
   assertNotNull,
   DaimoPayOrder,
-  DaimoPayOrderMode,
   DaimoPayTokenAmount,
   ExternalPaymentOptionMetadata,
   ExternalPaymentOptions,
-  readDaimoPayOrderID,
+  readDaimoPayOrderID
 } from "@daimo/common";
 import { erc20Abi } from "@daimo/contract";
 import {
-  createContext,
-  ReactNode,
   useCallback,
-  useContext,
-  useEffect,
-  useState,
+  useState
 } from "react";
 import { parseUnits, zeroAddress } from "viem";
 import { useAccount, useSendTransaction, useWriteContract } from "wagmi";
 
-import { trpc } from "./trpc";
 import { detectPlatform } from "./platform";
+import { trpc } from "./trpc";
 
 export type SourcePayment = Parameters<
   typeof trpc.processSourcePayment.mutate

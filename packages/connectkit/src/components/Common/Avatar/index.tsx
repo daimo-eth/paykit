@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { EnsAvatar, ImageContainer } from "./styles";
 
-import { useEnsName, useEnsAvatar, useEnsAddress } from "wagmi";
 import { normalize } from "viem/ens";
-import { ResetContainer } from "../../../styles";
-import { useContext } from "../../ConnectKit";
-import useIsMounted from "../../../hooks/useIsMounted";
+import { useEnsAddress, useEnsAvatar, useEnsName } from "wagmi";
 import { useEnsFallbackConfig } from "../../../hooks/useEnsFallbackConfig";
+import useIsMounted from "../../../hooks/useIsMounted";
+import { ResetContainer } from "../../../styles";
+import { useContext } from "../../DaimoPay";
 
 type Hash = `0x${string}`;
 

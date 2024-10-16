@@ -1,14 +1,14 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
-import { useContext } from "../ConnectKit";
 import { useWallet } from "../../wallets/useWallets";
+import { useContext } from "../DaimoPay";
 
 import ConnectWithInjector from "./ConnectWithInjector";
 import ConnectWithQRCode from "./ConnectWithQRCode";
 
-import { contentVariants } from "../Common/Modal";
 import Alert from "../Common/Alert";
+import { contentVariants } from "../Common/Modal";
 
 const states = {
   QRCODE: "qrcode",

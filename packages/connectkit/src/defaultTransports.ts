@@ -6,10 +6,10 @@
  *
  */
 
-import { fallback, http, webSocket } from "wagmi";
 import { type CreateConfigParameters } from "@wagmi/core";
-import { type Chain } from "wagmi/chains";
 import { type HttpTransport, type WebSocketTransport } from "viem";
+import { fallback, http, webSocket } from "wagmi";
+import { type Chain } from "wagmi/chains";
 
 import { chainConfigs } from "./constants/chainConfigs";
 import { REQUIRED_CHAINS } from "./defaultConfig";

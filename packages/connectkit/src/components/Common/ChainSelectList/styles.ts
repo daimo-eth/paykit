@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
-import styled from "./../../../styles/styled";
 import { css } from "styled-components";
+import styled from "./../../../styles/styled";
 
 import defaultTheme from "../../../constants/defaultTheme";
 

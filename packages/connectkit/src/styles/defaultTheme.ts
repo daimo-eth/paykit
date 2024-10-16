@@ -1,4 +1,4 @@
-import { Theme, ThemeMode, CustomTheme } from "./types";
+import { CustomTheme, Theme } from "./types";
 
 const defaultLightTheme: Theme = {
   font: {
@@ -81,7 +81,7 @@ if (darkMode) {
 }
 
 const defaultTheme: CustomTheme = {
-  connectKit: {
+  daimoPay: {
     options: {
       iconStyle: "light",
     },

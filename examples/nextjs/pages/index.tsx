@@ -1,5 +1,5 @@
+import { DaimoPayButton } from "@daimo/pay";
 import type { NextPage } from "next";
-import { ConnectKitButton } from "@daimo/pay";
 
 const Home: NextPage = () => {
   return (
@@ -11,7 +11,7 @@ const Home: NextPage = () => {
         height: "100vh",
       }}
     >
-      <ConnectKitButton payId="Fcdcb474QD4s9KPQzaKgdz3UJTMnZVhks51WpMp2TdSV" />
+      <DaimoPayButton payId="D3tekbu6T2uSRnaSQVmEwurjeYcQ5NdtMNbnwG4Uh5Wk" />
     </div>
   );
 };

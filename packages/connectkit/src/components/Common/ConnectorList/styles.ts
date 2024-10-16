@@ -1,5 +1,5 @@
-import styled from "../../../styles/styled";
 import { css, keyframes } from "styled-components";
+import styled from "../../../styles/styled";
 
 import { motion } from "framer-motion";
 

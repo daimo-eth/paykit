@@ -1,44 +1,44 @@
 import React, { useEffect, useState } from "react";
-import { useContext } from "../../ConnectKit";
 import {
   isSafeConnector,
   nFormatter,
   truncateEthAddress,
 } from "../../../utils";
+import { useContext } from "../../DaimoPay";
 
 import {
+  useAccount,
+  useBalance,
   useConnect,
   useDisconnect,
-  useAccount,
   useEnsName,
-  useBalance,
 } from "wagmi";
 
 import {
   AvatarContainer,
   AvatarInner,
-  ChainSelectorContainer,
-  BalanceContainer,
-  LoadingBalance,
   Balance,
+  BalanceContainer,
+  ChainSelectorContainer,
+  LoadingBalance,
 } from "./styles";
 
+import Avatar from "../../Common/Avatar";
+import Button from "../../Common/Button";
+import ChainSelector from "../../Common/ChainSelect";
 import {
-  PageContent,
   ModalBody,
   ModalContent,
   ModalH1,
+  PageContent,
 } from "../../Common/Modal/styles";
-import Button from "../../Common/Button";
-import Avatar from "../../Common/Avatar";
-import ChainSelector from "../../Common/ChainSelect";
 
-import { DisconnectIcon } from "../../../assets/icons";
-import CopyToClipboard from "../../Common/CopyToClipboard";
 import { AnimatePresence } from "framer-motion";
-import { useThemeContext } from "../../ConnectKitThemeProvider/ConnectKitThemeProvider";
-import useLocales from "../../../hooks/useLocales";
+import { DisconnectIcon } from "../../../assets/icons";
 import { useEnsFallbackConfig } from "../../../hooks/useEnsFallbackConfig";
+import useLocales from "../../../hooks/useLocales";
+import CopyToClipboard from "../../Common/CopyToClipboard";
+import { useThemeContext } from "../../DaimoPayThemeProvider/DaimoPayThemeProvider";
 
 const Profile: React.FC<{ closeModal?: () => void }> = ({ closeModal }) => {
   const context = useContext();

@@ -1,42 +1,25 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useContext, ROUTES } from "../../ConnectKit";
+import { ROUTES, useContext } from "../../DaimoPay";
 
 import {
-  LearnMoreContainer,
-  LearnMoreButton,
-  InfoBox,
-  InfoBoxButtons,
-} from "./styles";
-import {
-  PageContent,
-  Disclaimer,
-  ModalContent,
-  ModalH1,
-  ModalBody,
+  PageContent
 } from "../../Common/Modal/styles";
-import WalletIcon from "../../../assets/wallet";
 
-import useLocales from "../../../hooks/useLocales";
-import ConnectorList from "../../Common/ConnectorList";
-import useIsMobile from "../../../hooks/useIsMobile";
-import Button from "../../Common/Button";
-import FitText from "../../Common/FitText";
-import { OrderHeader } from "../../Common/OrderHeader";
-import OptionsList from "../../Common/OptionsList";
-import {
-  Coinbase,
-  MetaMask,
-  Rainbow,
-  WalletConnect,
-} from "../../../assets/logos";
-import { detectPlatform } from "../../../utils/platform";
-import { trpc } from "../../../utils/trpc";
 import {
   ExternalPaymentOptionMetadata,
   getAddressContraction,
 } from "@daimo/common";
-import { useAccount, useEnsName } from "wagmi";
 import { ethereum } from "@daimo/contract";
+import { useAccount, useEnsName } from "wagmi";
+import {
+  Coinbase,
+  MetaMask,
+  Rainbow
+} from "../../../assets/logos";
+import { detectPlatform } from "../../../utils/platform";
+import { trpc } from "../../../utils/trpc";
+import OptionsList from "../../Common/OptionsList";
+import { OrderHeader } from "../../Common/OrderHeader";
 
 const SelectMethod: React.FC = () => {
   const { address, isConnected, connector } = useAccount();

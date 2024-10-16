@@ -1,5 +1,5 @@
-import React from "react";
 import { detect } from "detect-browser";
+import React from "react";
 
 const truncateRegex = /^(0x[a-zA-Z0-9]{4})[a-zA-Z0-9]+([a-zA-Z0-9]{4})$/;
 
@@ -95,12 +95,7 @@ export const isInjectedConnector = (connectorId?: string) =>
   connectorId === "injected";
 
 export {
-  nFormatter,
-  truncateEthAddress,
-  truncateENSAddress,
-  isMobile,
-  isAndroid,
   detectBrowser,
   detectOS,
-  flattenChildren,
+  flattenChildren, isAndroid, isMobile, nFormatter, truncateENSAddress, truncateEthAddress
 };

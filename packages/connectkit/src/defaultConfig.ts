@@ -1,13 +1,13 @@
-import { http } from "wagmi";
 import { type CreateConfigParameters } from "@wagmi/core";
+import { http } from "wagmi";
 import {
-  mainnet,
-  polygon,
-  optimism,
   arbitrum,
   base,
-  sepolia,
   Chain,
+  mainnet,
+  optimism,
+  polygon,
+  sepolia,
 } from "wagmi/chains";
 import { CoinbaseWalletParameters } from "wagmi/connectors";
 

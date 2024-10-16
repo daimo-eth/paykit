@@ -1,5 +1,5 @@
 import React, { createContext, createElement } from "react";
-import { CustomTheme, Mode, Theme } from "./../../types";
+import { CustomTheme, Mode, Theme } from "../../types";
 
 type ContextValue = {
   theme?: Theme;
@@ -9,16 +9,19 @@ type ContextValue = {
 
 const Context = createContext<ContextValue | null>(null);
 
-type ConnectKitThemeProviderProps = {
+type DaimoPayThemeProviderProps = {
   children?: React.ReactNode;
   theme?: Theme;
   mode?: Mode;
   customTheme?: CustomTheme;
 };
 
-export const ConnectKitThemeProvider: React.FC<
-  ConnectKitThemeProviderProps
-> = ({ children, theme = "auto", mode = "auto", customTheme }) => {
+export const DaimoPayThemeProvider: React.FC<DaimoPayThemeProviderProps> = ({
+  children,
+  theme = "auto",
+  mode = "auto",
+  customTheme,
+}) => {
   const value = {
     theme,
     mode,
@@ -30,7 +33,6 @@ export const ConnectKitThemeProvider: React.FC<
 
 export const useThemeContext = () => {
   const context = React.useContext(Context);
-  if (!context)
-    throw Error("ConnectKitThemeProvider must be inside a Provider.");
+  if (!context) throw Error("DaimoPayThemeProvider must be inside a Provider.");
   return context;
 };

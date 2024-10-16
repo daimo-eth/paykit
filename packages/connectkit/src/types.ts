@@ -20,5 +20,6 @@ export type All = {
   lang?: Languages;
 };
 
-export type { ConnectKitOptions } from "./components/ConnectKit";
 export type { CustomAvatarProps } from "./components/Common/Avatar";
+export type { DaimoPayOptions } from "./components/DaimoPay";
+

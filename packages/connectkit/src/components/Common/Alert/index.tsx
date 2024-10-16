@@ -1,5 +1,5 @@
-import { AlertProps } from "./types";
 import { AlertContainer, IconContainer } from "./styles";
+import { AlertProps } from "./types";
 
 const Alert = ({ children, error, icon }: AlertProps) => {
   return (

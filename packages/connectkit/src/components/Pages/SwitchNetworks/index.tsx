@@ -1,20 +1,20 @@
 import React from "react";
 
-import {
-  PageContent,
-  ModalContent,
-  ModalBody,
-} from "../../Common/Modal/styles";
-import ChainSelectList from "../../Common/ChainSelectList";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
+import ChainSelectList from "../../Common/ChainSelectList";
+import {
+  ModalBody,
+  ModalContent,
+  PageContent,
+} from "../../Common/Modal/styles";
 
 import useLocales from "../../../hooks/useLocales";
 
-import Button from "../../Common/Button";
 import { DisconnectIcon } from "../../../assets/icons";
-import { isSafeConnector } from "../../../utils";
-import { OrDivider } from "../../Common/Modal";
 import { useChainIsSupported } from "../../../hooks/useChainIsSupported";
+import { isSafeConnector } from "../../../utils";
+import Button from "../../Common/Button";
+import { OrDivider } from "../../Common/Modal";
 
 const SwitchNetworks: React.FC = () => {
   const { reset } = useConnect();

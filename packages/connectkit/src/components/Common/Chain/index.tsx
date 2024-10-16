@@ -1,16 +1,16 @@
 import React from "react";
 
+import { AnimatePresence } from "framer-motion";
+import Chains from "../../../assets/chains";
+import { chainConfigs } from "../../../constants/chainConfigs";
+import { useChainIsSupported } from "../../../hooks/useChainIsSupported";
+import useIsMounted from "../../../hooks/useIsMounted";
 import {
   ChainContainer,
   LoadingContainer,
   LogoContainer,
   Unsupported,
 } from "./styles";
-import { AnimatePresence } from "framer-motion";
-import { chainConfigs } from "../../../constants/chainConfigs";
-import Chains from "../../../assets/chains";
-import useIsMounted from "../../../hooks/useIsMounted";
-import { useChainIsSupported } from "../../../hooks/useChainIsSupported";
 
 const Spinner = (
   <svg

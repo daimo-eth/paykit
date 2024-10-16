@@ -1,37 +1,35 @@
-import React, { useEffect, useState } from "react";
 import { AnimatePresence, Variants } from "framer-motion";
+import React, { useEffect, useState } from "react";
 import {
-  Container,
-  ConnectingContainer,
   ConnectingAnimation,
+  ConnectingContainer,
+  Container,
+  Content,
   RetryButton,
   RetryIconContainer,
-  Content,
 } from "./styles";
 
-import {
-  PageContent,
-  ModalHeading,
-  ModalBody,
-  ModalH1,
-  ModalContentContainer,
-  ModalContent,
-} from "../../Common/Modal/styles";
-import { OrDivider } from "../../Common/Modal";
-import Button from "../../Common/Button";
-import Tooltip from "../../Common/Tooltip";
 import Alert from "../../Common/Alert";
+import Button from "../../Common/Button";
+import {
+  ModalBody,
+  ModalContent,
+  ModalContentContainer,
+  ModalH1,
+  ModalHeading,
+  PageContent,
+} from "../../Common/Modal/styles";
+import Tooltip from "../../Common/Tooltip";
 
 import SquircleSpinner from "../../Spinners/SquircleSpinner";
 
-import { RetryIconCircle, Scan } from "../../../assets/icons";
-import BrowserIcon from "../../Common/BrowserIcon";
-import { AlertIcon, TickIcon } from "../../../assets/icons";
-import { detectBrowser, isWalletConnectConnector } from "../../../utils";
-import useLocales from "../../../hooks/useLocales";
+import { AlertIcon, RetryIconCircle, TickIcon } from "../../../assets/icons";
 import { useConnect } from "../../../hooks/useConnect";
-import { useContext } from "../../ConnectKit";
+import useLocales from "../../../hooks/useLocales";
+import { detectBrowser, isWalletConnectConnector } from "../../../utils";
 import { useWallet } from "../../../wallets/useWallets";
+import BrowserIcon from "../../Common/BrowserIcon";
+import { useContext } from "../../DaimoPay";
 import CircleSpinner from "../../Spinners/CircleSpinner";
 
 export const states = {

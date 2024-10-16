@@ -5,73 +5,61 @@
 
 # Daimo Pay
 
-Daimo Pay is a powerful [React](https://reactjs.org/) component library for connecting a wallet to your dApp. It supports the most popular connectors and chains out of the box and provides a beautiful, seamless experience.
+Daimo Pay enables seamless crypto payments for your app.
+
+Onboard users from any chain, any coin into your app with one click and maximize your conversion.
 
 ## Features
 
-- 💡 TypeScript Ready — Get types straight out of the box.
-- 🌱 Ecosystem Standards — Uses top libraries such as [wagmi](https://github.com/wagmi-dev/wagmi).
-- 🖥️ Simple UX — Give users a simple, attractive experience.
-- 🎨 Beautiful Themes — Predesigned themes or full customization.
+- 🌱 Instant cross-chain payments — Accept payment from 1000+ tokens on multiple chains. Payments complete in less than 5 seconds. We handle the swapping and bridging so that your customers don't have to.
+- 💡 Pay with a single transaction - No more wallet round-trips to make approval, swap, or bridging transactions. Your customers pay with a single transfer transaction.
+- ⚡️ Fully permissionless - Daimo never custodies funds and funds can never be stuck in a contract. Payments can be permissionlessly completed by anyone.
+- 💱 Support for all major wallets and exchanges - Daimo Pay supports payments from browser wallets like MetaMask and Rabby, WalletConnect, as well as exchanges like Coinbase and Binance.
+- 💨 Integrate within minutes - Get up and running with Daimo Pay in as little as 10 minutes with little to no code.
 
 and much more...
 
 ## Documentation
 
-You can find the full ConnectKit documentation in the Family docs [here](https://docs.family.co/connectkit).
-
-## API Reference
-
-You can find the full API Reference in the Family docs [here](https://docs.family.co/connectkit/api-reference).
+You can find the full Daimo Pay documentation [here](https://paydocs.daimo.com).
 
 ## Examples
 
-There are various runnable examples included in this repository in the [examples folder](https://github.com/family/connectkit/tree/main/examples):
-
-- [Create React App Example (TypeScript)](https://github.com/family/connectkit/tree/main/examples/cra)
-- [Next.js Example (TypeScript)](https://github.com/family/connectkit/tree/main/examples/nextjs)
-- [Vite Example (TypeScript)](https://github.com/family/connectkit/tree/main/examples/vite)
+Check out https://github.com/daimo-eth/pay-hello-world. More coming soon.
 
 ### Try in CodeSandbox
 
-You can try out some ConnectKit examples directly in your browser through CodeSandbox:
+Coming soon
 
-- [Create React App Example (TypeScript)](https://codesandbox.io/s/5rhqm0?file=/README.md)
-- [Next.js (TypeScript)](https://codesandbox.io/s/qnvyqe?file=/README.md)
-- [Vite Example (TypeScript)](https://codesandbox.io/s/4jtssh?file=/README.md)
+### Local Development
 
-### Running Examples Locally
-
-Clone the ConnectKit project and install the necessary dependencies:
+Clone the repository and build the SDK in `dev` mode:
 
 ```sh
-$ git clone git@github.com:family/connectkit.git
-$ cd connectkit
-$ yarn install
+git clone https://github.com/daimo-eth/paykit.git
+cd paykit/packages/connectkit
+npm i
+npm run dev
 ```
 
-and start the code bundler:
+The rollup bundler will now watch file changes in the background. Try using one of the examples for testing:
 
 ```sh
-$ yarn dev:connectkit
+cd examples/nextjs
+npm i
+npm run dev
 ```
 
-and then simply select the example you'd like to run:
+Any changes will be reflected on the Pay button in the example app.
 
-```sh
-$ yarn dev:vite # Vite
-$ yarn dev:nextjs # Next.js
-$ yarn dev:cra # Create React App
-```
+## Support
 
-## Contribute
-
-Before starting on anything, please have a read through our [Contribution Guidelines](https://github.com/family/connectkit/blob/main/CONTRIBUTING.md).
-
-## Twitter
-
-Follow [@family](https://twitter.com/family) on Twitter for the latest updates on ConnectKit.
+Message us on [Telegram](https://t.me/daimo_support) if you're interested in integrating Daimo Pay.
 
 ## License
 
-See [LICENSE](https://github.com/family/connectkit/blob/main/LICENSE) for more information.
+See [LICENSE](https://github.com/daimo-eth/paykit/blob/main/packages/connectkit/LICENSE) for more information.
+
+## Credits
+
+Daimo Pay SDK is a fork of [Connectkit](https://github.com/family/connectkit) developed by [Family](https://family.co). We're grateful to them for making Connectkit fast, beatiful and open-source.

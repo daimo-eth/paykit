@@ -1,14 +1,14 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useContext } from "../../ConnectKit";
 import useMeasure from "react-use-measure";
+import { useContext } from "../../DaimoPay";
 
+import { TooltipContainer, TooltipTail, TooltipWindow } from "./styles";
 import { TooltipProps, TooltipSizeProps } from "./types";
-import { TooltipWindow, TooltipContainer, TooltipTail } from "./styles";
 
 import { AnimatePresence, motion } from "framer-motion";
 import { ResetContainer } from "../../../styles";
+import { useThemeContext } from "../../DaimoPayThemeProvider/DaimoPayThemeProvider";
 import Portal from "../Portal";
-import { useThemeContext } from "../../ConnectKitThemeProvider/ConnectKitThemeProvider";
 
 const Tooltip: React.FC<TooltipProps> = ({
   children,

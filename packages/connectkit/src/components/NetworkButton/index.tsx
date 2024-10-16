@@ -6,15 +6,15 @@ import { AnimatePresence } from "framer-motion";
 import { useAccount } from "wagmi";
 import useIsMounted from "../../hooks/useIsMounted";
 
-import Chain from "../Common/Chain";
-import DynamicContainer from "../Common/DynamicContainer";
-import { chainConfigs } from "../../constants/chainConfigs";
-import ThemedButton from "../Common/ThemedButton";
-import ChainSelectDropdown from "../Common/ChainSelectDropdown";
-import { ConnectKitThemeProvider } from "../ConnectKitThemeProvider/ConnectKitThemeProvider";
 import { motion } from "framer-motion";
+import { chainConfigs } from "../../constants/chainConfigs";
+import Chain from "../Common/Chain";
+import ChainSelectDropdown from "../Common/ChainSelectDropdown";
+import DynamicContainer from "../Common/DynamicContainer";
+import ThemedButton from "../Common/ThemedButton";
+import { useContext } from "../DaimoPay";
+import { DaimoPayThemeProvider } from "../DaimoPayThemeProvider/DaimoPayThemeProvider";
 import styled from "./../../styles/styled";
-import { useContext } from "../ConnectKit";
 
 const Container = styled(motion.div)`
   position: relative;
@@ -60,7 +60,7 @@ const NetworkButton: React.FC<NetworkButtonProps & All> = ({
 
   const currentChain = chainConfigs.find((c) => c.id === chain?.id);
   return (
-    <ConnectKitThemeProvider
+    <DaimoPayThemeProvider
       theme={theme ?? context.theme}
       mode={mode ?? context.mode}
       customTheme={customTheme ?? context.customTheme}
@@ -111,7 +111,7 @@ const NetworkButton: React.FC<NetworkButtonProps & All> = ({
           </Container>
         )}
       </AnimatePresence>
-    </ConnectKitThemeProvider>
+    </DaimoPayThemeProvider>
   );
 };
 export default NetworkButton;

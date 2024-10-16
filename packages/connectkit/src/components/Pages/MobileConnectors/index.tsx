@@ -1,26 +1,26 @@
 import React from "react";
 import {
   Container,
-  WalletList,
-  WalletItem,
   WalletIcon,
+  WalletItem,
   WalletLabel,
+  WalletList,
 } from "./styles";
 
-import { PageContent, ModalContent } from "../../Common/Modal/styles";
+import { ModalContent, PageContent } from "../../Common/Modal/styles";
 
-import { useContext } from "../../ConnectKit";
-import { useWalletConnectModal } from "../../../hooks/useWalletConnectModal";
-import CopyToClipboard from "../../Common/CopyToClipboard";
 import useLocales from "../../../hooks/useLocales";
-import { Spinner } from "../../Common/Spinner";
-import { ScrollArea } from "../../Common/ScrollArea";
-import { useWeb3 } from "../../contexts/web3";
+import { useWalletConnectModal } from "../../../hooks/useWalletConnectModal";
 import { useWallets } from "../../../wallets/useWallets";
 import {
   WalletConfigProps,
   walletConfigs,
 } from "../../../wallets/walletConfigs";
+import CopyToClipboard from "../../Common/CopyToClipboard";
+import { ScrollArea } from "../../Common/ScrollArea";
+import { Spinner } from "../../Common/Spinner";
+import { useWeb3 } from "../../contexts/web3";
+import { useContext } from "../../DaimoPay";
 
 const MoreIcon = (
   <svg

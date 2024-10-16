@@ -1,25 +1,25 @@
 import React from "react";
-import { useContext, ROUTES } from "../../ConnectKit";
+import { ROUTES, useContext } from "../../DaimoPay";
 
+import WalletIcon from "../../../assets/wallet";
 import {
-  LearnMoreContainer,
-  LearnMoreButton,
-  InfoBox,
-  InfoBoxButtons,
-} from "./styles";
-import {
-  PageContent,
   Disclaimer,
+  ModalBody,
   ModalContent,
   ModalH1,
-  ModalBody,
+  PageContent,
 } from "../../Common/Modal/styles";
-import WalletIcon from "../../../assets/wallet";
+import {
+  InfoBox,
+  InfoBoxButtons,
+  LearnMoreButton,
+  LearnMoreContainer,
+} from "./styles";
 
-import useLocales from "../../../hooks/useLocales";
-import ConnectorList from "../../Common/ConnectorList";
 import useIsMobile from "../../../hooks/useIsMobile";
+import useLocales from "../../../hooks/useLocales";
 import Button from "../../Common/Button";
+import ConnectorList from "../../Common/ConnectorList";
 import { OrderHeader } from "../../Common/OrderHeader";
 
 const Wallets: React.FC = () => {

@@ -1,23 +1,22 @@
 import React from "react";
-import { ROUTES, useContext } from "../ConnectKit";
+import { ROUTES, useContext } from "../DaimoPay";
 
 import { useWalletConnectModal } from "../../hooks/useWalletConnectModal";
 
 import {
   detectBrowser,
-  isCoinbaseWalletConnector,
-  isWalletConnectConnector,
+  isWalletConnectConnector
 } from "../../utils";
 
-import { PageContent, ModalContent } from "../Common/Modal/styles";
 import { OrDivider } from "../Common/Modal";
+import { ModalContent, PageContent } from "../Common/Modal/styles";
 
-import CustomQRCode from "../Common/CustomQRCode";
-import Button from "../Common/Button";
 import ScanIconWithLogos from "../../assets/ScanIconWithLogos";
 import { ExternalLinkIcon } from "../../assets/icons";
-import CopyToClipboard from "../Common/CopyToClipboard";
 import useLocales from "../../hooks/useLocales";
+import Button from "../Common/Button";
+import CopyToClipboard from "../Common/CopyToClipboard";
+import CustomQRCode from "../Common/CustomQRCode";
 
 import { useWallet } from "../../wallets/useWallets";
 import { useWeb3 } from "../contexts/web3";

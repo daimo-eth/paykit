@@ -1,16 +1,15 @@
-import React from "react";
 
 import {
-  PageContent,
   ModalBody,
   ModalContent,
+  PageContent,
 } from "../../Common/Modal/styles";
 
 import CustomQRCode from "../../Common/CustomQRCode";
 
 import useLocales from "../../../hooks/useLocales";
-import { useContext } from "../../ConnectKit";
 import { useWallet } from "../../../wallets/useWallets";
+import { useContext } from "../../DaimoPay";
 
 const DownloadApp = () => {
   const context = useContext();

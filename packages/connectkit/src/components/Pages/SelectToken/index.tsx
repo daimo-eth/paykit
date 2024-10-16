@@ -1,55 +1,30 @@
 import React, { useEffect, useState } from "react";
-import { useContext, ROUTES } from "../../ConnectKit";
+import { ROUTES, useContext } from "../../DaimoPay";
 
 import {
-  PageContent,
-  Disclaimer,
-  ModalContent,
-  ModalH1,
-  ModalBody,
+  PageContent
 } from "../../Common/Modal/styles";
-import WalletIcon from "../../../assets/wallet";
 
-import useLocales from "../../../hooks/useLocales";
-import ConnectorList from "../../Common/ConnectorList";
-import useIsMobile from "../../../hooks/useIsMobile";
-import Button from "../../Common/Button";
-import { OrderHeader } from "../../Common/OrderHeader";
 import {
-  assertNotNull,
   capitalize,
   DaimoPayToken,
-  getDisplayPrice,
+  getDisplayPrice
 } from "@daimo/common";
-import { trpc } from "../../../utils/trpc";
 import {
-  ConnectorChainMismatchError,
-  useAccount,
-  useChainId,
-  useSwitchChain,
-} from "wagmi";
-import OptionsList from "../../Common/OptionsList";
-import {
-  ethereum,
-  arbitrum,
-  getChainName,
-  base,
-  baseSepolia,
-  optimism,
-  polygon,
-  ethereumSepolia,
+  getChainName
 } from "@daimo/contract";
 import { motion } from "framer-motion";
-import styled from "../../../styles/styled";
 import {
-  Arbitrum,
-  Base,
-  chainToLogo,
-  Ethereum,
-  Optimism,
-  Polygon,
+  useAccount
+} from "wagmi";
+import {
+  chainToLogo
 } from "../../../assets/chains";
+import styled from "../../../styles/styled";
 import { PaymentOption } from "../../../utils/getPaymentInfo";
+import { trpc } from "../../../utils/trpc";
+import OptionsList from "../../Common/OptionsList";
+import { OrderHeader } from "../../Common/OrderHeader";
 
 function getDaimoTokenKey(token: DaimoPayToken) {
   return `${token.chainId}-${token.token}`;

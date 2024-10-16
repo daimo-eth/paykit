@@ -1,3 +1,4 @@
+import json from '@rollup/plugin-json';
 import peerDepsExternal from "rollup-plugin-peer-deps-external";
 import typescript from "rollup-plugin-typescript2";
 
@@ -14,6 +15,7 @@ export default [
     },
     plugins: [
       peerDepsExternal(),
+      json(),
       typescript({
         useTsconfigDeclarationDir: true,
         exclude: "node_modules/**",

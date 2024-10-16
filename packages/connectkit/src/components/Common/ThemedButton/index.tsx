@@ -1,9 +1,9 @@
 import React from "react";
 
-import { ThemeContainer, Container } from "./styles";
+import { Container, ThemeContainer } from "./styles";
 
-import { All } from "./../../../types";
 import useMeasure from "react-use-measure";
+import { All } from "./../../../types";
 
 type ThemedButtonProps = {
   children?: React.ReactNode;

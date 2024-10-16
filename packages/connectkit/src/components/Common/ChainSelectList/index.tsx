@@ -2,25 +2,25 @@ import { useState } from "react";
 import { useAccount, useSwitchChain } from "wagmi";
 import { chainConfigs } from "../../../constants/chainConfigs";
 
+import Alert from "../Alert";
 import {
-  SwitchNetworksContainer,
   ChainButton,
-  ChainButtonContainer,
   ChainButtonBg,
+  ChainButtonContainer,
   ChainButtonStatus,
   ChainButtons,
   ChainIcon,
   ChainLogoContainer,
   ChainLogoSpinner,
+  SwitchNetworksContainer,
 } from "./styles";
-import Alert from "../Alert";
 
 import { AnimatePresence, motion } from "framer-motion";
 import { isCoinbaseWalletConnector, isMobile } from "../../../utils";
 
 import ChainIcons from "../../../assets/chains";
 import useLocales from "../../../hooks/useLocales";
-import { useContext } from "../../ConnectKit";
+import { useContext } from "../../DaimoPay";
 
 const Spinner = (
   <svg

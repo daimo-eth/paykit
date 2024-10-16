@@ -1,35 +1,26 @@
-import React, { useEffect, useState } from "react";
-import { useContext, ROUTES } from "../../ConnectKit";
+import React, { useEffect } from "react";
+import { useContext } from "../../DaimoPay";
 
 import {
-  PageContent,
-  Disclaimer,
   ModalContent,
-  ModalH1,
-  ModalBody,
+  PageContent
 } from "../../Common/Modal/styles";
-import WalletIcon from "../../../assets/wallet";
 
-import useLocales from "../../../hooks/useLocales";
-import ConnectorList from "../../Common/ConnectorList";
-import useIsMobile from "../../../hooks/useIsMobile";
-import Button from "../../Common/Button";
-import {
-  ExternalLinkIcon,
-  LoadingCircleIcon,
-  TickIcon,
-} from "../../../assets/icons";
-import { motion } from "framer-motion";
-import styled from "../../../styles/styled";
 import {
   capitalize,
-  DaimoPayHydratedOrder,
   DaimoPayOrder,
   DaimoPayOrderMode,
-  getChainExplorerTxUrl,
+  getChainExplorerTxUrl
 } from "@daimo/common";
 import { getChainName } from "@daimo/contract";
+import { motion } from "framer-motion";
 import { css } from "styled-components";
+import {
+  LoadingCircleIcon,
+  TickIcon
+} from "../../../assets/icons";
+import styled from "../../../styles/styled";
+import Button from "../../Common/Button";
 
 function getPathMetadata(order: DaimoPayOrder | null): {
   path: { label: string; url?: string }[];

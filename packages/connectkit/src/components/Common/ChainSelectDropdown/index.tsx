@@ -5,26 +5,26 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { useContext } from "./../../ConnectKit";
+import { useContext } from "../../DaimoPay";
 
 import useMeasure from "react-use-measure";
 
 import ChainSelectList from "./../ChainSelectList";
 
-import Portal from "./../Portal";
 import { ResetContainer } from "./../../../styles";
+import Portal from "./../Portal";
 import {
-  DropdownWindow,
-  DropdownOverlay,
   DropdownContainer,
   DropdownHeading,
+  DropdownOverlay,
+  DropdownWindow,
 } from "./styles";
 
 import { AnimatePresence } from "framer-motion";
-import { useThemeContext } from "./../../ConnectKitThemeProvider/ConnectKitThemeProvider";
+import useLocales from "../../../hooks/useLocales";
+import { useThemeContext } from "../../DaimoPayThemeProvider/DaimoPayThemeProvider";
 import FocusTrap from "./../../../hooks/useFocusTrap";
 import useLockBodyScroll from "./../../../hooks/useLockBodyScroll";
-import useLocales from "../../../hooks/useLocales";
 
 const ChainSelectDropdown: React.FC<{
   children?: React.ReactNode;
