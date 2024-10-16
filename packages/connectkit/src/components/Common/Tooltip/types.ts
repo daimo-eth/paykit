@@ -1,4 +1,4 @@
-export type TooltipSizeProps = 'small' | 'large';
+export type TooltipSizeProps = "small" | "large";
 
 export type TooltipProps = {
   message?: string | React.ReactNode;

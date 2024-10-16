@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
-import { All } from './../../types';
+import React, { useState } from "react";
+import { All } from "./../../types";
 
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from "framer-motion";
 
-import { useAccount } from 'wagmi';
-import useIsMounted from '../../hooks/useIsMounted';
+import { useAccount } from "wagmi";
+import useIsMounted from "../../hooks/useIsMounted";
 
-import Chain from '../Common/Chain';
-import DynamicContainer from '../Common/DynamicContainer';
-import { chainConfigs } from '../../constants/chainConfigs';
-import ThemedButton from '../Common/ThemedButton';
-import ChainSelectDropdown from '../Common/ChainSelectDropdown';
-import { ConnectKitThemeProvider } from '../ConnectKitThemeProvider/ConnectKitThemeProvider';
-import { motion } from 'framer-motion';
-import styled from './../../styles/styled';
-import { useContext } from '../ConnectKit';
+import Chain from "../Common/Chain";
+import DynamicContainer from "../Common/DynamicContainer";
+import { chainConfigs } from "../../constants/chainConfigs";
+import ThemedButton from "../Common/ThemedButton";
+import ChainSelectDropdown from "../Common/ChainSelectDropdown";
+import { ConnectKitThemeProvider } from "../ConnectKitThemeProvider/ConnectKitThemeProvider";
+import { motion } from "framer-motion";
+import styled from "./../../styles/styled";
+import { useContext } from "../ConnectKit";
 
 const Container = styled(motion.div)`
   position: relative;
@@ -71,7 +71,7 @@ const NetworkButton: React.FC<NetworkButtonProps & All> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2, ease: 'linear' }}
+            transition={{ duration: 0.2, ease: "linear" }}
           >
             <ChainSelectDropdown open={open} onClose={() => setOpen(false)}>
               <ThemedButton
@@ -82,10 +82,10 @@ const NetworkButton: React.FC<NetworkButtonProps & All> = ({
               >
                 <div
                   style={{
-                    display: 'flex',
+                    display: "flex",
                     gap: 8,
-                    alignItems: 'center',
-                    justifyContent: 'center',
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
                   {!hideIcon && (
@@ -102,7 +102,7 @@ const NetworkButton: React.FC<NetworkButtonProps & All> = ({
                       </div>
                     )}
                   </AnimatePresence>
-                  <div style={{ minWidth: 10, transform: 'translateY(1px)' }}>
+                  <div style={{ minWidth: 10, transform: "translateY(1px)" }}>
                     {ArrowIcon}
                   </div>
                 </div>

@@ -1,5 +1,5 @@
-import { motion } from 'framer-motion';
-import styled from './../../../styles/styled';
+import { motion } from "framer-motion";
+import styled from "./../../../styles/styled";
 
 export const BrowserIconContainer = styled(motion.div)`
   display: flex;

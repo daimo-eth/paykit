@@ -1,24 +1,24 @@
-import { motion, EasingFunction } from 'framer-motion';
-import styled from './../../../styles/styled';
-import { keyframes } from 'styled-components';
+import { motion, EasingFunction } from "framer-motion";
+import styled from "./../../../styles/styled";
+import { keyframes } from "styled-components";
 
 export type Easing =
   | [number, number, number, number]
-  | 'linear'
-  | 'easeIn'
-  | 'easeOut'
-  | 'easeInOut'
-  | 'circIn'
-  | 'circOut'
-  | 'circInOut'
-  | 'backIn'
-  | 'backOut'
-  | 'backInOut'
-  | 'anticipate'
+  | "linear"
+  | "easeIn"
+  | "easeOut"
+  | "easeInOut"
+  | "circIn"
+  | "circOut"
+  | "circInOut"
+  | "backIn"
+  | "backOut"
+  | "backInOut"
+  | "anticipate"
   | EasingFunction;
 
 const pulseAnim = { scale: [0.9, 1.25, 1.6], opacity: [0, 0.11, 0] };
-const pulseTransition = { ease: 'linear', duration: 2, repeat: Infinity };
+const pulseTransition = { ease: "linear", duration: 2, repeat: Infinity };
 
 const Center = styled.div`
   position: absolute;
@@ -110,8 +110,8 @@ const Wallet = ({ inverted = false }) => (
       d="M57.9332 20.3335V42.1113C57.9332 46.4069 54.451 49.8891 50.1555 49.8891H8.15546C3.85991 49.8891 0.377686 46.4069 0.377686 42.1113V25.0002V7.8891C0.377686 3.59355 3.85991 0.111328 8.15546 0.111328H47.0444C48.7626 0.111328 50.1555 1.50422 50.1555 3.22244C50.1555 4.94066 48.7626 6.33355 47.0443 6.33355H9.71102C7.9928 6.33355 6.59991 7.72644 6.59991 9.44466C6.59991 11.1629 7.9928 12.5558 9.71102 12.5558H50.1555C54.451 12.5558 57.9332 16.038 57.9332 20.3335ZM46.2667 34.3337C48.4145 34.3337 50.1556 32.5926 50.1556 30.4448C50.1556 28.297 48.4145 26.5559 46.2667 26.5559C44.1189 26.5559 42.3778 28.297 42.3778 30.4448C42.3778 32.5926 44.1189 34.3337 46.2667 34.3337Z"
       fill={
         inverted
-          ? 'var(--ck-graphic-primary-color, var(--ck-body-background))'
-          : 'var(--ck-graphic-primary-color, var(--ck-body-color))'
+          ? "var(--ck-graphic-primary-color, var(--ck-body-background))"
+          : "var(--ck-graphic-primary-color, var(--ck-body-color))"
       }
     />
     <defs>
@@ -126,14 +126,14 @@ const Wallet = ({ inverted = false }) => (
         <stop
           stopColor={
             inverted
-              ? 'var(--ck-body-color-muted)'
-              : 'var(--ck-body-background-transparent, transparent)'
+              ? "var(--ck-body-color-muted)"
+              : "var(--ck-body-background-transparent, transparent)"
           }
         />
         <stop
           offset="1"
           stopColor={
-            inverted ? 'var(--ck-body-color)' : 'var(--ck-body-background)'
+            inverted ? "var(--ck-body-color)" : "var(--ck-body-background)"
           }
         />
       </linearGradient>
@@ -174,7 +174,7 @@ const Receive = (
 );
 
 const Key = ({ ...props }) => {
-  const id = props?.id ?? '';
+  const id = props?.id ?? "";
   return (
     <svg
       {...props}
@@ -317,27 +317,27 @@ export const SlideOne = ({ layoutId }: Slide) => {
   return (
     <div
       style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
       }}
     >
       <motion.div
-        initial={{ rotate: 90, scale: 0.2, x: '100%' }}
+        initial={{ rotate: 90, scale: 0.2, x: "100%" }}
         animate={{ rotate: 0, scale: 1, x: 0 }}
-        exit={{ rotate: 40, scale: 0.1, x: '70%' }}
+        exit={{ rotate: 40, scale: 0.1, x: "70%" }}
         style={{
           zIndex: 4,
-          position: 'relative',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
+          position: "relative",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
           width: 76,
           height: 76,
-          background: 'var(--ck-graphic-secondary-background, #6366F1)',
-          borderRadius: '50%',
+          background: "var(--ck-graphic-secondary-background, #6366F1)",
+          borderRadius: "50%",
           boxShadow:
-            'var(--ck-graphic-secondary-box-shadow, 0px 2px 10px rgba(99, 102, 241, 0.3))',
+            "var(--ck-graphic-secondary-box-shadow, 0px 2px 10px rgba(99, 102, 241, 0.3))",
         }}
       >
         {Receive}
@@ -346,20 +346,20 @@ export const SlideOne = ({ layoutId }: Slide) => {
         key={layoutId}
         layoutId={layoutId}
         style={{
-          position: 'relative',
+          position: "relative",
           zIndex: 10,
-          margin: '0 -8px',
+          margin: "0 -8px",
           width: 112,
           height: 112,
         }}
       >
         <MainCircleInner
-          key={'SlideOneInner'}
+          key={"SlideOneInner"}
           style={{
             background:
-              'var(--ck-graphic-primary-background, var(--ck-body-background))',
+              "var(--ck-graphic-primary-background, var(--ck-body-background))",
             boxShadow:
-              'var(--ck-graphic-primary-box-shadow, 0px 3px 15px rgba(0, 0, 0, 0.1))',
+              "var(--ck-graphic-primary-box-shadow, 0px 3px 15px rgba(0, 0, 0, 0.1))",
           }}
           initial={{
             opacity: 0,
@@ -368,29 +368,29 @@ export const SlideOne = ({ layoutId }: Slide) => {
           exit={{ opacity: 0 }}
         >
           <BgLighten />
-          <motion.div style={{ zIndex: 2, position: 'relative' }}>
+          <motion.div style={{ zIndex: 2, position: "relative" }}>
             <Wallet />
           </motion.div>
         </MainCircleInner>
       </MainCircle>
 
       <motion.div
-        initial={{ rotate: -90, scale: 0.2, x: '-100%' }}
+        initial={{ rotate: -90, scale: 0.2, x: "-100%" }}
         animate={{ rotate: 0, scale: 1, x: 0 }}
-        exit={{ rotate: -40, scale: 0.1, x: '-70%' }}
+        exit={{ rotate: -40, scale: 0.1, x: "-70%" }}
         style={{
           zIndex: 4,
-          position: 'relative',
+          position: "relative",
           width: 76,
           height: 76,
-          background: 'var(--ck-graphic-secondary-background, #3897FB)',
-          borderRadius: '50%',
+          background: "var(--ck-graphic-secondary-background, #3897FB)",
+          borderRadius: "50%",
           boxShadow:
-            'var(--ck-graphic-secondary-box-shadow, 0px 2px 10px rgba(56, 151, 251, 0.3))',
+            "var(--ck-graphic-secondary-box-shadow, 0px 2px 10px rgba(56, 151, 251, 0.3))",
         }}
       >
         <Center>
-          <div style={{ position: 'relative', left: -2, top: 3 }}>{Send}</div>
+          <div style={{ position: "relative", left: -2, top: 3 }}>{Send}</div>
         </Center>
       </motion.div>
     </div>
@@ -402,7 +402,7 @@ export const SlideTwo = ({ layoutId }: Slide) => {
     <>
       <div
         style={{
-          position: 'relative',
+          position: "relative",
           left: -14,
         }}
       >
@@ -411,7 +411,7 @@ export const SlideTwo = ({ layoutId }: Slide) => {
           layoutId={layoutId}
           style={{
             zIndex: 10,
-            position: 'absolute',
+            position: "absolute",
             left: 15,
             top: 12,
             width: 32,
@@ -419,15 +419,15 @@ export const SlideTwo = ({ layoutId }: Slide) => {
           }}
         >
           <MainCircleInner
-            key={'SlideTwoInner'}
+            key={"SlideTwoInner"}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             style={{
               background:
-                'var(--ck-graphic-primary-background, var(--ck-body-background))',
+                "var(--ck-graphic-primary-background, var(--ck-body-background))",
               boxShadow:
-                'var(--ck-graphic-primary-box-shadow, 0px 2px 5px rgba(37, 41, 46, 0.16))',
+                "var(--ck-graphic-primary-box-shadow, 0px 2px 5px rgba(37, 41, 46, 0.16))",
             }}
           >
             <Center>
@@ -441,27 +441,27 @@ export const SlideTwo = ({ layoutId }: Slide) => {
           exit={{ scale: 0.2 }}
           style={{
             zIndex: 7,
-            position: 'relative',
-            display: 'flex',
-            alignItems: 'center',
-            padding: '21px 56px',
+            position: "relative",
+            display: "flex",
+            alignItems: "center",
+            padding: "21px 56px",
             paddingRight: 52,
             background:
-              'var(--ck-graphic-primary-background, var(--ck-body-background))',
+              "var(--ck-graphic-primary-background, var(--ck-body-background))",
             boxShadow:
-              'var(--ck-graphic-primary-box-shadow, 0px 2px 9px rgba(0, 0, 0, 0.07))',
-            borderRadius: 'var(--ck-border-radius, 16px)',
+              "var(--ck-graphic-primary-box-shadow, 0px 2px 9px rgba(0, 0, 0, 0.07))",
+            borderRadius: "var(--ck-border-radius, 16px)",
           }}
         >
           <BgLighten />
-          <div style={{ position: 'relative', zIndex: 2, top: 1, left: 1 }}>
+          <div style={{ position: "relative", zIndex: 2, top: 1, left: 1 }}>
             {VitalikAddress}
           </div>
         </motion.div>
         <motion.div
           style={{
             zIndex: 8,
-            position: 'absolute',
+            position: "absolute",
             top: -16,
             right: -28,
           }}
@@ -481,9 +481,9 @@ export const SlideThree = ({ layoutId }: Slide) => {
   return (
     <>
       <motion.div
-        key={'SlideThree'}
+        key={"SlideThree"}
         style={{
-          position: 'relative',
+          position: "relative",
         }}
       >
         <MainCircle
@@ -492,18 +492,18 @@ export const SlideThree = ({ layoutId }: Slide) => {
           initial={{ rotate: 80 }}
           style={{
             zIndex: 10,
-            position: 'relative',
+            position: "relative",
             width: 128,
             height: 128,
           }}
         >
           <MainCircleInner
-            key={'SlideThreeInner'}
+            key={"SlideThreeInner"}
             initial={{ opacity: 0, rotate: 100 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             style={{
-              overflow: 'hidden',
+              overflow: "hidden",
               background: `var(--ck-graphic-globe-background, radial-gradient(
               82.42% 82.42% at 50% 86.72%,
               rgba(255, 255, 255, 0.2) 0%,
@@ -511,14 +511,14 @@ export const SlideThree = ({ layoutId }: Slide) => {
             ),
             linear-gradient(180deg, #3897FB 0%, #5004F1 100%))`,
               boxShadow:
-                'var(--ck-graphic-globe-box-shadow, 0px -6px 20px rgba(56, 151, 251, 0.23))',
+                "var(--ck-graphic-globe-box-shadow, 0px -6px 20px rgba(56, 151, 251, 0.23))",
             }}
           >
             <SpinContainer
               style={
                 !Boolean(layoutId)
                   ? {
-                      animationPlayState: 'paused',
+                      animationPlayState: "paused",
                     }
                   : undefined
               }
@@ -658,11 +658,11 @@ export const SlideThree = ({ layoutId }: Slide) => {
               animate={Boolean(layoutId) ? pulseAnim : undefined}
               transition={{ ...pulseTransition }}
               style={{
-                position: 'absolute',
+                position: "absolute",
                 inset: 0,
-                borderRadius: '50%',
+                borderRadius: "50%",
                 boxShadow:
-                  '0 0 0 2px var(--ck-graphic-globe-lines, rgba(126, 112, 243, 1))',
+                  "0 0 0 2px var(--ck-graphic-globe-lines, rgba(126, 112, 243, 1))",
               }}
             />
             <motion.div
@@ -673,11 +673,11 @@ export const SlideThree = ({ layoutId }: Slide) => {
               animate={Boolean(layoutId) ? pulseAnim : undefined}
               transition={{ ...pulseTransition, delay: 0.5 }}
               style={{
-                position: 'absolute',
+                position: "absolute",
                 inset: 0,
-                borderRadius: '50%',
+                borderRadius: "50%",
                 boxShadow:
-                  '0 0 0 2px var(--ck-graphic-globe-lines, rgba(126, 112, 243, 1))',
+                  "0 0 0 2px var(--ck-graphic-globe-lines, rgba(126, 112, 243, 1))",
               }}
             />
           </motion.div>
@@ -689,25 +689,25 @@ export const SlideThree = ({ layoutId }: Slide) => {
           exit={{ zIndex: 3, scale: 0.2, y: -25, x: 15 }}
           style={{
             zIndex: 12,
-            borderRadius: '50%',
-            position: 'absolute',
+            borderRadius: "50%",
+            position: "absolute",
             bottom: -4,
             right: -4,
             width: 54,
             height: 54,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
             padding: 13,
             background:
-              'var(--ck-graphic-compass-background, var(--ck-body-background))',
+              "var(--ck-graphic-compass-background, var(--ck-body-background))",
             boxShadow:
-              'var(--ck-graphic-compass-box-shadow, 0px 2px 9px rgba(0, 0, 0, 0.15))',
+              "var(--ck-graphic-compass-box-shadow, 0px 2px 9px rgba(0, 0, 0, 0.15))",
           }}
         >
           <BgLighten />
           <motion.div
-            style={{ zIndex: 2, position: 'absolute' }}
+            style={{ zIndex: 2, position: "absolute" }}
             initial={{ rotate: -170 }}
             animate={{ rotate: 0 }}
             exit={{
@@ -715,7 +715,7 @@ export const SlideThree = ({ layoutId }: Slide) => {
               transition: { duration: 0 }, // needed to avoid AnimatePresence taking too long to unmount the animation which causes issues on page close
             }}
             transition={{
-              type: 'spring',
+              type: "spring",
               stiffness: 6,
               damping: 0.9,
               mass: 0.2,

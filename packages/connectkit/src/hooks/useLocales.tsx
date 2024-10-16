@@ -1,13 +1,13 @@
-import React, { useMemo } from 'react';
-import Logos from '../assets/logos';
+import React, { useMemo } from "react";
+import Logos from "../assets/logos";
 
-import { useContext } from '../components/ConnectKit';
+import { useContext } from "../components/ConnectKit";
 
-import { getLocale } from './../localizations';
+import { getLocale } from "./../localizations";
 
 export default function useLocales(replacements?: any) {
   const context = useContext();
-  const language = context.options?.language ?? 'en-US';
+  const language = context.options?.language ?? "en-US";
 
   const translations = useMemo(() => {
     return getLocale(language);
@@ -33,8 +33,8 @@ const localize = (text: string, replacements?: any[string]) => {
     Object.keys(replacements).forEach((key) => {
       // use `replace` instead of `replaceAll` to support Node 14
       parsedText = parsedText.replace(
-        new RegExp(`({{ ${key} }})`, 'g'),
-        replacements[key as keyof typeof replacements]
+        new RegExp(`({{ ${key} }})`, "g"),
+        replacements[key as keyof typeof replacements],
       );
     });
   }
@@ -43,7 +43,7 @@ const localize = (text: string, replacements?: any[string]) => {
 
 const replaceMarkdown = (markdownText: string) => {
   let text: any = markdownText;
-  text = text.split('\n');
+  text = text.split("\n");
   text = text.map((t: string, i: number) => {
     return (
       <React.Fragment key={i}>
@@ -61,16 +61,16 @@ const wrapTags = (text: string) => {
   let result = textArray.map((str, i) => {
     if (/(\*\*.*\*\*)/g.test(str)) {
       // use `replace` instead of `replaceAll` to support Node 14
-      return <strong key={i}>{str.replace(/\*\*/g, '')}</strong>;
+      return <strong key={i}>{str.replace(/\*\*/g, "")}</strong>;
     }
     return `${str}`;
   });
 
   // Replace text with logo
   return result.map((r) => {
-    if (typeof r === 'string') {
+    if (typeof r === "string") {
       return r.split(/(\[WALLETCONNECTLOGO\])/g).map((s) => {
-        if (s === '[WALLETCONNECTLOGO]') {
+        if (s === "[WALLETCONNECTLOGO]") {
           return (
             <span key={s} className="ck-tt-logo">
               <Logos.WalletConnect />

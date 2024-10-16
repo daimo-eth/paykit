@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { useAccount, useSwitchChain } from 'wagmi';
-import { chainConfigs } from '../../../constants/chainConfigs';
+import { useState } from "react";
+import { useAccount, useSwitchChain } from "wagmi";
+import { chainConfigs } from "../../../constants/chainConfigs";
 
 import {
   SwitchNetworksContainer,
@@ -12,15 +12,15 @@ import {
   ChainIcon,
   ChainLogoContainer,
   ChainLogoSpinner,
-} from './styles';
-import Alert from '../Alert';
+} from "./styles";
+import Alert from "../Alert";
 
-import { AnimatePresence, motion } from 'framer-motion';
-import { isCoinbaseWalletConnector, isMobile } from '../../../utils';
+import { AnimatePresence, motion } from "framer-motion";
+import { isCoinbaseWalletConnector, isMobile } from "../../../utils";
 
-import ChainIcons from '../../../assets/chains';
-import useLocales from '../../../hooks/useLocales';
-import { useContext } from '../../ConnectKit';
+import ChainIcons from "../../../assets/chains";
+import useLocales from "../../../hooks/useLocales";
+import { useContext } from "../../ConnectKit";
 
 const Spinner = (
   <svg
@@ -56,18 +56,18 @@ const Spinner = (
 const ChainSelectList = ({
   variant,
 }: {
-  variant?: 'primary' | 'secondary';
+  variant?: "primary" | "secondary";
 }) => {
   const { connector, chain } = useAccount();
   const { chains, isPending, switchChain, error } = useSwitchChain();
   const [pendingChainId, setPendingChainId] = useState<number | undefined>(
-    undefined
+    undefined,
   );
 
   const locales = useLocales({});
   const mobile = isMobile();
 
-  const isError = error?.['code'] === 4902; // Wallet cannot switch networks
+  const isError = error?.["code"] === 4902; // Wallet cannot switch networks
   const disabled = isError || !switchChain;
 
   const handleSwitchNetwork = (chainId: number) => {
@@ -104,14 +104,14 @@ const ChainSelectList = ({
               >
                 <span
                   style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'flex-start',
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "flex-start",
                     gap: 12,
                     color:
                       ch.id === chain?.id
-                        ? 'var(--ck-dropdown-active-color, inherit)'
-                        : 'inherit',
+                        ? "var(--ck-dropdown-active-color, inherit)"
+                        : "inherit",
                   }}
                 >
                   <ChainLogoContainer>
@@ -151,17 +151,17 @@ const ChainSelectList = ({
                   </ChainLogoContainer>
                   {ch.name}
                 </span>
-                {variant !== 'secondary' && (
+                {variant !== "secondary" && (
                   <ChainButtonStatus>
                     <AnimatePresence initial={false} exitBeforeEnter>
                       {ch.id === chain?.id && (
                         <motion.span
-                          key={'connectedText'}
+                          key={"connectedText"}
                           style={{
                             color:
-                              'var(--ck-dropdown-active-color, var(--ck-focus-color))',
-                            display: 'block',
-                            position: 'relative',
+                              "var(--ck-dropdown-active-color, var(--ck-focus-color))",
+                            display: "block",
+                            position: "relative",
                           }}
                           initial={{ opacity: 0, x: -4 }}
                           animate={{ opacity: 1, x: 0 }}
@@ -181,11 +181,11 @@ const ChainSelectList = ({
                       )}
                       {isPending && pendingChainId === ch.id && (
                         <motion.span
-                          key={'approveText'}
+                          key={"approveText"}
                           style={{
-                            color: 'var(--ck-dropdown-pending-color, inherit)',
-                            display: 'block',
-                            position: 'relative',
+                            color: "var(--ck-dropdown-pending-color, inherit)",
+                            display: "block",
+                            position: "relative",
                           }}
                           initial={{
                             opacity: 0,
@@ -216,7 +216,7 @@ const ChainSelectList = ({
                     </AnimatePresence>
                   </ChainButtonStatus>
                 )}
-                {variant === 'secondary' ? (
+                {variant === "secondary" ? (
                   <ChainButtonBg
                     initial={false}
                     animate={{
@@ -224,7 +224,7 @@ const ChainSelectList = ({
                     }}
                     transition={{
                       duration: 0.3,
-                      ease: 'easeOut',
+                      ease: "easeOut",
                     }}
                   />
                 ) : (
@@ -235,7 +235,7 @@ const ChainSelectList = ({
                       layout="position"
                       transition={{
                         duration: 0.3,
-                        ease: 'easeOut',
+                        ease: "easeOut",
                       }}
                     />
                   )
@@ -260,7 +260,7 @@ const ChainSelectList = ({
           >
             <div style={{ paddingTop: 10, paddingBottom: 8 }}>
               <Alert>
-                {locales.warnings_walletSwitchingUnsupported}{' '}
+                {locales.warnings_walletSwitchingUnsupported}{" "}
                 {locales.warnings_walletSwitchingUnsupportedResolve}
               </Alert>
             </div>

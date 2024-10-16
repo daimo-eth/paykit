@@ -1,5 +1,5 @@
-import styled from './../../../styles/styled';
-import { motion } from 'framer-motion';
+import styled from "./../../../styles/styled";
+import { motion } from "framer-motion";
 
 export const DropdownWindow = styled(motion.div)`
   z-index: 2147483647;

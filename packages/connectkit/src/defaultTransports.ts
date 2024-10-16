@@ -6,31 +6,32 @@
  *
  */
 
-import { fallback, http, webSocket } from 'wagmi';
-import { type CreateConfigParameters } from '@wagmi/core';
-import { type Chain, mainnet, polygon, optimism, arbitrum } from 'wagmi/chains';
-import { type HttpTransport, type WebSocketTransport } from 'viem';
+import { fallback, http, webSocket } from "wagmi";
+import { type CreateConfigParameters } from "@wagmi/core";
+import { type Chain } from "wagmi/chains";
+import { type HttpTransport, type WebSocketTransport } from "viem";
 
-import { chainConfigs } from './constants/chainConfigs';
+import { chainConfigs } from "./constants/chainConfigs";
+import { REQUIRED_CHAINS } from "./defaultConfig";
 
 const createTransport = ({
   chain,
-  provider = 'public',
+  provider = "public",
   apiKey,
 }: {
   chain: Chain;
-  provider: 'alchemy' | 'infura' | 'public';
+  provider: "alchemy" | "infura" | "public";
   apiKey: string;
 }): HttpTransport | WebSocketTransport => {
   const supportedChain = chainConfigs.find((c) => c.id === chain.id);
   if (supportedChain?.rpcUrls) {
-    if (provider === 'alchemy') {
+    if (provider === "alchemy") {
       if (supportedChain.rpcUrls?.alchemy?.http) {
         return http(supportedChain.rpcUrls?.alchemy?.http + apiKey);
       } else {
         return webSocket(supportedChain.rpcUrls?.alchemy?.webSocket + apiKey);
       }
-    } else if (provider === 'infura') {
+    } else if (provider === "infura") {
       if (supportedChain.rpcUrls?.infura?.http) {
         return http(supportedChain.rpcUrls?.infura?.http + apiKey);
       } else {
@@ -42,27 +43,27 @@ const createTransport = ({
 };
 
 type GetDefaultTransportsProps = {
-  chains?: CreateConfigParameters['chains'];
+  chains?: CreateConfigParameters["chains"];
   alchemyId?: string;
   infuraId?: string;
 };
 
 export const getDefaultTransports = ({
-  chains = [mainnet, polygon, optimism, arbitrum],
+  chains = REQUIRED_CHAINS,
   alchemyId,
   infuraId,
-}: GetDefaultTransportsProps): CreateConfigParameters['transports'] => {
-  const transports: CreateConfigParameters['transports'] = {};
+}: GetDefaultTransportsProps): CreateConfigParameters["transports"] => {
+  const transports: CreateConfigParameters["transports"] = {};
   Object.keys(chains).forEach((key, index) => {
     const chain = chains[index];
     const urls: (HttpTransport | WebSocketTransport)[] = [];
     if (alchemyId)
       urls.push(
-        createTransport({ chain, provider: 'alchemy', apiKey: alchemyId })
+        createTransport({ chain, provider: "alchemy", apiKey: alchemyId }),
       );
     if (infuraId)
       urls.push(
-        createTransport({ chain, provider: 'infura', apiKey: infuraId })
+        createTransport({ chain, provider: "infura", apiKey: infuraId }),
       );
 
     urls.push(http());

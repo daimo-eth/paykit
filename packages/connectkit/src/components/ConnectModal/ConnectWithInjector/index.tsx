@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { AnimatePresence, Variants } from 'framer-motion';
+import React, { useEffect, useState } from "react";
+import { AnimatePresence, Variants } from "framer-motion";
 import {
   Container,
   ConnectingContainer,
@@ -7,7 +7,7 @@ import {
   RetryButton,
   RetryIconContainer,
   Content,
-} from './styles';
+} from "./styles";
 
 import {
   PageContent,
@@ -16,43 +16,43 @@ import {
   ModalH1,
   ModalContentContainer,
   ModalContent,
-} from '../../Common/Modal/styles';
-import { OrDivider } from '../../Common/Modal';
-import Button from '../../Common/Button';
-import Tooltip from '../../Common/Tooltip';
-import Alert from '../../Common/Alert';
+} from "../../Common/Modal/styles";
+import { OrDivider } from "../../Common/Modal";
+import Button from "../../Common/Button";
+import Tooltip from "../../Common/Tooltip";
+import Alert from "../../Common/Alert";
 
-import SquircleSpinner from './SquircleSpinner';
+import SquircleSpinner from "../../Spinners/SquircleSpinner";
 
-import { RetryIconCircle, Scan } from '../../../assets/icons';
-import BrowserIcon from '../../Common/BrowserIcon';
-import { AlertIcon, TickIcon } from '../../../assets/icons';
-import { detectBrowser, isWalletConnectConnector } from '../../../utils';
-import useLocales from '../../../hooks/useLocales';
-import { useConnect } from '../../../hooks/useConnect';
-import { useContext } from '../../ConnectKit';
-import { useWallet } from '../../../wallets/useWallets';
-import CircleSpinner from './CircleSpinner';
+import { RetryIconCircle, Scan } from "../../../assets/icons";
+import BrowserIcon from "../../Common/BrowserIcon";
+import { AlertIcon, TickIcon } from "../../../assets/icons";
+import { detectBrowser, isWalletConnectConnector } from "../../../utils";
+import useLocales from "../../../hooks/useLocales";
+import { useConnect } from "../../../hooks/useConnect";
+import { useContext } from "../../ConnectKit";
+import { useWallet } from "../../../wallets/useWallets";
+import CircleSpinner from "../../Spinners/CircleSpinner";
 
 export const states = {
-  CONNECTED: 'connected',
-  CONNECTING: 'connecting',
-  EXPIRING: 'expiring',
-  FAILED: 'failed',
-  REJECTED: 'rejected',
-  NOTCONNECTED: 'notconnected',
-  UNAVAILABLE: 'unavailable',
+  CONNECTED: "connected",
+  CONNECTING: "connecting",
+  EXPIRING: "expiring",
+  FAILED: "failed",
+  REJECTED: "rejected",
+  NOTCONNECTED: "notconnected",
+  UNAVAILABLE: "unavailable",
 };
 
 const contentVariants: Variants = {
   initial: {
-    willChange: 'transform,opacity',
-    position: 'relative',
+    willChange: "transform,opacity",
+    position: "relative",
     opacity: 0,
     scale: 0.95,
   },
   animate: {
-    position: 'relative',
+    position: "relative",
     opacity: 1,
     scale: 1,
     transition: {
@@ -63,7 +63,7 @@ const contentVariants: Variants = {
     },
   },
   exit: {
-    position: 'absolute',
+    position: "absolute",
     opacity: 0,
     scale: 0.95,
     transition: {
@@ -110,7 +110,7 @@ const ConnectWithInjector: React.FC<{
             // Sometimes the error doesn't respond with a code
             if (error.message) {
               switch (error.message) {
-                case 'User rejected request':
+                case "User rejected request":
                   setStatus(states.REJECTED);
                   break;
                 default:
@@ -134,7 +134,7 @@ const ConnectWithInjector: React.FC<{
     name: wallet?.name,
     shortName: wallet?.shortName ?? wallet?.name,
     icon: wallet?.iconConnector ?? wallet?.icon,
-    iconShape: wallet?.iconShape ?? 'circle',
+    iconShape: wallet?.iconShape ?? "circle",
     iconShouldShrink: wallet?.iconShouldShrink,
   };
 
@@ -161,14 +161,14 @@ const ConnectWithInjector: React.FC<{
     forceState
       ? forceState
       : !wallet?.isInstalled
-      ? states.UNAVAILABLE
-      : states.CONNECTING
+        ? states.UNAVAILABLE
+        : states.CONNECTING,
   );
 
   const locales = useLocales({
     CONNECTORNAME: walletInfo.name,
     CONNECTORSHORTNAME: walletInfo.shortName ?? walletInfo.name,
-    SUGGESTEDEXTENSIONBROWSER: suggestedExtension?.label ?? 'your browser',
+    SUGGESTEDEXTENSIONBROWSER: suggestedExtension?.label ?? "your browser",
   });
 
   const runConnect = async () => {
@@ -250,7 +250,7 @@ const ConnectWithInjector: React.FC<{
         <ConnectingContainer>
           <ConnectingAnimation
             $shake={status === states.FAILED || status === states.REJECTED}
-            $circle={walletInfo.iconShape === 'circle'}
+            $circle={walletInfo.iconShape === "circle"}
           >
             <AnimatePresence>
               {(status === states.FAILED || status === states.REJECTED) && (
@@ -278,15 +278,15 @@ const ConnectWithInjector: React.FC<{
                 </RetryButton>
               )}
             </AnimatePresence>
-            {walletInfo.iconShape === 'circle' ? (
+            {walletInfo.iconShape === "circle" ? (
               <CircleSpinner
                 logo={
                   status === states.UNAVAILABLE ? (
                     <div
                       style={{
-                        transform: 'scale(1.14)',
-                        position: 'relative',
-                        width: '100%',
+                        transform: "scale(1.14)",
+                        position: "relative",
+                        width: "100%",
                       }}
                     >
                       {walletInfo.icon}
@@ -305,9 +305,9 @@ const ConnectWithInjector: React.FC<{
                   status === states.UNAVAILABLE ? (
                     <div
                       style={{
-                        transform: 'scale(1.14)',
-                        position: 'relative',
-                        width: '100%',
+                        transform: "scale(1.14)",
+                        position: "relative",
+                        width: "100%",
                       }}
                     >
                       {walletInfo.icon}
@@ -328,9 +328,9 @@ const ConnectWithInjector: React.FC<{
             {status === states.FAILED && (
               <Content
                 key={states.FAILED}
-                initial={'initial'}
-                animate={'animate'}
-                exit={'exit'}
+                initial={"initial"}
+                animate={"animate"}
+                exit={"exit"}
                 variants={contentVariants}
               >
                 <ModalContent>
@@ -360,9 +360,9 @@ const ConnectWithInjector: React.FC<{
             {status === states.REJECTED && (
               <Content
                 key={states.REJECTED}
-                initial={'initial'}
-                animate={'animate'}
-                exit={'exit'}
+                initial={"initial"}
+                animate={"animate"}
+                exit={"exit"}
                 variants={contentVariants}
               >
                 <ModalContent style={{ paddingBottom: 28 }}>
@@ -390,19 +390,19 @@ const ConnectWithInjector: React.FC<{
             {(status === states.CONNECTING || status === states.EXPIRING) && (
               <Content
                 key={states.CONNECTING}
-                initial={'initial'}
-                animate={'animate'}
-                exit={'exit'}
+                initial={"initial"}
+                animate={"animate"}
+                exit={"exit"}
                 variants={contentVariants}
               >
                 <ModalContent style={{ paddingBottom: 28 }}>
                   <ModalH1>
-                    {wallet.connector.id === 'injected'
+                    {wallet.connector.id === "injected"
                       ? locales.injectionScreen_connecting_injected_h1
                       : locales.injectionScreen_connecting_h1}
                   </ModalH1>
                   <ModalBody>
-                    {wallet.connector.id === 'injected'
+                    {wallet.connector.id === "injected"
                       ? locales.injectionScreen_connecting_injected_p
                       : locales.injectionScreen_connecting_p}
                   </ModalBody>
@@ -412,9 +412,9 @@ const ConnectWithInjector: React.FC<{
             {status === states.CONNECTED && (
               <Content
                 key={states.CONNECTED}
-                initial={'initial'}
-                animate={'animate'}
-                exit={'exit'}
+                initial={"initial"}
+                animate={"animate"}
+                exit={"exit"}
                 variants={contentVariants}
               >
                 <ModalContent>
@@ -428,9 +428,9 @@ const ConnectWithInjector: React.FC<{
             {status === states.NOTCONNECTED && (
               <Content
                 key={states.NOTCONNECTED}
-                initial={'initial'}
-                animate={'animate'}
-                exit={'exit'}
+                initial={"initial"}
+                animate={"animate"}
+                exit={"exit"}
                 variants={contentVariants}
               >
                 <ModalContent>
@@ -444,9 +444,9 @@ const ConnectWithInjector: React.FC<{
             {status === states.UNAVAILABLE && (
               <Content
                 key={states.UNAVAILABLE}
-                initial={'initial'}
-                animate={'animate'}
-                exit={'exit'}
+                initial={"initial"}
+                animate={"animate"}
+                exit={"exit"}
                 variants={contentVariants}
               >
                 {!extensionUrl ? (

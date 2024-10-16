@@ -1,15 +1,15 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
-import { AnimatePresence, motion, Variants } from 'framer-motion';
+import { AnimatePresence, motion, Variants } from "framer-motion";
 
-import { ResetContainer } from '../../../styles';
-import Portal from '../Portal';
+import { ResetContainer } from "../../../styles";
+import Portal from "../Portal";
 
 import {
   flattenChildren,
   isWalletConnectConnector,
   isMobile,
-} from '../../../utils';
+} from "../../../utils";
 
 import {
   Container,
@@ -30,25 +30,26 @@ import {
   Disclaimer,
   SiweButton,
   SignInTooltip,
-} from './styles';
+} from "./styles";
 
-import { routes, useContext } from '../../ConnectKit';
-import useLockBodyScroll from '../../../hooks/useLockBodyScroll';
+import { ROUTES, useContext } from "../../ConnectKit";
+import useLockBodyScroll from "../../../hooks/useLockBodyScroll";
 
-import { useTransition } from 'react-transition-state';
-import FocusTrap from '../../../hooks/useFocusTrap';
-import usePrevious from '../../../hooks/usePrevious';
-import { CustomTheme } from '../../../types';
-import { useThemeContext } from '../../ConnectKitThemeProvider/ConnectKitThemeProvider';
-import { useAccount, useSwitchChain } from 'wagmi';
-import { AuthIcon } from '../../../assets/icons';
-import { useSIWE } from '../../../siwe';
-import useLocales from '../../../hooks/useLocales';
-import FitText from '../FitText';
-import { useWallet } from '../../../wallets/useWallets';
+import { useTransition } from "react-transition-state";
+import FocusTrap from "../../../hooks/useFocusTrap";
+import usePrevious from "../../../hooks/usePrevious";
+import { CustomTheme } from "../../../types";
+import { useThemeContext } from "../../ConnectKitThemeProvider/ConnectKitThemeProvider";
+import { useAccount, useSwitchChain } from "wagmi";
+import { AuthIcon } from "../../../assets/icons";
+import { useSIWE } from "../../../siwe";
+import useLocales from "../../../hooks/useLocales";
+import FitText from "../FitText";
+import { useWallet } from "../../../wallets/useWallets";
+import { getChainName } from "@daimo/contract";
 
 const ProfileIcon = ({ isSignedIn }: { isSignedIn?: boolean }) => (
-  <div style={{ position: 'relative' }}>
+  <div style={{ position: "relative" }}>
     {isSignedIn ? (
       <AuthIcon
         style={{
@@ -60,12 +61,12 @@ const ProfileIcon = ({ isSignedIn }: { isSignedIn?: boolean }) => (
       <div
         style={{
           zIndex: 2,
-          position: 'absolute',
+          position: "absolute",
           top: -2,
           right: -2,
-          background: '#1A88F8',
+          background: "#1A88F8",
           borderRadius: 8,
-          boxShadow: '0 0 0 2px var(--ck-body-background)',
+          boxShadow: "0 0 0 2px var(--ck-body-background)",
           width: 8,
           height: 8,
         }}
@@ -78,7 +79,7 @@ const ProfileIcon = ({ isSignedIn }: { isSignedIn?: boolean }) => (
       viewBox="0 0 20 20"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      style={{ overflow: 'visible' }}
+      style={{ overflow: "visible" }}
     >
       <circle cx="10" cy="10" r="9" stroke="currentColor" strokeWidth="2" />
       <path
@@ -164,10 +165,10 @@ export const contentVariants: Variants = {
   exit: {
     zIndex: 1,
     opacity: 0,
-    pointerEvents: 'none',
-    position: 'absolute',
-    left: ['50%', '50%'],
-    x: ['-50%', '-50%'],
+    pointerEvents: "none",
+    position: "absolute",
+    left: ["50%", "50%"],
+    x: ["-50%", "-50%"],
     transition: {
       duration: contentTransitionDuration,
       ease: [0.26, 0.08, 0.25, 1],
@@ -177,7 +178,7 @@ export const contentVariants: Variants = {
 
 type ModalProps = {
   open?: boolean;
-  pages: any;
+  pages: Record<ROUTES, React.ReactNode>;
   pageId: string;
   positionInside?: boolean;
   inline?: boolean;
@@ -206,6 +207,8 @@ const Modal: React.FC<ModalProps> = ({
   const themeContext = useThemeContext();
   const mobile = isMobile();
   const { isSignedIn, reset } = useSIWE();
+  const { daimoPayOrder, selectedExternalOption, selectedTokenOption } =
+    context.paymentInfo;
 
   const wallet = useWallet(context.connector?.id);
 
@@ -213,7 +216,7 @@ const Modal: React.FC<ModalProps> = ({
     name: wallet?.name,
     shortName: wallet?.shortName ?? wallet?.name,
     icon: wallet?.iconConnector ?? wallet?.icon,
-    iconShape: wallet?.iconShape ?? 'circle',
+    iconShape: wallet?.iconShape ?? "circle",
     iconShouldShrink: wallet?.iconShouldShrink,
   };
 
@@ -227,14 +230,14 @@ const Modal: React.FC<ModalProps> = ({
     mountOnEnter: true,
     unmountOnExit: true,
   });
-  const mounted = !(state === 'exited' || state === 'unmounted');
-  const rendered = state === 'preEnter' || state !== 'exiting';
+  const mounted = !(state === "exited" || state === "unmounted");
+  const rendered = state === "preEnter" || state !== "exiting";
   const currentDepth =
-    context.route === routes.CONNECTORS
+    context.route === ROUTES.CONNECTORS
       ? 0
-      : context.route === routes.DOWNLOAD
-      ? 2
-      : 1;
+      : context.route === ROUTES.DOWNLOAD
+        ? 2
+        : 1;
   const prevDepth = usePrevious(currentDepth, currentDepth);
   if (!positionInside) useLockBodyScroll(mounted);
 
@@ -253,7 +256,7 @@ const Modal: React.FC<ModalProps> = ({
     height: undefined,
   });
   const [inTransition, setInTransition] = useState<boolean | undefined>(
-    undefined
+    undefined,
   );
 
   // Calculate new content bounds
@@ -282,7 +285,7 @@ const Modal: React.FC<ModalProps> = ({
       // Calculate new content bounds
       updateBounds(node);
     },
-    [open, inTransition]
+    [open, inTransition],
   );
 
   // Update layout on chain/network switch to avoid clipping
@@ -304,17 +307,17 @@ const Modal: React.FC<ModalProps> = ({
     }
 
     const listener = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && onClose) onClose();
+      if (e.key === "Escape" && onClose) onClose();
     };
-    document.addEventListener('keydown', listener);
+    document.addEventListener("keydown", listener);
     return () => {
-      document.removeEventListener('keydown', listener);
+      document.removeEventListener("keydown", listener);
     };
   }, [mounted, onClose]);
 
   const dimensionsCSS = {
-    '--height': dimensions.height,
-    '--width': dimensions.width,
+    "--height": dimensions.height,
+    "--width": dimensions.width,
   } as React.CSSProperties;
 
   function shouldUseQrcode() {
@@ -326,9 +329,9 @@ const Modal: React.FC<ModalProps> = ({
 
   function getHeading() {
     switch (context.route) {
-      case routes.ABOUT:
+      case ROUTES.ABOUT:
         return locales.aboutScreen_heading;
-      case routes.CONNECT:
+      case ROUTES.CONNECT:
         if (shouldUseQrcode()) {
           return isWalletConnectConnector(wallet?.connector?.id)
             ? locales.scanScreen_heading
@@ -336,24 +339,39 @@ const Modal: React.FC<ModalProps> = ({
         } else {
           return walletInfo?.name;
         }
-      case routes.CONNECTORS:
+      case ROUTES.CONNECTORS:
         return locales.connectorsScreen_heading;
-      case routes.MOBILECONNECTORS:
+      case ROUTES.MOBILECONNECTORS:
         return locales.mobileConnectorsScreen_heading;
-      case routes.DOWNLOAD:
+      case ROUTES.DOWNLOAD:
         return locales.downloadAppScreen_heading;
-      case routes.ONBOARDING:
+      case ROUTES.ONBOARDING:
         return locales.onboardingScreen_heading;
-      case routes.PROFILE:
+      case ROUTES.PROFILE:
         return locales.profileScreen_heading;
-      case routes.SWITCHNETWORKS:
+      case ROUTES.SWITCHNETWORKS:
         return locales.switchNetworkScreen_heading;
-      case routes.SIGNINWITHETHEREUM:
+      case ROUTES.SIGNINWITHETHEREUM:
         return isSignedIn
           ? locales.signInWithEthereumScreen_signedIn_heading
           : locales.signInWithEthereumScreen_signedOut_heading;
-      default:
-        return '';
+      case ROUTES.SELECT_METHOD:
+        return daimoPayOrder?.metadata.intent;
+      case ROUTES.SELECT_TOKEN:
+        return daimoPayOrder?.metadata.intent;
+      case ROUTES.WAITING_OTHER:
+        return selectedExternalOption?.cta;
+      case ROUTES.PAY_WITH_TOKEN:
+        if (!selectedTokenOption) return undefined;
+
+        const chainName = getChainName(
+          selectedTokenOption.required.token.chainId ?? 0,
+        );
+        const capitalizedChainName =
+          chainName.charAt(0).toUpperCase() + chainName.slice(1);
+        return `Pay with ${capitalizedChainName} ${selectedTokenOption.required.token.symbol}`;
+      case ROUTES.CONFIRMATION:
+        return "Payment Successful";
     }
   }
 
@@ -366,8 +384,8 @@ const Modal: React.FC<ModalProps> = ({
       <ModalContainer
         role="dialog"
         style={{
-          pointerEvents: rendered ? 'auto' : 'none',
-          position: positionInside ? 'absolute' : undefined,
+          pointerEvents: rendered ? "auto" : "none",
+          position: positionInside ? "absolute" : undefined,
         }}
       >
         {!inline && (
@@ -387,21 +405,21 @@ const Modal: React.FC<ModalProps> = ({
         >
           <div
             style={{
-              pointerEvents: inTransition ? 'all' : 'none', // Block interaction while transitioning
-              position: 'absolute',
+              pointerEvents: inTransition ? "all" : "none", // Block interaction while transitioning
+              position: "absolute",
               top: 0,
               bottom: 0,
-              left: '50%',
-              transform: 'translateX(-50%)',
-              width: 'var(--width)',
+              left: "50%",
+              transform: "translateX(-50%)",
+              width: "var(--width)",
               zIndex: 9,
-              transition: 'width 200ms ease',
+              transition: "width 200ms ease",
             }}
           />
-          <BoxContainer className={`${rendered && 'active'}`}>
+          <BoxContainer className={`${rendered && "active"}`}>
             <AnimatePresence initial={false}>
               {context.options?.disclaimer &&
-                context.route === routes.CONNECTORS && (
+                context.route === ROUTES.CONNECTORS && (
                   <DisclaimerBackground
                     initial={{
                       opacity: 0,
@@ -425,19 +443,19 @@ const Modal: React.FC<ModalProps> = ({
             <AnimatePresence initial={false}>
               {context.errorMessage && (
                 <ErrorMessage
-                  initial={{ y: '10%', x: '-50%' }}
-                  animate={{ y: '-100%' }}
-                  exit={{ y: '100%' }}
-                  transition={{ duration: 0.2, ease: 'easeInOut' }}
+                  initial={{ y: "10%", x: "-50%" }}
+                  animate={{ y: "-100%" }}
+                  exit={{ y: "100%" }}
+                  transition={{ duration: 0.2, ease: "easeInOut" }}
                 >
                   <span>{context.errorMessage}</span>
                   <div
                     onClick={() => context.displayError(null)}
                     style={{
-                      position: 'absolute',
+                      position: "absolute",
                       right: 24,
                       top: 24,
-                      cursor: 'pointer',
+                      cursor: "pointer",
                     }}
                   >
                     <CloseIcon />
@@ -456,7 +474,7 @@ const Modal: React.FC<ModalProps> = ({
               )}
               <div
                 style={{
-                  position: 'absolute',
+                  position: "absolute",
                   top: 23,
                   left: 20,
                   width: 32,
@@ -480,15 +498,15 @@ const Modal: React.FC<ModalProps> = ({
                     >
                       <BackIcon />
                     </BackButton>
-                  ) : context.route === routes.PROFILE &&
+                  ) : context.route === ROUTES.PROFILE &&
                     context.signInWithEthereum ? (
                     <>
                       {!isSignedIn && !context.options?.hideTooltips && (
                         <motion.div
                           style={{
-                            position: 'absolute',
+                            position: "absolute",
                             inset: 0,
-                            pointerEvents: 'none',
+                            pointerEvents: "none",
                           }}
                           initial={{ opacity: 0, scale: 0.8 }}
                           animate={{
@@ -518,7 +536,7 @@ const Modal: React.FC<ModalProps> = ({
                         key="siweButton"
                         onClick={() => {
                           reset();
-                          context.setRoute(routes.SIGNINWITHETHEREUM);
+                          context.setRoute(ROUTES.SIGNINWITHETHEREUM);
                         }}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -537,7 +555,7 @@ const Modal: React.FC<ModalProps> = ({
                       <InfoButton
                         disabled={inTransition}
                         aria-label={flattenChildren(
-                          locales.moreInformation
+                          locales.moreInformation,
                         ).toString()}
                         key="infoButton"
                         onClick={onInfo}
@@ -561,16 +579,16 @@ const Modal: React.FC<ModalProps> = ({
               <AnimatePresence>
                 <motion.div
                   style={{
-                    position: 'absolute',
+                    position: "absolute",
                     top: 0,
                     bottom: 0,
                     left: 52,
                     right: 52,
-                    display: 'flex',
+                    display: "flex",
                     //alignItems: 'center',
-                    justifyContent: 'center',
+                    justifyContent: "center",
                   }}
-                  key={`${context.route}-${isSignedIn ? 'signedIn' : ''}`}
+                  key={`${context.route}-${isSignedIn ? "signedIn" : ""}`}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
@@ -593,20 +611,20 @@ const Modal: React.FC<ModalProps> = ({
                   <Page
                     key={key}
                     open={key === pageId}
-                    initial={!positionInside && state !== 'entered'}
+                    initial={!positionInside && state !== "entered"}
                     enterAnim={
                       key === pageId
                         ? currentDepth > prevDepth
-                          ? 'active-scale-up'
-                          : 'active'
-                        : ''
+                          ? "active-scale-up"
+                          : "active"
+                        : ""
                     }
                     exitAnim={
                       key !== pageId
                         ? currentDepth < prevDepth
-                          ? 'exit-scale-down'
-                          : 'exit'
-                        : ''
+                          ? "exit-scale-down"
+                          : "exit"
+                        : ""
                     }
                   >
                     <PageContents
@@ -614,7 +632,7 @@ const Modal: React.FC<ModalProps> = ({
                       ref={contentRef}
                       style={{
                         pointerEvents:
-                          key === pageId && rendered ? 'auto' : 'none',
+                          key === pageId && rendered ? "auto" : "none",
                       }}
                     >
                       {page}
@@ -675,8 +693,8 @@ const Page: React.FC<PageProps> = ({
     mountOnEnter: true,
     unmountOnExit: true,
   });
-  const mounted = !(state === 'exited' || state === 'unmounted');
-  const rendered = state === 'preEnter' || state !== 'exiting';
+  const mounted = !(state === "exited" || state === "unmounted");
+  const rendered = state === "preEnter" || state !== "exiting";
 
   useEffect(() => {
     setOpen(open);
@@ -688,8 +706,8 @@ const Page: React.FC<PageProps> = ({
     <PageContainer
       className={`${rendered ? enterAnim : exitAnim}`}
       style={{
-        animationDuration: initial ? '0ms' : undefined,
-        animationDelay: initial ? '0ms' : undefined,
+        animationDuration: initial ? "0ms" : undefined,
+        animationDelay: initial ? "0ms" : undefined,
       }}
     >
       {children}

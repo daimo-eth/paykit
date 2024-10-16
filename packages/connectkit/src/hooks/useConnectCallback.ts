@@ -1,4 +1,4 @@
-import { useAccountEffect } from 'wagmi';
+import { useAccountEffect } from "wagmi";
 
 export type useConnectCallbackProps = {
   onConnect?: ({

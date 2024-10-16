@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 
-import { EnsAvatar, ImageContainer } from './styles';
+import { EnsAvatar, ImageContainer } from "./styles";
 
-import { useEnsName, useEnsAvatar, useEnsAddress } from 'wagmi';
-import { normalize } from 'viem/ens';
-import { ResetContainer } from '../../../styles';
-import { useContext } from '../../ConnectKit';
-import useIsMounted from '../../../hooks/useIsMounted';
-import { useEnsFallbackConfig } from '../../../hooks/useEnsFallbackConfig';
+import { useEnsName, useEnsAvatar, useEnsAddress } from "wagmi";
+import { normalize } from "viem/ens";
+import { ResetContainer } from "../../../styles";
+import { useContext } from "../../ConnectKit";
+import useIsMounted from "../../../hooks/useIsMounted";
+import { useEnsFallbackConfig } from "../../../hooks/useEnsFallbackConfig";
 
 type Hash = `0x${string}`;
 
@@ -44,7 +44,7 @@ const Avatar: React.FC<{
   });
   const { data: ensAvatar } = useEnsAvatar({
     chainId: 1,
-    name: normalize(ensName ?? ''),
+    name: normalize(ensName ?? ""),
     config: ensFallbackConfig,
   });
 
@@ -76,7 +76,7 @@ const Avatar: React.FC<{
           width: size,
           height: size,
           borderRadius: radius,
-          overflow: 'hidden',
+          overflow: "hidden",
         }}
       >
         {context.options?.customAvatar({
@@ -91,12 +91,12 @@ const Avatar: React.FC<{
 
   if (!ens.name || !ens.avatar)
     return (
-      <ResetContainer style={{ pointerEvents: 'none' }}>
+      <ResetContainer style={{ pointerEvents: "none" }}>
         <EnsAvatar $size={size} $seed={ens.address} $radius={radius} />
       </ResetContainer>
     );
   return (
-    <ResetContainer style={{ pointerEvents: 'none' }}>
+    <ResetContainer style={{ pointerEvents: "none" }}>
       <EnsAvatar $size={size} $seed={ens.address} $radius={radius}>
         <ImageContainer
           ref={imageRef}

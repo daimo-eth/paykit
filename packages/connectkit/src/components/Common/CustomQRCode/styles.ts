@@ -1,6 +1,6 @@
-import { motion } from 'framer-motion';
-import styled from './../../../styles/styled';
-import { css, keyframes } from 'styled-components';
+import { motion } from "framer-motion";
+import styled from "./../../../styles/styled";
+import { css, keyframes } from "styled-components";
 
 export const QRCodeContainer = styled(motion.div)`
   z-index: 3;
@@ -62,7 +62,7 @@ export const QRPlaceholder = styled(motion.div)`
     height: 13.25%;
     box-shadow: 0 0 0 4px var(--bg);
     &:before {
-      content: '';
+      content: "";
       position: absolute;
       inset: 9px;
       border-radius: 3px;
@@ -83,7 +83,7 @@ export const QRPlaceholder = styled(motion.div)`
   }
   &:before {
     z-index: 3;
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
     background: repeat;
@@ -92,7 +92,7 @@ export const QRPlaceholder = styled(motion.div)`
   }
   &:after {
     z-index: 5;
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
     transform: scale(1.5) rotate(45deg);
@@ -144,7 +144,7 @@ export const LogoIcon = styled(motion.div)<{ $wcLogo?: boolean }>`
           &:before {
             pointer-events: none;
             z-index: 2;
-            content: '';
+            content: "";
             position: absolute;
             inset: 0;
             border-radius: inherit;

@@ -1,5 +1,5 @@
-import { useContext } from 'react';
-import { SIWEContext, StatusState, SIWESession } from './SIWEContext';
+import { useContext } from "react";
+import { SIWEContext, StatusState, SIWESession } from "./SIWEContext";
 
 type HookProps = {
   isSignedIn: boolean;
@@ -34,7 +34,7 @@ export const useSIWE = ({ onSignIn, onSignOut }: UseSIWEConfig = {}):
       isSignedIn: false,
       data: undefined,
       status: StatusState.ERROR,
-      error: new Error('useSIWE hook must be inside a SIWEProvider.'),
+      error: new Error("useSIWE hook must be inside a SIWEProvider."),
       isRejected: false,
       isError: true,
       isLoading: false,
@@ -53,8 +53,8 @@ export const useSIWE = ({ onSignIn, onSignOut }: UseSIWEConfig = {}):
   const currentStatus = address
     ? StatusState.SUCCESS
     : session.isLoading || nonce.isLoading
-    ? StatusState.LOADING
-    : status;
+      ? StatusState.LOADING
+      : status;
 
   const isLoading = currentStatus === StatusState.LOADING;
   const isSuccess = currentStatus === StatusState.SUCCESS;

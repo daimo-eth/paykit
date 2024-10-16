@@ -1,7 +1,7 @@
-import { keyframes } from 'styled-components';
-import styled from './../../../styles/styled';
-import { motion } from 'framer-motion';
-import defaultTheme from '../../../constants/defaultTheme';
+import { keyframes } from "styled-components";
+import styled from "./../../../styles/styled";
+import { motion } from "framer-motion";
+import defaultTheme from "../../../constants/defaultTheme";
 
 export const AvatarContainer = styled(motion.div)`
   padding: 18px 0 20px;
@@ -40,7 +40,7 @@ export const LoadingBalance = styled(motion.div)`
   inset: 0;
   &:before {
     z-index: 4;
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
     background-image: linear-gradient(

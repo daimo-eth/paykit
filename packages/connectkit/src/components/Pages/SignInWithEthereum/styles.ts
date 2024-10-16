@@ -1,7 +1,7 @@
-import { motion } from 'framer-motion';
-import styled from './../../../styles/styled';
-import { css, keyframes } from 'styled-components';
-import defaultTheme from '../../../constants/defaultTheme';
+import { motion } from "framer-motion";
+import styled from "./../../../styles/styled";
+import { css, keyframes } from "styled-components";
+import defaultTheme from "../../../constants/defaultTheme";
 
 const spinKeyframes = keyframes`
   from{ transform: rotate(0deg); }
@@ -67,7 +67,7 @@ export const StatusIcon = styled(motion.div)`
   }
   &:before {
     z-index: 1;
-    content: '';
+    content: "";
     position: absolute;
     inset: 10px;
     border-radius: inherit;
@@ -78,7 +78,7 @@ export const StatusIcon = styled(motion.div)`
   }
   &:after {
     z-index: 2;
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
     border-radius: inherit;
@@ -150,7 +150,7 @@ export const StatusGraphic = styled(motion.div)<{ $connected?: boolean }>`
   &:before,
   &:after {
     z-index: 1;
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     left: 50%;

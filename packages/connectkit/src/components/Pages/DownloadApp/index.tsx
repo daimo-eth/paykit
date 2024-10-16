@@ -1,16 +1,16 @@
-import React from 'react';
+import React from "react";
 
 import {
   PageContent,
   ModalBody,
   ModalContent,
-} from '../../Common/Modal/styles';
+} from "../../Common/Modal/styles";
 
-import CustomQRCode from '../../Common/CustomQRCode';
+import CustomQRCode from "../../Common/CustomQRCode";
 
-import useLocales from '../../../hooks/useLocales';
-import { useContext } from '../../ConnectKit';
-import { useWallet } from '../../../wallets/useWallets';
+import useLocales from "../../../hooks/useLocales";
+import { useContext } from "../../ConnectKit";
+import { useWallet } from "../../../wallets/useWallets";
 
 const DownloadApp = () => {
   const context = useContext();
@@ -32,8 +32,8 @@ const DownloadApp = () => {
     downloads.ios && downloads.android
       ? locales.downloadAppScreen_iosAndroid
       : downloads.ios
-      ? locales.downloadAppScreen_ios
-      : locales.downloadAppScreen_android;
+        ? locales.downloadAppScreen_ios
+        : locales.downloadAppScreen_android;
 
   return (
     <PageContent>
@@ -41,7 +41,7 @@ const DownloadApp = () => {
         {downloads.redirect && <CustomQRCode value={downloads.redirect} />}
         {!downloads.redirect && <>No download link available</>}
         <ModalBody
-          style={{ fontSize: 15, lineHeight: '20px', padding: '0 12px' }}
+          style={{ fontSize: 15, lineHeight: "20px", padding: "0 12px" }}
         >
           {bodycopy}
         </ModalBody>

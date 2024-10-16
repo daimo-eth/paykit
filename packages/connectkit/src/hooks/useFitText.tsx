@@ -6,10 +6,10 @@ import {
   useLayoutEffect,
   useRef,
   useState,
-} from 'react';
-import ResizeObserver from 'resize-observer-polyfill';
+} from "react";
+import ResizeObserver from "resize-observer-polyfill";
 
-export type TLogLevel = 'debug' | 'info' | 'warn' | 'error' | 'none';
+export type TLogLevel = "debug" | "info" | "warn" | "error" | "none";
 
 export type TOptions = {
   logLevel?: TLogLevel;
@@ -31,14 +31,14 @@ const LOG_LEVEL: Record<TLogLevel, number> = {
 // Suppress `useLayoutEffect` warning when rendering on the server
 // https://gist.github.com/gaearon/e7d97cdf38a2907924ea12e4ebdf3c85
 const useIsoLayoutEffect =
-  typeof window !== 'undefined' &&
+  typeof window !== "undefined" &&
   window.document &&
   window.document.createElement !== undefined
     ? useLayoutEffect
     : useEffect;
 
 const useFitText = ({
-  logLevel: logLevelOption = 'info',
+  logLevel: logLevelOption = "info",
   maxFontSize = 100,
   minFontSize = 20,
   onFinish,
@@ -83,7 +83,7 @@ const useFitText = ({
             calcKey: calcKey + 1,
           });
         });
-      })
+      }),
   );
 
   useEffect(() => {
@@ -135,7 +135,7 @@ const useFitText = ({
         isCalculatingRef.current = false;
         if (logLevel <= LOG_LEVEL.info) {
           console.info(
-            `[use-fit-text] reached \`minFontSize = ${minFontSize}\` without fitting text`
+            `[use-fit-text] reached \`minFontSize = ${minFontSize}\` without fitting text`,
           );
         }
       } else if (isOverflow) {

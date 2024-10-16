@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-import { LogoContainer, Image, Squircle } from './styles';
+import { LogoContainer, Image, Squircle } from "./styles";
 
 const Logo: React.FC<{
   src: React.ReactNode;

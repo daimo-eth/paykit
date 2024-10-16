@@ -1,6 +1,6 @@
-import { motion } from 'framer-motion';
-import styled from './../../../styles/styled';
-import { TooltipSizeProps } from './types';
+import { motion } from "framer-motion";
+import styled from "./../../../styles/styled";
+import { TooltipSizeProps } from "./types";
 
 export const TooltipWindow = styled(motion.div)`
   z-index: 2147483647;
@@ -21,9 +21,9 @@ export const TooltipContainer = styled(motion.div)<{ $size: TooltipSizeProps }>`
   justify-content: center;
   border-radius: var(
     --ck-tooltip-border-radius,
-    ${(props) => (props.$size === 'small' ? 11 : 14)}px
+    ${(props) => (props.$size === "small" ? 11 : 14)}px
   );
-  border-radius: ;
+  border-radius:;
   padding: 10px 16px 10px 12px;
   font-size: 14px;
   line-height: 19px;
@@ -62,19 +62,19 @@ export const TooltipTail = styled(motion.div)<{ $size: TooltipSizeProps }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: ${(props) => (props.$size === 'small' ? 14 : 18)}px;
+  width: ${(props) => (props.$size === "small" ? 14 : 18)}px;
   right: 100%;
   top: 0;
   bottom: 0;
   overflow: hidden;
   &:before {
-    content: '';
+    content: "";
     position: absolute;
     box-shadow: var(--shadow);
-    width: ${(props) => (props.$size === 'small' ? 14 : 18)}px;
-    height: ${(props) => (props.$size === 'small' ? 14 : 18)}px;
+    width: ${(props) => (props.$size === "small" ? 14 : 18)}px;
+    height: ${(props) => (props.$size === "small" ? 14 : 18)}px;
     transform: translate(75%, 0) rotate(45deg);
     background: var(--ck-tooltip-background);
-    border-radius: ${(props) => (props.$size === 'small' ? 2 : 3)}px 0 0 0;
+    border-radius: ${(props) => (props.$size === "small" ? 2 : 3)}px 0 0 0;
   }
 `;

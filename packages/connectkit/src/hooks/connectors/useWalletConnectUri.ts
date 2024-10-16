@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
-import { Connector, useAccount } from 'wagmi';
-import { useContext } from '../../components/ConnectKit';
-import { useConnect } from '../useConnect';
-import { useWalletConnectConnector } from './../useConnectors';
+import { Connector, useAccount } from "wagmi";
+import { useContext } from "../../components/ConnectKit";
+import { useConnect } from "../useConnect";
+import { useWalletConnectConnector } from "./../useConnectors";
 
 type Props = {
   enabled?: boolean;
@@ -12,7 +12,7 @@ type Props = {
 export function useWalletConnectUri(
   { enabled }: Props = {
     enabled: true,
-  }
+  },
 ) {
   const { log } = useContext();
 
@@ -28,8 +28,8 @@ export function useWalletConnectUri(
 
     async function handleMessage(message) {
       const { type, data } = message;
-      log('WC Message', type, data);
-      if (type === 'display_uri') {
+      log("WC Message", type, data);
+      if (type === "display_uri") {
         setUri(data);
       }
       /*
@@ -42,7 +42,7 @@ export function useWalletConnectUri(
         */
     }
     async function handleDisconnect() {
-      log('WC Disconnect');
+      log("WC Disconnect");
 
       if (connector) connectWallet(connector);
     }
@@ -57,21 +57,21 @@ export function useWalletConnectUri(
       try {
         await connectWallet(connector);
       } catch (error: any) {
-        log('catch error');
+        log("catch error");
         log(error);
         if (error.code) {
           switch (error.code) {
             case 4001:
-              log('error.code - User rejected');
+              log("error.code - User rejected");
               connectWalletConnect(connector); // Regenerate QR code
               break;
             default:
-              log('error.code - Unknown Error');
+              log("error.code - Unknown Error");
               break;
           }
         } else {
           // Sometimes the error doesn't respond with a code
-          log('WalletConnect cannot connect.', error);
+          log("WalletConnect cannot connect.", error);
         }
       }
     }
@@ -81,13 +81,13 @@ export function useWalletConnectUri(
       if (!connector || uri) return;
       if (connector && !isConnected) {
         connectWalletConnect(connector);
-        log('add wc listeners');
-        connector.emitter.on('message', handleMessage);
-        connector.emitter.on('disconnect', handleDisconnect);
+        log("add wc listeners");
+        connector.emitter.on("message", handleMessage);
+        connector.emitter.on("disconnect", handleDisconnect);
         return () => {
-          log('remove wc listeners');
-          connector.emitter.off('message', handleMessage);
-          connector.emitter.off('disconnect', handleDisconnect);
+          log("remove wc listeners");
+          connector.emitter.off("message", handleMessage);
+          connector.emitter.off("disconnect", handleDisconnect);
         };
       }
     }

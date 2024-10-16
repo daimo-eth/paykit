@@ -1,10 +1,10 @@
-import React from 'react';
-import useFitText from '../../../hooks/useFitText';
+import React from "react";
+import useFitText from "../../../hooks/useFitText";
 
 const FitText = ({ children }: { children: React.ReactNode }) => {
   const [ready, setReady] = React.useState(false);
   const { fontSize, ref: textRef } = useFitText({
-    logLevel: 'none',
+    logLevel: "none",
     maxFontSize: 100,
     minFontSize: 70,
     onStart: () => setReady(true),
@@ -14,19 +14,19 @@ const FitText = ({ children }: { children: React.ReactNode }) => {
     <div
       ref={textRef}
       style={{
-        visibility: ready ? 'visible' : 'hidden',
+        visibility: ready ? "visible" : "hidden",
         fontSize: `${fontSize}%`,
-        maxHeight: '100%',
-        maxWidth: '100%',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
+        maxHeight: "100%",
+        maxWidth: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
       }}
     >
       {children}
     </div>
   );
 };
-FitText.displayName = 'FitText';
+FitText.displayName = "FitText";
 
 export default FitText;

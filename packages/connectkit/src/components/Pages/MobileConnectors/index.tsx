@@ -1,26 +1,26 @@
-import React from 'react';
+import React from "react";
 import {
   Container,
   WalletList,
   WalletItem,
   WalletIcon,
   WalletLabel,
-} from './styles';
+} from "./styles";
 
-import { PageContent, ModalContent } from '../../Common/Modal/styles';
+import { PageContent, ModalContent } from "../../Common/Modal/styles";
 
-import { useContext } from '../../ConnectKit';
-import { useWalletConnectModal } from '../../../hooks/useWalletConnectModal';
-import CopyToClipboard from '../../Common/CopyToClipboard';
-import useLocales from '../../../hooks/useLocales';
-import { Spinner } from '../../Common/Spinner';
-import { ScrollArea } from '../../Common/ScrollArea';
-import { useWeb3 } from '../../contexts/web3';
-import { useWallets } from '../../../wallets/useWallets';
+import { useContext } from "../../ConnectKit";
+import { useWalletConnectModal } from "../../../hooks/useWalletConnectModal";
+import CopyToClipboard from "../../Common/CopyToClipboard";
+import useLocales from "../../../hooks/useLocales";
+import { Spinner } from "../../Common/Spinner";
+import { ScrollArea } from "../../Common/ScrollArea";
+import { useWeb3 } from "../../contexts/web3";
+import { useWallets } from "../../../wallets/useWallets";
 import {
   WalletConfigProps,
   walletConfigs,
-} from '../../../wallets/walletConfigs';
+} from "../../../wallets/walletConfigs";
 
 const MoreIcon = (
   <svg
@@ -81,14 +81,14 @@ const MobileConnectors: React.FC = () => {
                     const nameA = walletA.name ?? walletA.shortName ?? a;
                     const nameB = walletB.name ?? walletB.shortName ?? b;
                     return nameA.localeCompare(nameB);
-                  }
+                  },
                 )
                 .filter(
                   (walletId) =>
                     !(
-                      walletId === 'coinbaseWallet' ||
-                      walletId === 'com.coinbase.wallet'
-                    )
+                      walletId === "coinbaseWallet" ||
+                      walletId === "com.coinbase.wallet"
+                    ),
                 )
                 .map((walletId, i) => {
                   const wallet = walletConfigs[walletId];
@@ -110,21 +110,21 @@ const MobileConnectors: React.FC = () => {
                 })}
               <WalletItem onClick={openW3M} $waiting={isOpenW3M}>
                 <WalletIcon
-                  style={{ background: 'var(--ck-body-background-secondary)' }}
+                  style={{ background: "var(--ck-body-background-secondary)" }}
                 >
                   {isOpenW3M ? (
                     <div
                       style={{
-                        position: 'absolute',
+                        position: "absolute",
                         inset: 0,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
                       }}
                     >
                       <div
                         style={{
-                          width: '50%',
+                          width: "50%",
                         }}
                       >
                         <Spinner />
@@ -139,12 +139,12 @@ const MobileConnectors: React.FC = () => {
             </WalletList>
           </ScrollArea>
         </ModalContent>
-        {context.options?.walletConnectCTA !== 'modal' && (
+        {context.options?.walletConnectCTA !== "modal" && (
           <div
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
               gap: 14,
               paddingTop: 8,
             }}

@@ -1,34 +1,34 @@
-import React from 'react';
-import { useAccount, useEnsName } from 'wagmi';
-import { truncateENSAddress, truncateEthAddress } from './../../utils';
-import useIsMounted from '../../hooks/useIsMounted';
+import React, { useEffect } from "react";
+import { useAccount, useEnsName } from "wagmi";
+import { truncateENSAddress, truncateEthAddress } from "./../../utils";
+import useIsMounted from "../../hooks/useIsMounted";
 
 import {
   IconContainer,
   TextContainer,
   UnsupportedNetworkContainer,
-} from './styles';
-import { routes, useContext } from '../ConnectKit';
-import { useModal } from '../../hooks/useModal';
+} from "./styles";
+import { ROUTES, useContext } from "../ConnectKit";
+import { useModal } from "../../hooks/useModal";
 
-import Avatar from '../Common/Avatar';
-import { AnimatePresence, Variants, motion } from 'framer-motion';
-import { CustomTheme, Mode, Theme } from '../../types';
-import { Balance } from '../BalanceButton';
-import ThemedButton, { ThemeContainer } from '../Common/ThemedButton';
-import { ResetContainer } from '../../styles';
-import { AuthIcon } from '../../assets/icons';
-import { useSIWE } from '../../siwe';
-import useLocales from '../../hooks/useLocales';
-import { Chain } from 'viem';
-import { useChainIsSupported } from '../../hooks/useChainIsSupported';
-import { useEnsFallbackConfig } from '../../hooks/useEnsFallbackConfig';
+import Avatar from "../Common/Avatar";
+import { AnimatePresence, Variants, motion } from "framer-motion";
+import { CustomTheme, Mode, Theme } from "../../types";
+import { Balance } from "../BalanceButton";
+import ThemedButton, { ThemeContainer } from "../Common/ThemedButton";
+import { ResetContainer } from "../../styles";
+import { AuthIcon } from "../../assets/icons";
+import { useSIWE } from "../../siwe";
+import useLocales from "../../hooks/useLocales";
+import { Chain } from "viem";
+import { useChainIsSupported } from "../../hooks/useChainIsSupported";
+import { useEnsFallbackConfig } from "../../hooks/useEnsFallbackConfig";
 
 const contentVariants: Variants = {
   initial: {
     zIndex: 2,
     opacity: 0,
-    x: '-100%',
+    x: "-100%",
   },
   animate: {
     opacity: 1,
@@ -41,9 +41,9 @@ const contentVariants: Variants = {
   exit: {
     zIndex: 1,
     opacity: 0,
-    x: '-100%',
-    pointerEvents: 'none',
-    position: 'absolute',
+    x: "-100%",
+    pointerEvents: "none",
+    position: "absolute",
     transition: {
       duration: 0.4,
       ease: [0.25, 1, 0.5, 1],
@@ -55,7 +55,7 @@ const addressVariants: Variants = {
   initial: {
     zIndex: 2,
     opacity: 0,
-    x: '100%',
+    x: "100%",
   },
   animate: {
     x: 0.2,
@@ -67,10 +67,10 @@ const addressVariants: Variants = {
   },
   exit: {
     zIndex: 1,
-    x: '100%',
+    x: "100%",
     opacity: 0,
-    pointerEvents: 'none',
-    position: 'absolute',
+    pointerEvents: "none",
+    position: "absolute",
     transition: {
       duration: 0.4,
       ease: [0.25, 1, 0.5, 1],
@@ -90,7 +90,7 @@ const textVariants: Variants = {
     },
   },
   exit: {
-    position: 'absolute',
+    position: "absolute",
     opacity: 0,
     transition: {
       duration: 0.3,
@@ -102,6 +102,7 @@ const textVariants: Variants = {
 type Hash = `0x${string}`;
 
 type ConnectButtonRendererProps = {
+  payId: string;
   children?: (renderProps: {
     show?: () => void;
     hide?: () => void;
@@ -114,10 +115,12 @@ type ConnectButtonRendererProps = {
     address?: Hash;
     truncatedAddress?: string;
     ensName?: string;
+    payId?: string;
   }) => React.ReactNode;
 };
 
 const ConnectButtonRenderer: React.FC<ConnectButtonRendererProps> = ({
+  payId,
   children,
 }) => {
   const isMounted = useIsMounted();
@@ -127,20 +130,24 @@ const ConnectButtonRenderer: React.FC<ConnectButtonRendererProps> = ({
   const { address, isConnected, chain } = useAccount();
   const isChainSupported = useChainIsSupported(chain?.id);
 
-  const ensFallbackConfig = useEnsFallbackConfig();
   const { data: ensName } = useEnsName({
     chainId: 1,
     address: address,
-    config: ensFallbackConfig,
   });
 
   function hide() {
     setOpen(false);
   }
 
-  function show() {
-    setOpen(true);
-    context.setRoute(isConnected ? routes.PROFILE : routes.CONNECTORS);
+  // Pre-load payment info in background.
+  const { setPayId } = context.paymentInfo;
+  useEffect(() => {
+    setPayId(payId);
+  }, [payId]);
+
+  async function show() {
+    await context.loadPayment(payId); // ensure payment info is loaded before opening.
+    context.setOpen(true);
   }
 
   if (!children) return null;
@@ -149,6 +156,7 @@ const ConnectButtonRenderer: React.FC<ConnectButtonRendererProps> = ({
   return (
     <>
       {children({
+        payId,
         show,
         hide,
         chain: chain,
@@ -163,7 +171,7 @@ const ConnectButtonRenderer: React.FC<ConnectButtonRendererProps> = ({
   );
 };
 
-ConnectButtonRenderer.displayName = 'ConnectKitButton.Custom';
+ConnectButtonRenderer.displayName = "ConnectKitButton.Custom";
 
 function ConnectKitButtonInner({
   label,
@@ -181,22 +189,20 @@ function ConnectKitButtonInner({
   const { address, chain } = useAccount();
   const isChainSupported = useChainIsSupported(chain?.id);
 
-  const ensFallbackConfig = useEnsFallbackConfig();
   const { data: ensName } = useEnsName({
     chainId: 1,
     address: address,
-    config: ensFallbackConfig,
   });
-  const defaultLabel = locales.connectWallet;
+  const defaultLabel = "Pay";
 
   return (
     <AnimatePresence initial={false}>
       {address ? (
         <TextContainer
           key="connectedText"
-          initial={'initial'}
-          animate={'animate'}
-          exit={'exit'}
+          initial={"initial"}
+          animate={"animate"}
+          exit={"exit"}
           variants={addressVariants}
           style={{
             height: 40,
@@ -210,7 +216,7 @@ function ConnectKitButtonInner({
                   <motion.div
                     style={{
                       zIndex: 2,
-                      position: 'absolute',
+                      position: "absolute",
                       bottom: 0,
                       right: 0,
                     }}
@@ -248,7 +254,7 @@ function ConnectKitButtonInner({
 
           <div
             style={{
-              position: 'relative',
+              position: "relative",
               paddingRight: showAvatar ? 1 : 0,
             }}
           >
@@ -256,12 +262,12 @@ function ConnectKitButtonInner({
               {ensName ? (
                 <TextContainer
                   key="ckEnsName"
-                  initial={'initial'}
-                  animate={'animate'}
-                  exit={'exit'}
+                  initial={"initial"}
+                  animate={"animate"}
+                  exit={"exit"}
                   variants={textVariants}
                   style={{
-                    position: ensName ? 'relative' : 'absolute',
+                    position: ensName ? "relative" : "absolute",
                   }}
                 >
                   {context.options?.truncateLongENSAddress
@@ -271,15 +277,15 @@ function ConnectKitButtonInner({
               ) : (
                 <TextContainer
                   key="ckTruncatedAddress"
-                  initial={'initial'}
-                  animate={'animate'}
-                  exit={'exit'}
+                  initial={"initial"}
+                  animate={"animate"}
+                  exit={"exit"}
                   variants={textVariants}
                   style={{
-                    position: ensName ? 'absolute' : 'relative',
+                    position: ensName ? "absolute" : "relative",
                   }}
                 >
-                  {truncateEthAddress(address, separator)}{' '}
+                  {truncateEthAddress(address, separator)}{" "}
                 </TextContainer>
               )}
             </AnimatePresence>
@@ -288,9 +294,9 @@ function ConnectKitButtonInner({
       ) : (
         <TextContainer
           key="connectWalletText"
-          initial={'initial'}
-          animate={'animate'}
-          exit={'exit'}
+          initial={"initial"}
+          animate={"animate"}
+          exit={"exit"}
           variants={contentVariants}
           style={{
             height: 40,
@@ -305,6 +311,9 @@ function ConnectKitButtonInner({
 }
 
 type ConnectKitButtonProps = {
+  // Daimo Pay Order ID.
+  payId: string;
+
   // Options
   label?: string;
   showBalance?: boolean;
@@ -320,6 +329,8 @@ type ConnectKitButtonProps = {
 };
 
 export function ConnectKitButton({
+  payId,
+
   // Options
   label,
   showBalance = false,
@@ -337,18 +348,26 @@ export function ConnectKitButton({
 
   const context = useContext();
 
-  const { isConnected, address, chain } = useAccount();
+  const { address, chain } = useAccount({
+    // config: daimoPayChainConfig,
+  });
   const chainIsSupported = useChainIsSupported(chain?.id);
 
-  function show() {
+  // Pre-load payment info in background.
+  const { setPayId } = context.paymentInfo;
+  useEffect(() => {
+    setPayId(payId);
+  }, [payId]);
+
+  async function show() {
+    await context.loadPayment(payId); // ensure payment info is loaded
     context.setOpen(true);
-    context.setRoute(isConnected ? routes.PROFILE : routes.CONNECTORS);
   }
 
-  const separator = ['web95', 'rounded', 'minimal'].includes(
-    theme ?? context.theme ?? ''
+  const separator = ["web95", "rounded", "minimal"].includes(
+    theme ?? context.theme ?? "",
   )
-    ? '....'
+    ? "...."
     : undefined;
 
   if (!isMounted) return null;
@@ -375,17 +394,17 @@ export function ConnectKitButton({
           <AnimatePresence initial={false}>
             {willShowBalance && (
               <motion.div
-                key={'balance'}
+                key={"balance"}
                 initial={{
                   opacity: 0,
-                  x: '100%',
+                  x: "100%",
                   width: 0,
                   marginRight: 0,
                 }}
                 animate={{
                   opacity: 1,
                   x: 0,
-                  width: 'auto',
+                  width: "auto",
                   marginRight: -24,
                   transition: {
                     duration: 0.4,
@@ -394,7 +413,7 @@ export function ConnectKitButton({
                 }}
                 exit={{
                   opacity: 0,
-                  x: '100%',
+                  x: "100%",
                   width: 0,
                   marginRight: 0,
                   transition: {
@@ -404,11 +423,11 @@ export function ConnectKitButton({
                 }}
               >
                 <ThemedButton
-                  variant={'secondary'}
+                  variant={"secondary"}
                   theme={theme ?? context.theme}
                   mode={mode ?? context.mode}
                   customTheme={customTheme ?? context.customTheme}
-                  style={{ overflow: 'hidden' }}
+                  style={{ overflow: "hidden" }}
                 >
                   <motion.div style={{ paddingRight: 24 }}>
                     <Balance hideSymbol />
@@ -426,17 +445,17 @@ export function ConnectKitButton({
             shouldShowBalance &&
             showBalance &&
             address &&
-            (theme === 'retro' || context.theme === 'retro')
+            (theme === "retro" || context.theme === "retro")
               ? {
                   /** Special fix for the retro theme... not happy about this one */
                   boxShadow:
-                    'var(--ck-connectbutton-balance-connectbutton-box-shadow)',
+                    "var(--ck-connectbutton-balance-connectbutton-box-shadow)",
                   borderRadius:
-                    'var(--ck-connectbutton-balance-connectbutton-border-radius)',
-                  overflow: 'hidden',
+                    "var(--ck-connectbutton-balance-connectbutton-border-radius)",
+                  overflow: "hidden",
                 }
               : {
-                  overflow: 'hidden',
+                  overflow: "hidden",
                 }
           }
         >

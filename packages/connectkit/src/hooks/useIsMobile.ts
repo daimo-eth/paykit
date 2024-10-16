@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { isMobile } from '../utils';
+import { useState, useEffect } from "react";
+import { isMobile } from "../utils";
 
 export default function useIsMobile() {
   const [mobile, setMobile] = useState(isMobile());
@@ -8,8 +8,8 @@ export default function useIsMobile() {
     const handleResize = () => {
       setMobile(isMobile());
     };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return mobile;

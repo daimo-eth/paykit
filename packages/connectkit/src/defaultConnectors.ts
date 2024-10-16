@@ -1,11 +1,11 @@
-import { CreateConnectorFn } from 'wagmi';
+import { CreateConnectorFn } from "wagmi";
 import {
   injected,
   walletConnect,
   coinbaseWallet,
   CoinbaseWalletParameters,
   safe,
-} from '@wagmi/connectors';
+} from "@wagmi/connectors";
 
 type DefaultConnectorsProps = {
   app: {
@@ -15,7 +15,7 @@ type DefaultConnectorsProps = {
     url?: string;
   };
   walletConnectProjectId?: string;
-  coinbaseWalletPreference?: CoinbaseWalletParameters<'4'>['preference'];
+  coinbaseWalletPreference?: CoinbaseWalletParameters<"4">["preference"];
 };
 
 const defaultConnectors = ({
@@ -25,7 +25,7 @@ const defaultConnectors = ({
 }: DefaultConnectorsProps): CreateConnectorFn[] => {
   const hasAllAppData = app.name && app.icon && app.description && app.url;
   const shouldUseSafeConnector =
-    !(typeof window === 'undefined') && window?.parent !== window;
+    !(typeof window === "undefined") && window?.parent !== window;
 
   const connectors: CreateConnectorFn[] = [];
 
@@ -34,19 +34,19 @@ const defaultConnectors = ({
     connectors.push(
       safe({
         allowedDomains: [/gnosis-safe.io$/, /app.safe.global$/],
-      })
+      }),
     );
   }
 
   // Add the rest of the connectors
   connectors.push(
-    injected({ target: 'metaMask' }),
+    injected({ target: "metaMask" }),
     coinbaseWallet({
       appName: app.name,
       appLogoUrl: app.icon,
       overrideIsMetaMask: false,
       preference: coinbaseWalletPreference,
-    })
+    }),
   );
 
   if (walletConnectProjectId) {
@@ -62,7 +62,7 @@ const defaultConnectors = ({
               icons: [app.icon!],
             }
           : undefined,
-      })
+      }),
     );
   }
   /*

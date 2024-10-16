@@ -1,5 +1,5 @@
-import { css, keyframes } from 'styled-components';
-import styled from './../../../styles/styled';
+import { css, keyframes } from "styled-components";
+import styled from "./../../../styles/styled";
 
 export const WalletItem = styled.div<{ $waiting?: boolean }>`
   text-align: center;

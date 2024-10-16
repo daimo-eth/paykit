@@ -1,50 +1,50 @@
-import styled from './styled';
-import { css } from 'styled-components';
-import { motion } from 'framer-motion';
-import { CustomTheme } from '../types';
-import { hexToP3 } from '../utils/p3';
+import styled from "./styled";
+import { css } from "styled-components";
+import { motion } from "framer-motion";
+import { CustomTheme } from "../types";
+import { hexToP3 } from "../utils/p3";
 
-import predefinedThemes from './themes';
+import predefinedThemes from "./themes";
 
 /**
  * Theme variables for the modal
  */
 const themeGlobals = {
   default: {
-    '--ck-font-family': `-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica,
+    "--ck-font-family": `-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica,
     'Apple Color Emoji', Arial, sans-serif, 'Segoe UI Emoji',
     'Segoe UI Symbol'`,
-    '--ck-border-radius': '20px',
-    '--ck-secondary-button-border-radius': '16px',
+    "--ck-border-radius": "20px",
+    "--ck-secondary-button-border-radius": "16px",
   },
   graphics: {
     light: {
-      '--ck-graphic-wave-stop-01': '#E8F17D',
-      '--ck-graphic-wave-stop-02': '#A8ECDE',
-      '--ck-graphic-wave-stop-03': '#7AA1F2',
-      '--ck-graphic-wave-stop-04': '#DEA1E8',
-      '--ck-graphic-wave-stop-05': '#F46D98',
+      "--ck-graphic-wave-stop-01": "#E8F17D",
+      "--ck-graphic-wave-stop-02": "#A8ECDE",
+      "--ck-graphic-wave-stop-03": "#7AA1F2",
+      "--ck-graphic-wave-stop-04": "#DEA1E8",
+      "--ck-graphic-wave-stop-05": "#F46D98",
 
-      '--ck-graphic-scaniconwithlogos-01': '#4E4E4E',
-      '--ck-graphic-scaniconwithlogos-02': '#272727',
-      '--ck-graphic-scaniconwithlogos-03': '#F8D74A',
-      '--ck-graphic-scaniconwithlogos-04': '#F6F7F9',
+      "--ck-graphic-scaniconwithlogos-01": "#4E4E4E",
+      "--ck-graphic-scaniconwithlogos-02": "#272727",
+      "--ck-graphic-scaniconwithlogos-03": "#F8D74A",
+      "--ck-graphic-scaniconwithlogos-04": "#F6F7F9",
 
-      '--ck-chain-ethereum-01': '#25292E',
-      '--ck-chain-ethereum-02': '#fff',
-      '--ck-chain-ethereum-03': '#DFE0E0',
+      "--ck-chain-ethereum-01": "#25292E",
+      "--ck-chain-ethereum-02": "#fff",
+      "--ck-chain-ethereum-03": "#DFE0E0",
     },
     dark: {
-      '--ck-graphic-wave-stop-01': '#E8F17D',
-      '--ck-graphic-wave-stop-02': '#A8ECDE',
-      '--ck-graphic-wave-stop-03': '#7AA1F2',
-      '--ck-graphic-wave-stop-04': '#DEA1E8',
-      '--ck-graphic-wave-stop-05': '#F46D98',
+      "--ck-graphic-wave-stop-01": "#E8F17D",
+      "--ck-graphic-wave-stop-02": "#A8ECDE",
+      "--ck-graphic-wave-stop-03": "#7AA1F2",
+      "--ck-graphic-wave-stop-04": "#DEA1E8",
+      "--ck-graphic-wave-stop-05": "#F46D98",
 
-      '--ck-graphic-scaniconwithlogos-01': '#AFAFAF',
-      '--ck-graphic-scaniconwithlogos-02': '#696969',
-      '--ck-graphic-scaniconwithlogos-03': '#F8D74A',
-      '--ck-graphic-scaniconwithlogos-04': '#3D3D3D',
+      "--ck-graphic-scaniconwithlogos-01": "#AFAFAF",
+      "--ck-graphic-scaniconwithlogos-02": "#696969",
+      "--ck-graphic-scaniconwithlogos-03": "#F8D74A",
+      "--ck-graphic-scaniconwithlogos-04": "#3D3D3D",
 
       //'--ck-chain-ethereum-01': '#fff',
       //'--ck-chain-ethereum-02': '#000',
@@ -53,68 +53,68 @@ const themeGlobals = {
   },
   ens: {
     light: {
-      '--ck-ens-01-start': '#FF3B30',
-      '--ck-ens-01-stop': '#FF9500',
-      '--ck-ens-02-start': '#FF9500',
-      '--ck-ens-02-stop': '#FFCC00',
-      '--ck-ens-03-start': '#FFCC00',
-      '--ck-ens-03-stop': '#34C759',
-      '--ck-ens-04-start': '#5856D6',
-      '--ck-ens-04-stop': '#AF52DE',
-      '--ck-ens-05-start': '#5AC8FA',
-      '--ck-ens-05-stop': '#007AFF',
-      '--ck-ens-06-start': '#007AFF',
-      '--ck-ens-06-stop': '#5856D6',
-      '--ck-ens-07-start': '#5856D6',
-      '--ck-ens-07-stop': '#AF52DE',
-      '--ck-ens-08-start': '#AF52DE',
-      '--ck-ens-08-stop': '#FF2D55',
+      "--ck-ens-01-start": "#FF3B30",
+      "--ck-ens-01-stop": "#FF9500",
+      "--ck-ens-02-start": "#FF9500",
+      "--ck-ens-02-stop": "#FFCC00",
+      "--ck-ens-03-start": "#FFCC00",
+      "--ck-ens-03-stop": "#34C759",
+      "--ck-ens-04-start": "#5856D6",
+      "--ck-ens-04-stop": "#AF52DE",
+      "--ck-ens-05-start": "#5AC8FA",
+      "--ck-ens-05-stop": "#007AFF",
+      "--ck-ens-06-start": "#007AFF",
+      "--ck-ens-06-stop": "#5856D6",
+      "--ck-ens-07-start": "#5856D6",
+      "--ck-ens-07-stop": "#AF52DE",
+      "--ck-ens-08-start": "#AF52DE",
+      "--ck-ens-08-stop": "#FF2D55",
     },
     dark: {
-      '--ck-ens-01-start': '#FF453A',
-      '--ck-ens-01-stop': '#FF9F0A',
-      '--ck-ens-02-start': '#FF9F0A',
-      '--ck-ens-02-stop': '#FFD60A',
-      '--ck-ens-03-start': '#FFD60A',
-      '--ck-ens-03-stop': '#32D74B',
-      '--ck-ens-04-start': '#32D74B',
-      '--ck-ens-04-stop': '#64D2FF',
-      '--ck-ens-05-start': '#64D2FF',
-      '--ck-ens-05-stop': '#0A84FF',
-      '--ck-ens-06-start': '#0A84FF',
-      '--ck-ens-06-stop': '#5E5CE6',
-      '--ck-ens-07-start': '#5E5CE6',
-      '--ck-ens-07-stop': '#BF5AF2',
-      '--ck-ens-08-start': '#BF5AF2',
-      '--ck-ens-08-stop': '#FF2D55',
+      "--ck-ens-01-start": "#FF453A",
+      "--ck-ens-01-stop": "#FF9F0A",
+      "--ck-ens-02-start": "#FF9F0A",
+      "--ck-ens-02-stop": "#FFD60A",
+      "--ck-ens-03-start": "#FFD60A",
+      "--ck-ens-03-stop": "#32D74B",
+      "--ck-ens-04-start": "#32D74B",
+      "--ck-ens-04-stop": "#64D2FF",
+      "--ck-ens-05-start": "#64D2FF",
+      "--ck-ens-05-stop": "#0A84FF",
+      "--ck-ens-06-start": "#0A84FF",
+      "--ck-ens-06-stop": "#5E5CE6",
+      "--ck-ens-07-start": "#5E5CE6",
+      "--ck-ens-07-stop": "#BF5AF2",
+      "--ck-ens-08-start": "#BF5AF2",
+      "--ck-ens-08-stop": "#FF2D55",
     },
   },
   brand: {
-    '--ck-family-brand': '#1A88F8',
-    '--ck-brand-walletConnect': '#3B99FC',
-    '--ck-brand-coinbaseWallet': '#0052FF',
-    '--ck-brand-metamask': '#f6851b',
-    '--ck-brand-metamask-01': '#F6851B',
-    '--ck-brand-metamask-02': '#E2761B',
-    '--ck-brand-metamask-03': '#CD6116',
-    '--ck-brand-metamask-04': '#161616',
-    '--ck-brand-metamask-05': '#763D16',
-    '--ck-brand-metamask-06': '#D7C1B3',
-    '--ck-brand-metamask-07': '#C0AD9E',
-    '--ck-brand-metamask-08': '#E4761B',
-    '--ck-brand-metamask-09': '#233447',
-    '--ck-brand-metamask-10': '#E4751F',
-    '--ck-brand-metamask-11': '#FEF5E7',
-    '--ck-brand-metamask-12': '#E3C8AB',
-    '--ck-brand-trust-01': '#3375BB',
-    '--ck-brand-trust-02': '#ffffff',
-    '--ck-brand-trust-01b': '#ffffff', // dark Theme
-    '--ck-brand-trust-02b': '#3375BB', // dark Theme
-    '--ck-brand-argent': '#f36a3d',
-    '--ck-brand-imtoken-01': '#11C4D1',
-    '--ck-brand-imtoken-02': '#0062AD',
-    '--ck-brand-safe': '#12FF80',
-    '--ck-brand-dawn': '#000000',
+    "--ck-family-brand": "#1A88F8",
+    "--ck-brand-walletConnect": "#3B99FC",
+    "--ck-brand-coinbaseWallet": "#0052FF",
+    "--ck-brand-metamask": "#f6851b",
+    "--ck-brand-metamask-01": "#F6851B",
+    "--ck-brand-metamask-02": "#E2761B",
+    "--ck-brand-metamask-03": "#CD6116",
+    "--ck-brand-metamask-04": "#161616",
+    "--ck-brand-metamask-05": "#763D16",
+    "--ck-brand-metamask-06": "#D7C1B3",
+    "--ck-brand-metamask-07": "#C0AD9E",
+    "--ck-brand-metamask-08": "#E4761B",
+    "--ck-brand-metamask-09": "#233447",
+    "--ck-brand-metamask-10": "#E4751F",
+    "--ck-brand-metamask-11": "#FEF5E7",
+    "--ck-brand-metamask-12": "#E3C8AB",
+    "--ck-brand-trust-01": "#3375BB",
+    "--ck-brand-trust-02": "#ffffff",
+    "--ck-brand-trust-01b": "#ffffff", // dark Theme
+    "--ck-brand-trust-02b": "#3375BB", // dark Theme
+    "--ck-brand-argent": "#f36a3d",
+    "--ck-brand-imtoken-01": "#11C4D1",
+    "--ck-brand-imtoken-02": "#0062AD",
+    "--ck-brand-safe": "#12FF80",
+    "--ck-brand-dawn": "#000000",
   },
 };
 const themeColors = {
@@ -142,7 +142,7 @@ const createCssVars = (scheme: any, important?: boolean) => {
   `;
 };
 const createCssColors = (scheme: any, override?: boolean) => {
-  const important = override ? ' !important' : '';
+  const important = override ? " !important" : "";
   return css`
     ${Object.keys(scheme).map((key) => {
       const value = scheme[key];
@@ -195,7 +195,7 @@ const globalsDark = css`
 // TODO: Think more about how to reset our components as to not be affected by external stylings
 // TODO: Merge theme objects instead of overriding
 
-let mode = 'auto';
+let mode = "auto";
 export const ResetContainer = styled(motion.div)<{
   $useTheme?: string;
   $useMode?: string;
@@ -205,33 +205,33 @@ export const ResetContainer = styled(motion.div)<{
 
   ${(props) => {
     switch (props.$useTheme) {
-      case 'web95':
-        mode = 'light';
+      case "web95":
+        mode = "light";
         return themes.web95;
-      case 'retro':
-        mode = 'light';
+      case "retro":
+        mode = "light";
         return themes.retro;
-      case 'soft':
-        mode = 'light';
+      case "soft":
+        mode = "light";
         return themes.soft;
-      case 'midnight':
-        mode = 'dark';
+      case "midnight":
+        mode = "dark";
         return themes.midnight;
-      case 'minimal':
-        mode = 'light';
+      case "minimal":
+        mode = "light";
         return themes.minimal;
-      case 'rounded':
-        mode = 'light';
+      case "rounded":
+        mode = "light";
         return themes.rounded;
-      case 'nouns':
-        mode = 'light';
+      case "nouns":
+        mode = "light";
         return themes.nouns;
       default:
-        if (props.$useMode === 'light') {
-          mode = 'light';
+        if (props.$useMode === "light") {
+          mode = "light";
           return themes.light;
-        } else if (props.$useMode === 'dark') {
-          mode = 'dark';
+        } else if (props.$useMode === "dark") {
+          mode = "dark";
           return themes.dark;
         } else {
           return css`
@@ -248,9 +248,9 @@ export const ResetContainer = styled(motion.div)<{
 
   ${(props) => {
     switch (mode) {
-      case 'light':
+      case "light":
         return globalsLight;
-      case 'dark':
+      case "dark":
         return globalsDark;
       default:
         return css`
@@ -266,15 +266,15 @@ export const ResetContainer = styled(motion.div)<{
   ${(props) => {
     if (
       props.$customTheme &&
-      props.$customTheme['--ck-accent-color'] &&
-      ['light', 'dark', 'auto', '', undefined].includes(props.$useTheme)
+      props.$customTheme["--ck-accent-color"] &&
+      ["light", "dark", "auto", "", undefined].includes(props.$useTheme)
     ) {
-      const accentColor = props.$customTheme['--ck-accent-color'];
+      const accentColor = props.$customTheme["--ck-accent-color"];
       const accentTextColor =
-        props.$customTheme['--ck-accent-text-color'] ?? '#ffffff';
+        props.$customTheme["--ck-accent-text-color"] ?? "#ffffff";
       return {
-        '--ck-accent-color': accentColor,
-        '--ck-accent-text-color': accentTextColor,
+        "--ck-accent-color": accentColor,
+        "--ck-accent-text-color": accentTextColor,
         // '--ck-connectbutton-color': accentTextColor,
         // '--ck-connectbutton-background': accentColor,
         // '--ck-connectbutton-background-hover': accentColor,
@@ -282,11 +282,11 @@ export const ResetContainer = styled(motion.div)<{
         // accentColor,
         // 20
         // ),
-        '--ck-secondary-button-background': accentColor,
-        '--ck-secondary-button-hover-background': accentColor,
-        '--ck-secondary-button-color': accentTextColor,
-        '--ck-button-primary-color': accentTextColor,
-        '--ck-focus-color': accentColor,
+        "--ck-secondary-button-background": accentColor,
+        "--ck-secondary-button-hover-background": accentColor,
+        "--ck-secondary-button-color": accentTextColor,
+        "--ck-button-primary-color": accentTextColor,
+        "--ck-focus-color": accentColor,
       };
     }
     if (props.$customTheme) {

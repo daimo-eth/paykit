@@ -1,7 +1,7 @@
-import { CreateConnectorFn } from 'wagmi';
-import { injected } from '@wagmi/connectors';
+import { CreateConnectorFn } from "wagmi";
+import { injected } from "@wagmi/connectors";
 
-import { walletConfigs } from './walletConfigs';
+import { walletConfigs } from "./walletConfigs";
 
 type WalletIds = Extract<keyof typeof walletConfigs, string>;
 
@@ -10,9 +10,9 @@ export const wallets: {
 } = Object.keys(walletConfigs).reduce((acc, key) => {
   const config = walletConfigs[key];
   if (!config?.getWalletConnectDeeplink) return acc;
-  const target = key.split(',')[0].trim();
+  const target = key.split(",")[0].trim();
   const flag =
-    config.name?.replace('Wallet', '').replace(' ', '') ??
+    config.name?.replace("Wallet", "").replace(" ", "") ??
     target[0].toUpperCase() + target.slice(1);
 
   const connector = injected({
@@ -27,7 +27,7 @@ export const wallets: {
     // capitalize first letter
     .replace(/(?:^|\s)\S/g, (a) => a.toUpperCase())
     // remove spaces
-    .replace(/\s/g, '')
+    .replace(/\s/g, "")
     // lowercase first letter
     .replace(/(?:^|\s)\S/g, (a) => a.toLowerCase());
 

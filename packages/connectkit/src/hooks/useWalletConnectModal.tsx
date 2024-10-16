@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { Connector, CreateConnectorFn } from 'wagmi';
-import { walletConnect } from 'wagmi/connectors';
-import { useContext } from '../components/ConnectKit';
+import { useState } from "react";
+import { Connector, CreateConnectorFn } from "wagmi";
+import { walletConnect } from "wagmi/connectors";
+import { useContext } from "../components/ConnectKit";
 
-import { isWalletConnectConnector } from '../utils';
-import { useConnect } from './useConnect';
+import { isWalletConnectConnector } from "../utils";
+import { useConnect } from "./useConnect";
 
 export function useWalletConnectModal() {
   const { log } = useContext();
@@ -15,12 +15,12 @@ export function useWalletConnectModal() {
     isOpen,
     open: async () => {
       // add modal styling because wagmi does not let you add styling to the modal
-      const w3mcss = document.createElement('style');
+      const w3mcss = document.createElement("style");
       w3mcss.innerHTML = `w3m-modal, wcm-modal{ --wcm-z-index: 2147483647; --w3m-z-index:2147483647; }`;
       document.head.appendChild(w3mcss);
 
       const clientConnector: Connector | undefined = connectors.find((c) =>
-        isWalletConnectConnector(c.id)
+        isWalletConnectConnector(c.id),
       );
 
       if (clientConnector) {
@@ -37,17 +37,17 @@ export function useWalletConnectModal() {
           try {
             await connectAsync({ connector: connector });
           } catch (err) {
-            log('WalletConnect', err);
+            log("WalletConnect", err);
           }
           setIsOpen(false);
 
           // remove modal styling
           document.head.removeChild(w3mcss);
         } catch (err) {
-          log('Could not get WalletConnect provider', err);
+          log("Could not get WalletConnect provider", err);
         }
       } else {
-        log('No WalletConnect connector available');
+        log("No WalletConnect connector available");
       }
     },
   };

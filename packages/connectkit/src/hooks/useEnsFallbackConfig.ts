@@ -1,7 +1,7 @@
-import type { Config } from '@wagmi/core';
-import { http, createConfig } from 'wagmi';
-import { mainnet } from 'wagmi/chains';
-import { useChainIsSupported } from '../hooks/useChainIsSupported';
+import type { Config } from "@wagmi/core";
+import { http, createConfig } from "wagmi";
+import { mainnet } from "wagmi/chains";
+import { useChainIsSupported } from "../hooks/useChainIsSupported";
 
 const ensFallbackConfig = createConfig({
   chains: [mainnet],

@@ -1,18 +1,18 @@
-import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
-import { useContext } from '../ConnectKit';
-import { useWallet } from '../../wallets/useWallets';
+import { useContext } from "../ConnectKit";
+import { useWallet } from "../../wallets/useWallets";
 
-import ConnectWithInjector from './ConnectWithInjector';
-import ConnectWithQRCode from './ConnectWithQRCode';
+import ConnectWithInjector from "./ConnectWithInjector";
+import ConnectWithQRCode from "./ConnectWithQRCode";
 
-import { contentVariants } from '../Common/Modal';
-import Alert from '../Common/Alert';
+import { contentVariants } from "../Common/Modal";
+import Alert from "../Common/Alert";
 
 const states = {
-  QRCODE: 'qrcode',
-  INJECTOR: 'injector',
+  QRCODE: "qrcode",
+  INJECTOR: "injector",
 };
 
 const ConnectUsing = () => {
@@ -23,7 +23,7 @@ const ConnectUsing = () => {
   const isQrCode = !wallet?.isInstalled && wallet?.getWalletConnectDeeplink;
 
   const [status, setStatus] = useState(
-    isQrCode ? states.QRCODE : states.INJECTOR
+    isQrCode ? states.QRCODE : states.INJECTOR,
   );
 
   useEffect(() => {
@@ -45,9 +45,9 @@ const ConnectUsing = () => {
       {status === states.QRCODE && (
         <motion.div
           key={states.QRCODE}
-          initial={'initial'}
-          animate={'animate'}
-          exit={'exit'}
+          initial={"initial"}
+          animate={"animate"}
+          exit={"exit"}
           variants={contentVariants}
         >
           <ConnectWithQRCode
@@ -61,9 +61,9 @@ const ConnectUsing = () => {
       {status === states.INJECTOR && (
         <motion.div
           key={states.INJECTOR}
-          initial={'initial'}
-          animate={'animate'}
-          exit={'exit'}
+          initial={"initial"}
+          animate={"animate"}
+          exit={"exit"}
           variants={contentVariants}
         >
           <ConnectWithInjector

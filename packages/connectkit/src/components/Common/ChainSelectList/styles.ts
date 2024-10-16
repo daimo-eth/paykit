@@ -1,8 +1,8 @@
-import { motion } from 'framer-motion';
-import styled from './../../../styles/styled';
-import { css } from 'styled-components';
+import { motion } from "framer-motion";
+import styled from "./../../../styles/styled";
+import { css } from "styled-components";
 
-import defaultTheme from '../../../constants/defaultTheme';
+import defaultTheme from "../../../constants/defaultTheme";
 
 export const SwitchNetworksContainer = styled.div`
   display: flex;
@@ -38,7 +38,7 @@ export const ChainIcon = styled(motion.div)<{ $empty?: boolean }>`
       align-items: center;
       justify-content: center;
       &:before {
-        content: '?';
+        content: "?";
         color: var(--ck-body-color-muted);
         font-weight: bold;
         font-family: var(--ck-font-family);
@@ -80,11 +80,12 @@ export const ChainButtonContainer = styled.div`
   &:after {
     border-radius: var(--border-radius, 0);
     z-index: 2;
-    content: '';
+    content: "";
     pointer-events: none;
     position: absolute;
     inset: 0 2px;
-    box-shadow: inset 0 16px 8px -12px var(--background, var(--ck-body-background)),
+    box-shadow:
+      inset 0 16px 8px -12px var(--background, var(--ck-body-background)),
       inset 0 -16px 8px -12px var(--background, var(--ck-body-background));
   }
 `;
@@ -107,7 +108,7 @@ export const ChainButtons = styled(motion.div)`
   }
 `;
 export const ChainButton = styled(motion.button)<{
-  $variant?: 'primary' | 'secondary';
+  $variant?: "primary" | "secondary";
 }>`
   appearance: none;
   cursor: pointer;
@@ -128,10 +129,12 @@ export const ChainButton = styled(motion.button)<{
   color: var(--ck-body-color);
   background: none;
   white-space: nowrap;
-  transition: transform 100ms ease, background-color 100ms ease;
+  transition:
+    transform 100ms ease,
+    background-color 100ms ease;
   transform: translateZ(0px);
   &:before {
-    content: '';
+    content: "";
     background: currentColor;
     position: absolute;
     z-index: -1;
@@ -141,7 +144,7 @@ export const ChainButton = styled(motion.button)<{
     transition: opacity 180ms ease;
   }
   &:after {
-    content: '';
+    content: "";
     position: absolute;
     z-index: -1;
     inset: 0 var(--ck-dropdown-active-inset, -8px);
@@ -176,7 +179,7 @@ export const ChainButton = styled(motion.button)<{
     }
   }
   ${(props) =>
-    props.$variant === 'secondary' &&
+    props.$variant === "secondary" &&
     css`
       padding: 12px 4px;
       margin: 0 0 8px;

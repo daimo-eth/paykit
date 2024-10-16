@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from 'react';
-import { MoreIndicator, ScrollAreaContainer, ScrollContainer } from './styles';
-import useIsMobile from '../../../hooks/useIsMobile';
+import React, { useEffect, useRef } from "react";
+import { MoreIndicator, ScrollAreaContainer, ScrollContainer } from "./styles";
+import useIsMobile from "../../../hooks/useIsMobile";
 
 const ArrowDown = () => (
   <svg
@@ -28,7 +28,7 @@ export const ScrollArea = ({
   children: React.ReactNode;
   height?: number;
   backgroundColor?: string;
-  mobileDirection?: 'horizontal' | 'vertical';
+  mobileDirection?: "horizontal" | "vertical";
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const moreRef = useRef<HTMLDivElement>(null);
@@ -42,9 +42,10 @@ export const ScrollArea = ({
     // if ref is not scrollable, hide the more indicator
     if (el.scrollHeight > el.clientHeight) {
       if (moreRef.current) {
-        moreRef.current.classList.remove('hide');
+        moreRef.current.classList.remove("hide");
       }
     }
+    console.log(`[SCROLL AREA]: ${el.scrollHeight}, ${el.clientHeight}`);
 
     const handleScroll = (e: any) => {
       const {
@@ -58,31 +59,31 @@ export const ScrollArea = ({
 
       if (moreRef.current) {
         if (scrollTop > 0) {
-          moreRef.current.classList.add('hide');
+          moreRef.current.classList.add("hide");
         }
       }
 
       if (scrollTop === 0 && scrollLeft === 0) {
-        el.classList.add('scroll-start');
+        el.classList.add("scroll-start");
       } else {
-        el.classList.remove('scroll-start');
+        el.classList.remove("scroll-start");
       }
 
       if (
         scrollHeight - scrollTop === clientHeight &&
         scrollWidth - scrollLeft === clientWidth
       ) {
-        el.classList.add('scroll-end');
+        el.classList.add("scroll-end");
       } else {
-        el.classList.remove('scroll-end');
+        el.classList.remove("scroll-end");
       }
     };
 
-    el.addEventListener('scroll', handleScroll);
+    el.addEventListener("scroll", handleScroll);
     handleScroll({ target: el });
 
     return () => {
-      el.removeEventListener('scroll', handleScroll);
+      el.removeEventListener("scroll", handleScroll);
     };
   }, [ref.current]);
 
@@ -104,7 +105,7 @@ export const ScrollArea = ({
           if (ref.current) {
             ref.current.scrollTo({
               top: ref.current.scrollHeight,
-              behavior: 'smooth',
+              behavior: "smooth",
             });
           }
         }}

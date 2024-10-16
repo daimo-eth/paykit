@@ -1,38 +1,38 @@
-import { LocaleProps } from './';
+import { LocaleProps } from "./";
 
 const trTR: LocaleProps = {
-  connectWallet: 'Cüzdan Bağla',
-  disconnect: 'Bağlantıyı Kes',
-  connected: 'Bağlandı',
-  wrongNetwork: 'Yanlış Ağ',
-  switchNetworks: 'Ağ Değiştir',
-  chainNetwork: '{{ CHAIN }} Ağı',
-  copyToClipboard: 'Panoya Kopyala',
-  copyCode: 'Kodu Kopyala',
-  moreInformation: 'Daha Fazla Bilgi',
-  back: 'Geri',
-  close: 'Kapat',
-  or: 'veya',
-  more: 'Daha Fazla',
-  tryAgain: 'Tekrar Dene',
-  tryAgainQuestion: 'Tekrar Dene?',
+  connectWallet: "Cüzdan Bağla",
+  disconnect: "Bağlantıyı Kes",
+  connected: "Bağlandı",
+  wrongNetwork: "Yanlış Ağ",
+  switchNetworks: "Ağ Değiştir",
+  chainNetwork: "{{ CHAIN }} Ağı",
+  copyToClipboard: "Panoya Kopyala",
+  copyCode: "Kodu Kopyala",
+  moreInformation: "Daha Fazla Bilgi",
+  back: "Geri",
+  close: "Kapat",
+  or: "veya",
+  more: "Daha Fazla",
+  tryAgain: "Tekrar Dene",
+  tryAgainQuestion: "Tekrar Dene?",
   dontHaveTheApp: "Uygulaman yok mu?",
-  scanTheQRCode: 'Karekodu tarat',
-  useWalletConnectModal: 'WalletConnect Modalini Kullan ',
-  useModal: 'Modal Kullan',
-  installTheExtension: 'Eklentiyi İndir',
-  getWalletName: '{{ CONNECTORNAME }} Alın',
-  otherWallets: 'Diğer Cüzdanlar',
-  learnMore: 'Daha Fazlasını Öğren',
-  getWallet: 'Cüzdan Al',
-  approveInWallet: 'Cüzdanda Yetki Ver',
-  confirmInWallet: 'Cüzdanda Onayla',
-  awaitingConfirmation: 'Doğrulama Bekleniyor',
-  signIn: 'Giriş Yap',
-  signOut: 'Çıkış Yap',
-  signedIn: 'Giriş Yapıldı',
-  signedOut: 'Çıkış Yapıldı',
-  walletNotConnected: 'Cüzdan Bağlı Değil',
+  scanTheQRCode: "Karekodu tarat",
+  useWalletConnectModal: "WalletConnect Modalini Kullan ",
+  useModal: "Modal Kullan",
+  installTheExtension: "Eklentiyi İndir",
+  getWalletName: "{{ CONNECTORNAME }} Alın",
+  otherWallets: "Diğer Cüzdanlar",
+  learnMore: "Daha Fazlasını Öğren",
+  getWallet: "Cüzdan Al",
+  approveInWallet: "Cüzdanda Yetki Ver",
+  confirmInWallet: "Cüzdanda Onayla",
+  awaitingConfirmation: "Doğrulama Bekleniyor",
+  signIn: "Giriş Yap",
+  signOut: "Çıkış Yap",
+  signedIn: "Giriş Yapıldı",
+  signedOut: "Çıkış Yapıldı",
+  walletNotConnected: "Cüzdan Bağlı Değil",
 
   warnings_walletSwitchingUnsupported: `Bu uygulamada ağ değiştirmeyi cüzdanın desteklemiyor.`,
   warnings_walletSwitchingUnsupportedResolve: `Bunun yerine cüzdanınızdan ağları değiştirmeyi deneyin.`,
@@ -74,7 +74,6 @@ const trTR: LocaleProps = {
 
   injectionScreen_unavailable_h1: `Desteklenmeyen Tarayıcı`,
   injectionScreen_unavailable_p: `{{ CONNECTORSHORTNAME }} cüzdanına bağlanmak için\n{{ SUGGESTEDEXTENSIONBROWSER }} üzerinde indirmen gerekiyor.`,
-  
 
   injectionScreen_install_h1: `{{ CONNECTORNAME }} İndir`,
   injectionScreen_install_p: `{{ CONNECTORSHORTNAME }} cüzdanına bağlanmak için,\ntarayıcı eklentisini indir.`,
@@ -96,24 +95,24 @@ const trTR: LocaleProps = {
   injectionScreen_notconnected_h1: `{{ CONNECTORNAME }} ile giriş yap`,
   injectionScreen_notconnected_p: `Devam etmek için, {{ CONNECTORNAME }} eklentisine giriş yapın.`,
 
-  profileScreen_heading: 'Bağlandı',
+  profileScreen_heading: "Bağlandı",
 
-  switchNetworkScreen_heading: 'Ağ Değiştir',
+  switchNetworkScreen_heading: "Ağ Değiştir",
 
   signInWithEthereumScreen_tooltip:
-    'Bu uygulamada oturum açmadınız.\n Devam etmek için **Ethereum İle Giriş Yap**.',
+    "Bu uygulamada oturum açmadınız.\n Devam etmek için **Ethereum İle Giriş Yap**.",
 
-  signInWithEthereumScreen_signedOut_heading: 'Ethereum İle Giriş Yap',
+  signInWithEthereumScreen_signedOut_heading: "Ethereum İle Giriş Yap",
   signInWithEthereumScreen_signedOut_h1:
-    'Bu uygulama seni \n bu cüzdanın sahibi olarak doğrulamak istiyor.',
+    "Bu uygulama seni \n bu cüzdanın sahibi olarak doğrulamak istiyor.",
   signInWithEthereumScreen_signedOut_p: `Devam etmek için \n cüzdanınızdaki isteği onaylayın.`,
-  signInWithEthereumScreen_signedOut_button: 'Giriş Yap',
+  signInWithEthereumScreen_signedOut_button: "Giriş Yap",
 
-  signInWithEthereumScreen_signedIn_heading: 'Ethereum İle Giriş Yapıldı',
+  signInWithEthereumScreen_signedIn_heading: "Ethereum İle Giriş Yapıldı",
   signInWithEthereumScreen_signedIn_h1:
-    'Bu cüzdanın sahibi olduğunu \n başarıyla onayladın.',
+    "Bu cüzdanın sahibi olduğunu \n başarıyla onayladın.",
   signInWithEthereumScreen_signedIn_p: `Çıkış yaparsan ileride \n tekrar giriş yapman gerekecek. `,
-  signInWithEthereumScreen_signedIn_button: 'Çıkış Yap',
+  signInWithEthereumScreen_signedIn_button: "Çıkış Yap",
 };
 
 export default trTR;

@@ -1,10 +1,10 @@
-import React from 'react';
+import React from "react";
 
-import { BrowserIconProps } from './types';
-import { BrowserIconContainer } from './styles';
+import { BrowserIconProps } from "./types";
+import { BrowserIconContainer } from "./styles";
 
-import { detectBrowser } from '../../../utils';
-import browsers from '../../../assets/browsers';
+import { detectBrowser } from "../../../utils";
+import browsers from "../../../assets/browsers";
 
 const BrowserIcon = React.forwardRef(
   ({ browser }: BrowserIconProps, ref: React.Ref<HTMLElement>) => {
@@ -12,23 +12,23 @@ const BrowserIcon = React.forwardRef(
 
     let icon;
     switch (currentBrowser) {
-      case 'chrome':
+      case "chrome":
         icon = browsers.Chrome;
         break;
-      case 'firefox':
+      case "firefox":
         icon = browsers.FireFox;
         break;
-      case 'edge':
+      case "edge":
         icon = browsers.Edge;
         break;
-      case 'brave':
+      case "brave":
         //   icon = browsers.Brave;
         break;
     }
     if (!icon) return <></>;
     return <BrowserIconContainer>{icon}</BrowserIconContainer>;
-  }
+  },
 );
-BrowserIcon.displayName = 'BrowserIcon';
+BrowserIcon.displayName = "BrowserIcon";
 
 export default BrowserIcon;

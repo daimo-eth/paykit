@@ -1,9 +1,9 @@
-import { Connector } from 'wagmi';
+import { Connector } from "wagmi";
 
-import { useConnectors } from '../hooks/useConnectors';
-import { walletConfigs, WalletConfigProps } from './walletConfigs';
-import { useContext } from '../components/ConnectKit';
-import { isCoinbaseWalletConnector, isInjectedConnector } from '../utils';
+import { useConnectors } from "../hooks/useConnectors";
+import { walletConfigs, WalletConfigProps } from "./walletConfigs";
+import { useContext } from "../components/ConnectKit";
+import { isCoinbaseWalletConnector, isInjectedConnector } from "../utils";
 
 export type WalletProps = {
   id: string;
@@ -27,9 +27,9 @@ export const useWallets = (): WalletProps[] => {
       // where id is comma seperated list
       (id) =>
         id
-          .split(',')
+          .split(",")
           .map((i) => i.trim())
-          .indexOf(connector.id) !== -1
+          .indexOf(connector.id) !== -1,
     );
 
     const c: WalletProps = {
@@ -39,15 +39,15 @@ export const useWallets = (): WalletProps[] => {
         <img
           src={connector.icon}
           alt={connector.name}
-          width={'100%'}
-          height={'100%'}
+          width={"100%"}
+          height={"100%"}
         />
       ),
       connector,
-      iconShape: 'squircle',
+      iconShape: "squircle",
       isInstalled:
-        connector.type === 'mock' ||
-        (connector.type === 'injected' && connector.id !== 'metaMask') ||
+        connector.type === "mock" ||
+        (connector.type === "injected" && connector.id !== "metaMask") ||
         isCoinbaseWalletConnector(connector.id), // always run coinbase wallet SDK
     };
 
@@ -59,8 +59,8 @@ export const useWallets = (): WalletProps[] => {
           <img
             src={connector.icon}
             alt={connector.name}
-            width={'100%'}
-            height={'100%'}
+            width={"100%"}
+            height={"100%"}
           />
         ) : undefined,
         ...wallet,
@@ -75,11 +75,11 @@ export const useWallets = (): WalletProps[] => {
       // remove duplicate ids
       .filter(
         (wallet, index, self) =>
-          self.findIndex((w) => w.id === wallet.id) === index
+          self.findIndex((w) => w.id === wallet.id) === index,
       )
       // Replace walletConnect's name with the one from options
       .map((wallet) => {
-        if (wallet.id === 'walletConnect') {
+        if (wallet.id === "walletConnect") {
           return {
             ...wallet,
             name: context.options?.walletConnectName || wallet.name,
@@ -92,19 +92,19 @@ export const useWallets = (): WalletProps[] => {
       .filter(
         (wallet, index, self) =>
           !(
-            wallet.id === 'coinbaseWalletSDK' &&
-            self.find((w) => w.id === 'com.coinbase.wallet')
-          )
+            wallet.id === "coinbaseWalletSDK" &&
+            self.find((w) => w.id === "com.coinbase.wallet")
+          ),
       )
       // remove wallet with id io.metamask if wallet with id 'metaMask' exists
       .filter(
         (wallet, index, self) =>
           !(
-            (wallet.id === 'metaMaskSDK' || wallet.id === 'metaMask') &&
+            (wallet.id === "metaMaskSDK" || wallet.id === "metaMask") &&
             self.find(
-              (w) => w.id === 'io.metamask' || w.id === 'io.metamask.mobile'
+              (w) => w.id === "io.metamask" || w.id === "io.metamask.mobile",
             )
-          )
+          ),
       )
       // order by isInstalled injected connectors first
       .sort((a, b) => {
@@ -119,8 +119,8 @@ export const useWallets = (): WalletProps[] => {
       })
       // move walletConnect to the end
       .sort((a, b) => {
-        if (a.id === 'walletConnect') return 1;
-        if (b.id === 'walletConnect') return -1;
+        if (a.id === "walletConnect") return 1;
+        if (b.id === "walletConnect") return -1;
         return 0;
       })
   );

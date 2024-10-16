@@ -1,13 +1,13 @@
-import QRCodeUtil from 'qrcode';
-import React, { ReactElement, useMemo } from 'react';
+import QRCodeUtil from "qrcode";
+import React, { ReactElement, useMemo } from "react";
 
 const generateMatrix = (
   value: string,
-  errorCorrectionLevel: QRCodeUtil.QRCodeErrorCorrectionLevel
+  errorCorrectionLevel: QRCodeUtil.QRCodeErrorCorrectionLevel,
 ) => {
   const arr = Array.prototype.slice.call(
     QRCodeUtil.create(value, { errorCorrectionLevel }).modules.data,
-    0
+    0,
   );
   const sqrt = Math.sqrt(arr.length);
   return arr.reduce(
@@ -15,7 +15,7 @@ const generateMatrix = (
       (index % sqrt === 0
         ? rows.push([key])
         : rows[rows.length - 1].push(key)) && rows,
-    []
+    [],
   );
 };
 
@@ -29,12 +29,12 @@ type Props = {
 };
 
 export function QRCode({
-  ecl = 'M',
+  ecl = "M",
   size: sizeProp = 200,
   uri,
   clearArea = false,
   image,
-  imageBackground = 'transparent',
+  imageBackground = "transparent",
 }: Props) {
   const logoSize = clearArea ? 76 : 0;
   const size = sizeProp - 10 * 2;
@@ -58,8 +58,8 @@ export function QRCode({
             key={`${i}-${x}-${y}`}
             fill={
               i % 2 !== 0
-                ? 'var(--ck-qr-background, var(--ck-body-background))'
-                : 'var(--ck-qr-dot-color)'
+                ? "var(--ck-qr-background, var(--ck-body-background))"
+                : "var(--ck-qr-dot-color)"
             }
             rx={(i - 2) * -5 + (i === 0 ? 2 : 3)}
             ry={(i - 2) * -5 + (i === 0 ? 2 : 3)}
@@ -67,7 +67,7 @@ export function QRCode({
             height={cellSize * (7 - i * 2)}
             x={x1 + cellSize * i}
             y={y1 + cellSize * i}
-          />
+          />,
         );
       }
     });
@@ -92,11 +92,11 @@ export function QRCode({
             x={x1 + cellSize * 0}
             y={y1 + cellSize * 0}
           >
-            <div style={{ borderRadius: (0 - 2) * -5 + 2, overflow: 'hidden' }}>
+            <div style={{ borderRadius: (0 - 2) * -5 + 2, overflow: "hidden" }}>
               {image}
             </div>
           </foreignObject>
-        </>
+        </>,
       );
     }
 
@@ -132,7 +132,7 @@ export function QRCode({
                   cy={j * cellSize + cellSize / 2}
                   fill="var(--ck-qr-dot-color)"
                   r={cellSize / 3}
-                />
+                />,
               );
             }
           }

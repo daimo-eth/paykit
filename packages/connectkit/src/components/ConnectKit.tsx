@@ -4,44 +4,53 @@ import React, {
   useEffect,
   useState,
   ReactNode,
-} from 'react';
-import { Buffer } from 'buffer';
+} from "react";
+import { Buffer } from "buffer";
 import {
   CustomTheme,
   Languages,
   Mode,
   Theme,
   CustomAvatarProps,
-} from '../types';
+} from "../types";
 
-import defaultTheme from '../styles/defaultTheme';
+import defaultTheme from "../styles/defaultTheme";
 
-import ConnectKitModal from '../components/ConnectModal';
-import { ThemeProvider } from 'styled-components';
-import { useThemeFont } from '../hooks/useGoogleFont';
-import { SIWEContext } from './../siwe';
-import { useChains } from '../hooks/useChains';
+import ConnectKitModal from "../components/ConnectModal";
+import { ThemeProvider } from "styled-components";
+import { useThemeFont } from "../hooks/useGoogleFont";
+import { SIWEContext } from "./../siwe";
+import { useChains } from "../hooks/useChains";
 import {
   useConnectCallback,
   useConnectCallbackProps,
-} from '../hooks/useConnectCallback';
-import { isFamily } from '../utils/wallets';
-import { useConnector } from '../hooks/useConnectors';
-import { WagmiContext, useAccount } from 'wagmi';
-import { Web3ContextProvider } from './contexts/web3';
-import { useChainIsSupported } from '../hooks/useChainIsSupported';
+} from "../hooks/useConnectCallback";
+import { isFamily } from "../utils/wallets";
+import { useConnector } from "../hooks/useConnectors";
+import { WagmiContext, useAccount } from "wagmi";
+import { Web3ContextProvider } from "./contexts/web3";
+import { useChainIsSupported } from "../hooks/useChainIsSupported";
+import { getPaymentInfo, PaymentInfo } from "../utils/getPaymentInfo";
+import { REQUIRED_CHAINS } from "../defaultConfig";
+import { DaimoPayOrderMode } from "@daimo/common";
 
-export const routes = {
-  ONBOARDING: 'onboarding',
-  ABOUT: 'about',
-  CONNECTORS: 'connectors',
-  MOBILECONNECTORS: 'mobileConnectors',
-  CONNECT: 'connect',
-  DOWNLOAD: 'download',
-  PROFILE: 'profile',
-  SWITCHNETWORKS: 'switchNetworks',
-  SIGNINWITHETHEREUM: 'signInWithEthereum',
-};
+export enum ROUTES {
+  SELECT_METHOD = "daimoPaySelectMethod",
+  SELECT_TOKEN = "daimoPaySelectToken",
+  WAITING_OTHER = "daimoPayWaitingOther",
+  PAY_WITH_TOKEN = "daimoPayPayWithToken",
+  CONFIRMATION = "daimoPayConfirmation",
+
+  ONBOARDING = "onboarding",
+  ABOUT = "about",
+  CONNECTORS = "connectors",
+  MOBILECONNECTORS = "mobileConnectors",
+  CONNECT = "connect",
+  DOWNLOAD = "download",
+  PROFILE = "profile",
+  SWITCHNETWORKS = "switchNetworks",
+  SIGNINWITHETHEREUM = "signInWithEthereum",
+}
 
 type Connector = {
   id: string;
@@ -60,7 +69,8 @@ type ContextValue = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   route: string;
-  setRoute: React.Dispatch<React.SetStateAction<string>>;
+  setRoute: React.Dispatch<React.SetStateAction<ROUTES>>;
+  loadPayment: (payId: string) => Promise<void>;
   connector: Connector;
   setConnector: React.Dispatch<React.SetStateAction<Connector>>;
   errorMessage: Error;
@@ -71,6 +81,7 @@ type ContextValue = {
   displayError: (message: string | React.ReactNode | null, code?: any) => void;
   resize: number;
   triggerResize: () => void;
+  paymentInfo: PaymentInfo;
 } & useConnectCallbackProps;
 
 export const Context = createContext<ContextValue | null>(null);
@@ -82,7 +93,7 @@ export type ConnectKitOptions = {
   hideQuestionMarkCTA?: boolean;
   hideNoWalletCTA?: boolean;
   hideRecentBadge?: boolean;
-  walletConnectCTA?: 'link' | 'modal' | 'both';
+  walletConnectCTA?: "link" | "modal" | "both";
   avoidLayoutShift?: boolean; // Avoids layout shift when the ConnectKit modal is open by adding padding to the body
   embedGoogleFonts?: boolean; // Automatically embeds Google Font of the current theme. Does not work with custom themes
   truncateLongENSAddress?: boolean;
@@ -110,8 +121,8 @@ type ConnectKitProviderProps = {
 
 export const ConnectKitProvider = ({
   children,
-  theme = 'auto',
-  mode = 'auto',
+  theme = "auto",
+  mode = "auto",
   customTheme,
   options,
   onConnect,
@@ -120,14 +131,14 @@ export const ConnectKitProvider = ({
 }: ConnectKitProviderProps) => {
   // ConnectKitProvider must be within a WagmiProvider
   if (!React.useContext(WagmiContext)) {
-    throw Error('ConnectKitProvider must be within a WagmiProvider');
+    throw Error("ConnectKitProvider must be within a WagmiProvider");
   }
 
   // Only allow for mounting ConnectKitProvider once, so we avoid weird global
   // state collisions.
   if (React.useContext(Context)) {
     throw new Error(
-      'Multiple, nested usages of ConnectKitProvider detected. Please use only one.'
+      "Multiple, nested usages of ConnectKitProvider detected. Please use only one.",
     );
   }
 
@@ -138,16 +149,24 @@ export const ConnectKitProvider = ({
 
   const chains = useChains();
 
-  const injectedConnector = useConnector('injected');
+  for (const requiredChain of REQUIRED_CHAINS) {
+    if (!chains.some((c) => c.id === requiredChain.id)) {
+      throw new Error(
+        `Daimo Pay requires chains ${REQUIRED_CHAINS.map((c) => c.name).join(", ")}. Use \`getDefaultConfig\` to automatically configure required chains.`,
+      );
+    }
+  }
+
+  const injectedConnector = useConnector("injected");
 
   // Default config options
   const defaultOptions: ConnectKitOptions = {
-    language: 'en-US',
+    language: "en-US",
     hideBalance: false,
     hideTooltips: false,
     hideQuestionMarkCTA: false,
     hideNoWalletCTA: false,
-    walletConnectCTA: 'link',
+    walletConnectCTA: "link",
     hideRecentBadge: false,
     avoidLayoutShift: true,
     embedGoogleFonts: false,
@@ -157,7 +176,7 @@ export const ConnectKitProvider = ({
     disclaimer: null,
     bufferPolyfill: true,
     customAvatar: undefined,
-    initialChainId: chains?.[0]?.id,
+    initialChainId: undefined,
     enforceSupportedChains: false,
     ethereumOnboardingUrl: undefined,
     walletOnboardingUrl: undefined,
@@ -166,7 +185,7 @@ export const ConnectKitProvider = ({
 
   const opts: ConnectKitOptions = Object.assign({}, defaultOptions, options);
 
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     // Buffer Polyfill, needed for bundlers that don't provide Node polyfills (e.g CRA, Vite, etc.)
     if (opts.bufferPolyfill) window.Buffer = window.Buffer ?? Buffer;
 
@@ -181,15 +200,15 @@ export const ConnectKitProvider = ({
   const [ckTheme, setTheme] = useState<Theme>(theme);
   const [ckMode, setMode] = useState<Mode>(mode);
   const [ckCustomTheme, setCustomTheme] = useState<CustomTheme | undefined>(
-    customTheme ?? {}
+    customTheme ?? {},
   );
-  const [ckLang, setLang] = useState<Languages>('en-US');
+  const [ckLang, setLang] = useState<Languages>("en-US");
   const [open, setOpen] = useState<boolean>(false);
-  const [connector, setConnector] = useState<ContextValue['connector']>({
-    id: '',
+  const [connector, setConnector] = useState<ContextValue["connector"]>({
+    id: "",
   });
-  const [route, setRoute] = useState<string>(routes.CONNECTORS);
-  const [errorMessage, setErrorMessage] = useState<Error>('');
+  const [route, setRoute] = useState<ROUTES>(ROUTES.SELECT_METHOD);
+  const [errorMessage, setErrorMessage] = useState<Error>("");
 
   const [resize, onResize] = useState<number>(0);
 
@@ -198,7 +217,7 @@ export const ConnectKitProvider = ({
 
   // Other Configuration
   useEffect(() => setTheme(theme), [theme]);
-  useEffect(() => setLang(opts.language || 'en-US'), [opts.language]);
+  useEffect(() => setLang(opts.language || "en-US"), [opts.language]);
   useEffect(() => setErrorMessage(null), [route, open]);
 
   // Check if chain is supported, elsewise redirect to switches page
@@ -208,11 +227,12 @@ export const ConnectKitProvider = ({
   useEffect(() => {
     if (isConnected && opts.enforceSupportedChains && !isChainSupported) {
       setOpen(true);
-      setRoute(routes.SWITCHNETWORKS);
+      setRoute(ROUTES.SWITCHNETWORKS);
     }
   }, [isConnected, isChainSupported, chain, route, open]);
 
   // Autoconnect to Family wallet if available
+  // TODO: Does this work for all injected providers?
   useEffect(() => {
     if (isFamily()) {
       injectedConnector?.connect();
@@ -220,6 +240,22 @@ export const ConnectKitProvider = ({
   }, [injectedConnector]);
 
   const log = debugMode ? console.log : () => {};
+
+  const paymentInfo = getPaymentInfo();
+
+  const loadPayment = async (payId: string) => {
+    await paymentInfo.setPayId(payId);
+    const daimoPayOrder = paymentInfo.daimoPayOrder;
+    if (
+      daimoPayOrder &&
+      daimoPayOrder.mode === DaimoPayOrderMode.HYDRATED &&
+      (daimoPayOrder.destFastFinishTxHash || daimoPayOrder.destClaimTxHash)
+    ) {
+      setRoute(ROUTES.CONFIRMATION);
+    } else {
+      setRoute(ROUTES.SELECT_METHOD);
+    }
+  };
 
   const value = {
     theme: ckTheme,
@@ -234,6 +270,7 @@ export const ConnectKitProvider = ({
     setOpen,
     route,
     setRoute,
+    loadPayment,
     connector,
     setConnector,
     signInWithEthereum: React.useContext(SIWEContext)?.enabled ?? false,
@@ -245,36 +282,35 @@ export const ConnectKitProvider = ({
     log,
     displayError: (message: string | React.ReactNode | null, code?: any) => {
       setErrorMessage(message);
-      console.log('---------CONNECTKIT DEBUG---------');
+      console.log("---------CONNECTKIT DEBUG---------");
       console.log(message);
       if (code) console.table(code);
-      console.log('---------/CONNECTKIT DEBUG---------');
+      console.log("---------/CONNECTKIT DEBUG---------");
     },
     resize,
     triggerResize: () => onResize((prev) => prev + 1),
+    paymentInfo,
   };
 
   return createElement(
     Context.Provider,
     { value },
-    <>
-      <Web3ContextProvider enabled={open}>
-        <ThemeProvider theme={defaultTheme}>
-          {children}
-          <ConnectKitModal
-            lang={ckLang}
-            theme={ckTheme}
-            mode={mode}
-            customTheme={ckCustomTheme}
-          />
-        </ThemeProvider>
-      </Web3ContextProvider>
-    </>
+    <Web3ContextProvider enabled={open}>
+      <ThemeProvider theme={defaultTheme}>
+        {children}
+        <ConnectKitModal
+          lang={ckLang}
+          theme={ckTheme}
+          mode={mode}
+          customTheme={ckCustomTheme}
+        />
+      </ThemeProvider>
+    </Web3ContextProvider>,
   );
 };
 
 export const useContext = () => {
   const context = React.useContext(Context);
-  if (!context) throw Error('ConnectKit Hook must be inside a Provider.');
+  if (!context) throw Error("ConnectKit Hook must be inside a Provider.");
   return context;
 };

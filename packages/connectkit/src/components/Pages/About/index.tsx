@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 import {
   ImageContainer,
   ImageContainerInner,
@@ -8,22 +8,22 @@ import {
   Slide,
   Dots,
   Dot,
-} from './styles';
+} from "./styles";
 
 import {
   PageContent,
   ModalBody,
   ModalContent,
   ModalH1,
-} from '../../Common/Modal/styles';
+} from "../../Common/Modal/styles";
 
-import Button from '../../Common/Button';
-import { Easing, SlideOne, SlideThree, SlideTwo } from './graphics';
-import { AnimatePresence, MotionConfig } from 'framer-motion';
-import { OrDivider } from '../../Common/Modal';
-import useLocales from '../../../hooks/useLocales';
-import FitText from '../../Common/FitText';
-import { useContext } from '../../ConnectKit';
+import Button from "../../Common/Button";
+import { Easing, SlideOne, SlideThree, SlideTwo } from "./graphics";
+import { AnimatePresence, MotionConfig } from "framer-motion";
+import { OrDivider } from "../../Common/Modal";
+import useLocales from "../../../hooks/useLocales";
+import FitText from "../../Common/FitText";
+import { useContext } from "../../ConnectKit";
 
 const About: React.FC = () => {
   const locales = useLocales({
@@ -53,7 +53,7 @@ const About: React.FC = () => {
   const isSwipe = () => {
     if (sliderRef.current) {
       const { overflow } = getComputedStyle(sliderRef.current);
-      return overflow !== 'visible';
+      return overflow !== "visible";
     }
     return false;
   };
@@ -118,30 +118,30 @@ const About: React.FC = () => {
   const sliderRef = useRef<any>(null);
   useEffect(() => {
     if (!sliderRef.current) return;
-    sliderRef.current.addEventListener('scroll', onScroll);
-    sliderRef.current.addEventListener('touchmove', onTouchMove);
-    sliderRef.current.addEventListener('touchend', onTouchEnd);
+    sliderRef.current.addEventListener("scroll", onScroll);
+    sliderRef.current.addEventListener("touchmove", onTouchMove);
+    sliderRef.current.addEventListener("touchend", onTouchEnd);
     return () => {
       if (!sliderRef.current) return;
-      sliderRef.current.removeEventListener('scroll', onScroll);
-      sliderRef.current.removeEventListener('touchmove', onTouchMove);
-      sliderRef.current.removeEventListener('touchend', onTouchEnd);
+      sliderRef.current.removeEventListener("scroll", onScroll);
+      sliderRef.current.removeEventListener("touchmove", onTouchMove);
+      sliderRef.current.removeEventListener("touchend", onTouchEnd);
     };
   }, [sliderRef]);
 
   const graphics: React.ReactNode[] = [
     <SlideOne
-      layoutId={'graphicCircle'}
+      layoutId={"graphicCircle"}
       duration={animationDuration}
       ease={animationEase}
     />,
     <SlideTwo
-      layoutId={'graphicCircle'}
+      layoutId={"graphicCircle"}
       duration={animationDuration}
       ease={animationEase}
     />,
     <SlideThree
-      layoutId={'graphicCircle'}
+      layoutId={"graphicCircle"}
       duration={animationDuration}
       ease={animationEase}
     />,
@@ -156,8 +156,8 @@ const About: React.FC = () => {
   // Adjust height of ModalBody to fit content based on language
   const slideHeight = (() => {
     switch (context.options?.language) {
-      case 'en-US':
-      case 'zh-CN':
+      case "en-US":
+      case "zh-CN":
         return 64;
       default:
         return 84;
@@ -210,11 +210,11 @@ const About: React.FC = () => {
                   slider === i && (
                     <ImageContainerInner
                       key={i}
-                      style={{ position: 'absolute' }}
+                      style={{ position: "absolute" }}
                     >
                       {g}
                     </ImageContainerInner>
-                  )
+                  ),
               )}
             </AnimatePresence>
           </MotionConfig>

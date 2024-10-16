@@ -1,12 +1,12 @@
-import Button from '../../Common/Button';
-import { DisconnectIcon, RetryIcon } from '../../../assets/icons';
-import { ResetContainer } from '../../../styles';
-import { motion } from 'framer-motion';
-import useIsMounted from '../../../hooks/useIsMounted';
-import useLocales from '../../../hooks/useLocales';
-import { SIWESession, useSIWE } from './../../../siwe';
-import { useAccount } from 'wagmi';
-import { useModal } from '../../../hooks/useModal';
+import Button from "../../Common/Button";
+import { DisconnectIcon, RetryIcon } from "../../../assets/icons";
+import { ResetContainer } from "../../../styles";
+import { motion } from "framer-motion";
+import useIsMounted from "../../../hooks/useIsMounted";
+import useLocales from "../../../hooks/useLocales";
+import { SIWESession, useSIWE } from "./../../../siwe";
+import { useAccount } from "wagmi";
+import { useModal } from "../../../hooks/useModal";
 
 type ButtonProps = {
   showSignOutButton?: boolean;
@@ -43,7 +43,7 @@ export const SIWEButton: React.FC<ButtonProps> = ({
     if (isSuccess) return locales.signedIn;
     if (isRejected) return locales.tryAgain;
     if (isLoading) return locales.awaitingConfirmation;
-    if (isError) return error ?? 'Unknown Error';
+    if (isError) return error ?? "Unknown Error";
     if (isReady) return locales.signIn;
     return locales.signIn;
   }

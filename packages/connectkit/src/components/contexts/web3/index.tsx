@@ -2,14 +2,14 @@
  * This provider is responsible for handling reusable web3 logic across the app.
  */
 
-import React from 'react';
+import React from "react";
 
-import { Address, Chain } from 'viem';
-import { useAccount } from 'wagmi';
+import { Address, Chain } from "viem";
+import { useAccount } from "wagmi";
 
-import { useChains } from '../../../hooks/useChains';
-import { useWalletConnectUri } from '../../../hooks/connectors/useWalletConnectUri';
-import { useChainIsSupported } from '../../../hooks/useChainIsSupported';
+import { useChains } from "../../../hooks/useChains";
+import { useWalletConnectUri } from "../../../hooks/connectors/useWalletConnectUri";
+import { useChainIsSupported } from "../../../hooks/useChainIsSupported";
 
 type Web3Context = {
   connect: {
@@ -27,7 +27,7 @@ type Web3Context = {
 
 const Web3Context = React.createContext({
   connect: {
-    getUri: () => '',
+    getUri: () => "",
   },
   dapp: {
     chains: [],

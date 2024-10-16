@@ -1,7 +1,7 @@
-import { motion } from 'framer-motion';
-import styled from './../../../styles/styled';
-import { css } from 'styled-components';
-import defaultTheme from '../../../constants/defaultTheme';
+import { motion } from "framer-motion";
+import styled from "./../../../styles/styled";
+import { css } from "styled-components";
+import defaultTheme from "../../../constants/defaultTheme";
 
 export const SpinnerContainer = styled(motion.div)`
   position: absolute;
@@ -58,7 +58,7 @@ export const ButtonContainerInner = styled(motion.div)`
 `;
 export const ButtonContainer = styled.button<{
   disabled?: boolean;
-  $variant?: 'primary' | 'secondary' | 'tertiary';
+  $variant?: "primary" | "secondary" | "tertiary";
 }>`
 
   ${({ disabled }) =>
@@ -72,7 +72,7 @@ export const ButtonContainer = styled.button<{
     `}
 
   ${({ $variant }) => {
-    if ($variant === 'primary') {
+    if ($variant === "primary") {
       return css`
         --color: var(--ck-primary-button-color, var(--ck-body-color));
         --background: var(
@@ -101,7 +101,7 @@ export const ButtonContainer = styled.button<{
           var(--font-weight)
         );
       `;
-    } else if ($variant === 'secondary') {
+    } else if ($variant === "secondary") {
       return css`
         --color: var(--ck-secondary-button-color, var(--ck-body-color));
         --background: var(
@@ -130,7 +130,7 @@ export const ButtonContainer = styled.button<{
           var(--font-weight)
         );
       `;
-    } else if ($variant === 'tertiary') {
+    } else if ($variant === "tertiary") {
       return css`
         --color: var(
           --ck-tertiary-button-color,

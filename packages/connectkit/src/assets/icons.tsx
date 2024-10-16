@@ -122,6 +122,36 @@ export const TickIcon = ({ ...props }) => {
   );
 };
 
+export const LoadingCircleIcon = ({ ...props }) => {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 100 100"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <circle cx="50" cy="50" r="50" fill="currentColor" />
+      <circle
+        cx="50"
+        cy="50"
+        r="30"
+        stroke="var(--ck-body-background)"
+        strokeOpacity="0.4"
+        strokeWidth="16"
+      />
+      <path
+        d="M50 20V20C66.5685 20 80 33.4315 80 50V50"
+        stroke="var(--ck-body-background)"
+        strokeWidth="16"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
 export const RetryIconCircle = ({ ...props }) => {
   return (
     <svg
@@ -209,15 +239,15 @@ export const AuthIcon = ({ ...props }) => (
     {...props}
     style={{
       zIndex: 2,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      position: 'absolute',
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      position: "absolute",
       bottom: 0,
       right: 0,
-      background: '#34C759',
+      background: "#34C759",
       borderRadius: 10,
-      boxShadow: '0 0 0 1.5px var(--background)',
+      boxShadow: "0 0 0 1.5px var(--background)",
       width: 10,
       height: 10,
       ...props?.style,

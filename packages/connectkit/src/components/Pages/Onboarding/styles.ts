@@ -1,7 +1,7 @@
-import { keyframes } from 'styled-components';
-import styled from './../../../styles/styled';
-import { motion } from 'framer-motion';
-import defaultTheme from '../../../constants/defaultTheme';
+import { keyframes } from "styled-components";
+import styled from "./../../../styles/styled";
+import { motion } from "framer-motion";
+import defaultTheme from "../../../constants/defaultTheme";
 
 export const Graphic = styled(motion.div)`
   position: relative;
@@ -38,7 +38,7 @@ export const GraphicBackground = styled(motion.div)`
   top: -2px;
   overflow: hidden;
   &:before {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
     background: var(--ck-body-background);
@@ -55,9 +55,9 @@ export const GraphicBackground = styled(motion.div)`
     height: auto;
   }
   animation: ${graphicIn} 1000ms 100ms ease both;
-  @media only screen and (max-width: ${defaultTheme.mobileWidth}px) {
-    animation: none;
-  }
+  // @media only screen and (max-width: ${defaultTheme.mobileWidth}px) {
+  //   animation: none;
+  // }
 `;
 
 const logoIn = keyframes`
@@ -85,7 +85,9 @@ export const LogoGraphic = styled(motion.div)`
   height: 58px;
   width: 58px;
   border-radius: 13.84px;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05), 0 2px 20px 0 rgba(0, 0, 0, 0.03);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.05),
+    0 2px 20px 0 rgba(0, 0, 0, 0.03);
 
   svg {
     display: block;
@@ -118,29 +120,84 @@ export const Logo = styled(motion.div)`
   inset: 0;
 
   animation: ${logoIn} 750ms cubic-bezier(0.19, 1, 0.22, 1) both;
-  &:nth-child(1){ z-index:2; animation-delay:0ms;  }
-  &:nth-child(2){ z-index:1; animation-delay:60ms; }
-  &:nth-child(3){ z-index:1; animation-delay:30ms; }
-  &:nth-child(4){ z-index:1; animation-delay:90ms; }
-  &:nth-child(5){ z-index:1; animation-delay:120ms;}
+  &:nth-child(1) {
+    z-index: 2;
+    animation-delay: 0ms;
+  }
+  &:nth-child(2) {
+    z-index: 1;
+    animation-delay: 60ms;
+  }
+  &:nth-child(3) {
+    z-index: 1;
+    animation-delay: 30ms;
+  }
+  &:nth-child(4) {
+    z-index: 1;
+    animation-delay: 90ms;
+  }
+  &:nth-child(5) {
+    z-index: 1;
+    animation-delay: 120ms;
+  }
 
-  &:nth-child(1){ ${RotateWrapper}{ animation-delay:0ms; } }
-  &:nth-child(2){ ${RotateWrapper}{ animation-delay:-600ms; } }
-  &:nth-child(3){ ${RotateWrapper}{ animation-delay:-1200ms; } }
-  &:nth-child(4){ ${RotateWrapper}{ animation-delay:-1800ms; } }
-  &:nth-child(5){ ${RotateWrapper}{ animation-delay:-2400ms; } }
-
-  &:nth-child(1){ ${FloatWrapper}{ animation-delay:-200ms; } }
-  &:nth-child(2){ ${FloatWrapper}{ animation-delay:-600ms; } }
-  &:nth-child(3){ ${FloatWrapper}{ animation-delay:-800ms; } }
-  &:nth-child(4){ ${FloatWrapper}{ animation-delay:-300ms; } }
-  &:nth-child(5){ ${FloatWrapper}{ animation-delay:-3200ms; } }
-
-  @media only screen and (max-width: ${defaultTheme.mobileWidth}px) {
-    animation: none !important;
-    ${RotateWrapper},${FloatWrapper} {
-      animation: none !important;
+  &:nth-child(1) {
+    ${RotateWrapper} {
+      animation-delay: 0ms;
     }
+  }
+  &:nth-child(2) {
+    ${RotateWrapper} {
+      animation-delay: -600ms;
+    }
+  }
+  &:nth-child(3) {
+    ${RotateWrapper} {
+      animation-delay: -1200ms;
+    }
+  }
+  &:nth-child(4) {
+    ${RotateWrapper} {
+      animation-delay: -1800ms;
+    }
+  }
+  &:nth-child(5) {
+    ${RotateWrapper} {
+      animation-delay: -2400ms;
+    }
+  }
+
+  &:nth-child(1) {
+    ${FloatWrapper} {
+      animation-delay: -200ms;
+    }
+  }
+  &:nth-child(2) {
+    ${FloatWrapper} {
+      animation-delay: -600ms;
+    }
+  }
+  &:nth-child(3) {
+    ${FloatWrapper} {
+      animation-delay: -800ms;
+    }
+  }
+  &:nth-child(4) {
+    ${FloatWrapper} {
+      animation-delay: -300ms;
+    }
+  }
+  &:nth-child(5) {
+    ${FloatWrapper} {
+      animation-delay: -3200ms;
+    }
+  }
+
+  // @media only screen and (max-width: ${defaultTheme.mobileWidth}px) {
+  //   animation: none !important;
+  //   ${RotateWrapper},${FloatWrapper} {
+  //     animation: none !important;
+  //   }
   }
 
   ${LogoInner} {

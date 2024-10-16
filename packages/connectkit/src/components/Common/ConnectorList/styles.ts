@@ -1,7 +1,7 @@
-import styled from '../../../styles/styled';
-import { css, keyframes } from 'styled-components';
+import styled from "../../../styles/styled";
+import { css, keyframes } from "styled-components";
 
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 
 const Shimmer = keyframes`
   0%{ transform: translate(-100%) rotate(-45deg); }
@@ -145,13 +145,13 @@ const styles = {
         height: 100%;
       }
 
-      &[data-shape='squircle'] {
+      &[data-shape="squircle"] {
         border-radius: 22.5%;
       }
-      &[data-shape='circle'] {
+      &[data-shape="circle"] {
         border-radius: 100%;
       }
-      &[data-shape='square'] {
+      &[data-shape="square"] {
         border-radius: 0;
       }
     `,
@@ -188,17 +188,17 @@ const styles = {
         width: 100%;
         height: auto;
       }
-      &[data-small='true'] {
+      &[data-small="true"] {
         svg,
         img {
           transform: scale(0.8);
         }
       }
 
-      &[data-shape='squircle'] {
+      &[data-shape="squircle"] {
         border-radius: 22.5%;
         &:before {
-          content: '';
+          content: "";
           z-index: -1;
           position: absolute;
           inset: 0;
@@ -206,10 +206,10 @@ const styles = {
           box-shadow: inset 0 0 0 1px var(--ck-body-background-tertiary);
         }
       }
-      &[data-shape='circle'] {
+      &[data-shape="circle"] {
         border-radius: 100%;
       }
-      &[data-shape='square'] {
+      &[data-shape="square"] {
         border-radius: 0;
       }
     `,
@@ -237,7 +237,7 @@ export const RecentlyUsedTag = styled(motion.span)`
   }
   &:before {
     z-index: 1;
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
     opacity: 0.4;
@@ -246,7 +246,7 @@ export const RecentlyUsedTag = styled(motion.span)`
   }
   &:after {
     z-index: 2;
-    content: '';
+    content: "";
     position: absolute;
     inset: -10%;
     top: -110%;

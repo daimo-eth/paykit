@@ -1,5 +1,5 @@
-import { Chain } from 'viem';
-import { useConfig } from 'wagmi';
+import { Chain } from "viem";
+import { useConfig } from "wagmi";
 
 export function useChains() {
   const wagmi = useConfig();

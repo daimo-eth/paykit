@@ -1,6 +1,6 @@
 // Based on https://hiddedevries.nl/en/blog/2017-01-29-using-javascript-to-trap-focus-in-an-element
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from "react";
 
 const KEYCODE_TAB = 9;
 
@@ -21,7 +21,7 @@ function useFocusTrap() {
       firstFocusableEl = focusableEls[0],
       lastFocusableEl = focusableEls[focusableEls.length - 1];
 
-    var isTabPressed = e.key === 'Tab' || e.keyCode === KEYCODE_TAB;
+    var isTabPressed = e.key === "Tab" || e.keyCode === KEYCODE_TAB;
 
     if (!isTabPressed) {
       return;
@@ -42,12 +42,12 @@ function useFocusTrap() {
 
   useEffect(() => {
     if (elRef.current) {
-      elRef.current.addEventListener('keydown', handleFocus);
+      elRef.current.addEventListener("keydown", handleFocus);
       elRef.current.focus({ preventScroll: true });
     }
     return () => {
       if (elRef.current) {
-        elRef.current.removeEventListener('keydown', handleFocus);
+        elRef.current.removeEventListener("keydown", handleFocus);
       }
     };
   }, []);

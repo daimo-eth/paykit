@@ -1,9 +1,17 @@
-import { http } from 'wagmi';
-import { type CreateConfigParameters } from '@wagmi/core';
-import { mainnet, polygon, optimism, arbitrum } from 'wagmi/chains';
-import { CoinbaseWalletParameters } from 'wagmi/connectors';
+import { http } from "wagmi";
+import { type CreateConfigParameters } from "@wagmi/core";
+import {
+  mainnet,
+  polygon,
+  optimism,
+  arbitrum,
+  base,
+  sepolia,
+  Chain,
+} from "wagmi/chains";
+import { CoinbaseWalletParameters } from "wagmi/connectors";
 
-import defaultConnectors from './defaultConnectors';
+import defaultConnectors from "./defaultConnectors";
 
 // TODO: Move these to a provider rather than global variable
 let globalAppName: string;
@@ -20,29 +28,50 @@ type DefaultConfigProps = {
   // WC 2.0 requires a project ID (get one here: https://cloud.walletconnect.com/sign-in)
   walletConnectProjectId: string;
   // Coinbase Wallet preference
-  coinbaseWalletPreference?: CoinbaseWalletParameters<'4'>['preference'];
+  coinbaseWalletPreference?: CoinbaseWalletParameters<"4">["preference"];
 } & Partial<CreateConfigParameters>;
 
+export const REQUIRED_CHAINS: CreateConfigParameters["chains"] = [
+  mainnet,
+  base,
+  polygon,
+  optimism,
+  arbitrum,
+  sepolia,
+];
+
 const defaultConfig = ({
-  appName = 'ConnectKit',
+  appName = "Daimo Pay",
   appIcon,
   appDescription,
   appUrl,
   walletConnectProjectId,
   coinbaseWalletPreference,
-  chains = [mainnet, polygon, optimism, arbitrum],
+  chains = REQUIRED_CHAINS,
   client,
   ...props
 }: DefaultConfigProps): CreateConfigParameters => {
   globalAppName = appName;
   if (appIcon) globalAppIcon = appIcon;
 
-  // TODO: nice to have, automate transports based on chains, but for now just provide public if not provided
-  const transports: CreateConfigParameters['transports'] =
-    props?.transports ??
-    Object.fromEntries(chains.map((chain) => [chain.id, http()]));
+  const paddedChains: [Chain, ...Chain[]] = [...chains];
+  for (const chain of REQUIRED_CHAINS) {
+    if (!paddedChains.includes(chain)) {
+      paddedChains.push(chain);
+    }
+  }
 
-  const connectors: CreateConfigParameters['connectors'] =
+  const paddedTransports: CreateConfigParameters["transports"] = {};
+  for (const chain of paddedChains) {
+    if (!props?.transports?.[chain.id]) {
+      // Auto inject http transport if not provided for a chain
+      paddedTransports[chain.id] = http();
+    } else {
+      paddedTransports[chain.id] = props.transports[chain.id];
+    }
+  }
+
+  const connectors: CreateConfigParameters["connectors"] =
     props?.connectors ??
     defaultConnectors({
       app: {
@@ -57,9 +86,9 @@ const defaultConfig = ({
 
   const config: CreateConfigParameters<any, any> = {
     ...props,
-    chains,
+    chains: paddedChains,
+    transports: paddedTransports,
     connectors,
-    transports,
   };
 
   return config;

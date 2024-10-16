@@ -1,23 +1,23 @@
-import { CustomQRCodeProps } from './types';
+import { CustomQRCodeProps } from "./types";
 import {
   QRCodeContainer,
   LogoContainer,
   LogoIcon,
   QRPlaceholder,
   QRCodeContent,
-} from './styles';
+} from "./styles";
 
-import Tooltip from '../Tooltip';
-import { AnimatePresence, motion } from 'framer-motion';
+import Tooltip from "../Tooltip";
+import { AnimatePresence, motion } from "framer-motion";
 
-import { QRCode } from './QRCode';
-import useWindowSize from '../../../hooks/useWindowSize';
+import { QRCode } from "./QRCode";
+import useWindowSize from "../../../hooks/useWindowSize";
 
 function CustomQRCode({
   value,
   image,
   imageBackground,
-  imagePosition = 'center',
+  imagePosition = "center",
   tooltipMessage,
 }: CustomQRCodeProps) {
   const windowSize = useWindowSize();
@@ -37,10 +37,10 @@ function CustomQRCode({
         {image && (
           <LogoContainer>
             <LogoIcon
-              $wcLogo={imagePosition !== 'center'}
+              $wcLogo={imagePosition !== "center"}
               style={{
                 background:
-                  imagePosition === 'center' ? imageBackground : undefined,
+                  imagePosition === "center" ? imageBackground : undefined,
               }}
             >
               {Logo}
@@ -54,7 +54,7 @@ function CustomQRCode({
               key={value}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              exit={{ opacity: 0, position: 'absolute', inset: [0, 0] }}
+              exit={{ opacity: 0, position: "absolute", inset: [0, 0] }}
               transition={{
                 duration: 0.2,
               }}
@@ -63,14 +63,14 @@ function CustomQRCode({
                 uri={value}
                 size={288}
                 ecl="M"
-                clearArea={!!(imagePosition === 'center' && image)}
+                clearArea={!!(imagePosition === "center" && image)}
               />
             </motion.div>
           ) : (
             <QRPlaceholder
               initial={{ opacity: 0.1 }}
               animate={{ opacity: 0.1 }}
-              exit={{ opacity: 0, position: 'absolute', inset: [0, 0] }}
+              exit={{ opacity: 0, position: "absolute", inset: [0, 0] }}
               transition={{
                 duration: 0.2,
               }}
@@ -86,6 +86,6 @@ function CustomQRCode({
     </QRCodeContainer>
   );
 }
-CustomQRCode.displayName = 'CustomQRCode';
+CustomQRCode.displayName = "CustomQRCode";
 
 export default CustomQRCode;

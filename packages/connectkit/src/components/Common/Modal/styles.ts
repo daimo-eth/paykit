@@ -1,7 +1,7 @@
-import styled from './../../../styles/styled';
-import { keyframes } from 'styled-components';
-import { motion } from 'framer-motion';
-import defaultTheme from '../../../constants/defaultTheme';
+import styled from "./../../../styles/styled";
+import { keyframes } from "styled-components";
+import { motion } from "framer-motion";
+import defaultTheme from "../../../constants/defaultTheme";
 
 export const ErrorMessage = styled(motion.div)`
   z-index: -1;
@@ -67,7 +67,7 @@ from { opacity: 1; transform: scale(1); }
 
 export const PageContent = styled(motion.div)`
   max-width: 100%;
-  width: 295px;
+  width: 360px;
   padding-top: 48px;
 `;
 
@@ -92,7 +92,7 @@ export const TextWithHr = styled(motion.div)`
   }
   &:before {
     z-index: 2;
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     left: 0;
@@ -154,9 +154,9 @@ export const ModalH1 = styled(motion.h1)<{
   font-size: ${(props) => (props.$small ? 17 : 19)}px;
   font-weight: var(--ck-modal-h1-font-weight, 600);
   color: ${(props) => {
-    if (props.$error) return 'var(--ck-body-color-danger)';
-    if (props.$valid) return 'var(--ck-body-color-valid)';
-    return 'var(--ck-body-color)';
+    if (props.$error) return "var(--ck-body-color-danger)";
+    if (props.$valid) return "var(--ck-body-color-valid)";
+    return "var(--ck-body-color)";
   }};
   > svg {
     position: relative;
@@ -208,7 +208,7 @@ export const BackgroundOverlay = styled(motion.div)<{
   backdrop-filter: ${(props) =>
     props.$blur
       ? `blur(${props.$blur}px)`
-      : 'var(--ck-overlay-backdrop-filter, none)'};
+      : "var(--ck-overlay-backdrop-filter, none)"};
   opacity: 0;
   animation: ${(props) => (props.$active ? FadeIn : FadeOut)} 150ms ease-out
     both;
@@ -245,7 +245,7 @@ export const BoxContainer = styled(motion.div)`
   }
 
   &:before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     bottom: 0;
@@ -395,7 +395,9 @@ export const CloseButton = styled(motion.button)`
   margin: 0;
   color: var(--ck-body-action-color);
   background: var(--ck-body-background);
-  transition: background-color 200ms ease, transform 100ms ease;
+  transition:
+    background-color 200ms ease,
+    transform 100ms ease;
   /* will-change: transform; */
   svg {
     display: block;
@@ -422,7 +424,9 @@ export const SiweButton = styled(motion.button)`
   margin: 0;
   color: var(--ck-body-action-color);
   background: var(--ck-body-background);
-  transition: background-color 200ms ease, transform 100ms ease;
+  transition:
+    background-color 200ms ease,
+    transform 100ms ease;
   /* will-change: transform; */
   svg {
     display: block;
@@ -453,7 +457,9 @@ export const BackButton = styled(motion.button)`
   margin: 0;
   color: var(--ck-body-action-color);
   background: var(--ck-body-background);
-  transition: background-color 200ms ease, transform 100ms ease;
+  transition:
+    background-color 200ms ease,
+    transform 100ms ease;
   /* will-change: transform; */
   svg {
     display: block;
@@ -486,7 +492,9 @@ export const InfoButton = styled(motion.button)`
   margin: 0;
   color: var(--ck-body-action-color);
   background: var(--ck-body-background);
-  transition: background-color 200ms ease, transform 100ms ease;
+  transition:
+    background-color 200ms ease,
+    transform 100ms ease;
   /* will-change: transform; */
   svg {
     display: block;
@@ -663,7 +671,7 @@ export const SignInTooltip = styled(motion.div)`
   transform: translateY(8px) translateX(-48px);
   box-shadow: var(--ck-modal-box-shadow);
   &:before {
-    content: '';
+    content: "";
     position: absolute;
     box-shadow: var(--shadow);
     width: 18px;

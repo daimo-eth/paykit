@@ -1,16 +1,16 @@
-import React from 'react';
+import React from "react";
 
 import {
   ChainContainer,
   LoadingContainer,
   LogoContainer,
   Unsupported,
-} from './styles';
-import { AnimatePresence } from 'framer-motion';
-import { chainConfigs } from '../../../constants/chainConfigs';
-import Chains from '../../../assets/chains';
-import useIsMounted from '../../../hooks/useIsMounted';
-import { useChainIsSupported } from '../../../hooks/useChainIsSupported';
+} from "./styles";
+import { AnimatePresence } from "framer-motion";
+import { chainConfigs } from "../../../constants/chainConfigs";
+import Chains from "../../../assets/chains";
+import useIsMounted from "../../../hooks/useIsMounted";
+import { useChainIsSupported } from "../../../hooks/useChainIsSupported";
 
 const Spinner = (
   <svg
@@ -59,7 +59,7 @@ const Chain: React.FC<{
 }> = ({
   id,
   unsupported: controlledUnsupported,
-  radius = '50%',
+  radius = "50%",
   size = 24,
 }) => {
   const isChainSupported = useChainIsSupported(id);

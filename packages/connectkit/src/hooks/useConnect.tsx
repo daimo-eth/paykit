@@ -8,9 +8,9 @@ import {
   useConnect as wagmiUseConnect,
   CreateConnectorFn,
   Connector,
-} from 'wagmi';
-import { useContext } from '../components/ConnectKit';
-import { useLastConnector } from './useLastConnector';
+} from "wagmi";
+import { useContext } from "../components/ConnectKit";
+import { useLastConnector } from "./useLastConnector";
 
 export function useConnect({ ...props }: UseConnectParameters = {}) {
   const context = useContext();
@@ -21,7 +21,7 @@ export function useConnect({ ...props }: UseConnectParameters = {}) {
       ...props.mutation,
       onError(err) {
         if (err.message) {
-          if (err.message !== 'User rejected request') {
+          if (err.message !== "User rejected request") {
             context.log(err.message, err);
           }
         } else {
@@ -39,14 +39,14 @@ export function useConnect({ ...props }: UseConnectParameters = {}) {
     }: {
       connector: CreateConnectorFn | Connector;
       chainId?: number;
-      mutation?: UseConnectParameters['mutation'];
+      mutation?: UseConnectParameters["mutation"];
     }) => {
       return connect(
         {
           connector,
           chainId: chainId ?? context.options?.initialChainId,
         },
-        mutation
+        mutation,
       );
     },
     connectAsync: async ({
@@ -56,14 +56,14 @@ export function useConnect({ ...props }: UseConnectParameters = {}) {
     }: {
       connector: CreateConnectorFn | Connector;
       chainId?: number;
-      mutation?: UseConnectParameters['mutation'];
+      mutation?: UseConnectParameters["mutation"];
     }) => {
       return connectAsync(
         {
           connector,
           chainId: chainId ?? context.options?.initialChainId,
         },
-        mutation
+        mutation,
       );
     },
     connectors,

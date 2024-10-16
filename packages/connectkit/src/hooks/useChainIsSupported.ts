@@ -1,4 +1,4 @@
-import { useConfig } from 'wagmi';
+import { useConfig } from "wagmi";
 
 export function useChainIsSupported(chainId?: number): boolean | null {
   const { chains } = useConfig();

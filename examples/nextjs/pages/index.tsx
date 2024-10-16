@@ -1,17 +1,17 @@
-import type { NextPage } from 'next';
-import { ConnectKitButton } from 'connectkit';
+import type { NextPage } from "next";
+import { ConnectKitButton } from "@daimo/pay";
 
 const Home: NextPage = () => {
   return (
     <div
       style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '100vh',
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100vh",
       }}
     >
-      <ConnectKitButton />
+      <ConnectKitButton payId="Fcdcb474QD4s9KPQzaKgdz3UJTMnZVhks51WpMp2TdSV" />
     </div>
   );
 };

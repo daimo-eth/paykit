@@ -4,27 +4,27 @@ import React, {
   useLayoutEffect,
   useRef,
   useState,
-} from 'react';
-import { useContext } from './../../ConnectKit';
+} from "react";
+import { useContext } from "./../../ConnectKit";
 
-import useMeasure from 'react-use-measure';
+import useMeasure from "react-use-measure";
 
-import ChainSelectList from './../ChainSelectList';
+import ChainSelectList from "./../ChainSelectList";
 
-import Portal from './../Portal';
-import { ResetContainer } from './../../../styles';
+import Portal from "./../Portal";
+import { ResetContainer } from "./../../../styles";
 import {
   DropdownWindow,
   DropdownOverlay,
   DropdownContainer,
   DropdownHeading,
-} from './styles';
+} from "./styles";
 
-import { AnimatePresence } from 'framer-motion';
-import { useThemeContext } from './../../ConnectKitThemeProvider/ConnectKitThemeProvider';
-import FocusTrap from './../../../hooks/useFocusTrap';
-import useLockBodyScroll from './../../../hooks/useLockBodyScroll';
-import useLocales from '../../../hooks/useLocales';
+import { AnimatePresence } from "framer-motion";
+import { useThemeContext } from "./../../ConnectKitThemeProvider/ConnectKitThemeProvider";
+import FocusTrap from "./../../../hooks/useFocusTrap";
+import useLockBodyScroll from "./../../../hooks/useLockBodyScroll";
+import useLocales from "../../../hooks/useLocales";
 
 const ChainSelectDropdown: React.FC<{
   children?: React.ReactNode;
@@ -46,9 +46,9 @@ const ChainSelectDropdown: React.FC<{
   useEffect(() => {
     const listener = (e: KeyboardEvent) => {
       if (!open) return;
-      if (e.key === 'Escape') onClose();
+      if (e.key === "Escape") onClose();
 
-      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
         if (!contentRef.current) return;
         e.preventDefault();
 
@@ -64,7 +64,7 @@ const ChainSelectDropdown: React.FC<{
           firstFocusableEl: any = focusableEls[0],
           lastFocusableEl: any = focusableEls[focusableEls.length - 1];
 
-        if (e.key === 'ArrowUp') {
+        if (e.key === "ArrowUp") {
           if (document.activeElement === firstFocusableEl) {
             lastFocusableEl.focus();
           } else {
@@ -85,9 +85,9 @@ const ChainSelectDropdown: React.FC<{
         }
       }
     };
-    document.addEventListener('keydown', listener);
+    document.addEventListener("keydown", listener);
     return () => {
-      document.removeEventListener('keydown', listener);
+      document.removeEventListener("keydown", listener);
     };
   }, [open]);
 
@@ -98,7 +98,7 @@ const ChainSelectDropdown: React.FC<{
       targetRef.current = node;
       refresh();
     },
-    [open]
+    [open],
   );
   const [ref, bounds] = useMeasure({
     debounce: 120, // waits until modal transition has finished before measuring
@@ -147,7 +147,7 @@ const ChainSelectDropdown: React.FC<{
   };
 
   const useIsomorphicLayoutEffect =
-    typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+    typeof window !== "undefined" ? useLayoutEffect : useEffect;
   useIsomorphicLayoutEffect(refresh, [targetRef.current, bounds, open]);
 
   useEffect(refresh, [open, targetRef.current]);
@@ -156,11 +156,11 @@ const ChainSelectDropdown: React.FC<{
   const onResize = onClose;
   useEffect(() => {
     refresh();
-    window.addEventListener('scroll', onScroll);
-    window.addEventListener('resize', onResize);
+    window.addEventListener("scroll", onScroll);
+    window.addEventListener("resize", onResize);
     return () => {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onResize);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onResize);
     };
   }, []);
 
@@ -184,12 +184,12 @@ const ChainSelectDropdown: React.FC<{
                       left: offset.x,
                       top: offset.y,
                     }}
-                    initial={'collapsed'}
-                    animate={'open'}
-                    exit={'collapsed'}
+                    initial={"collapsed"}
+                    animate={"open"}
+                    exit={"collapsed"}
                     variants={{
                       collapsed: {
-                        transformOrigin: '0 0',
+                        transformOrigin: "0 0",
                         opacity: 0,
                         scale: 0.96,
                         z: 0.01,
@@ -200,8 +200,8 @@ const ChainSelectDropdown: React.FC<{
                         },
                       },
                       open: {
-                        transformOrigin: '0 0',
-                        willChange: 'opacity,transform',
+                        transformOrigin: "0 0",
+                        willChange: "opacity,transform",
                         opacity: 1,
                         scale: 1,
                         z: 0.01,

@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import styled from './../../../styles/styled';
-import { css } from 'styled-components';
+import React, { useState } from "react";
+import styled from "./../../../styles/styled";
+import { css } from "styled-components";
 
-import CopyToClipboardIcon from './CopyToClipboardIcon';
-import Button from '../Button';
+import CopyToClipboardIcon from "./CopyToClipboardIcon";
+import Button from "../Button";
 
 const Container = styled.div<{ $disabled?: boolean }>`
   --color: var(--ck-copytoclipboard-stroke);
@@ -44,7 +44,7 @@ const OffsetContainer = styled.div`
 const CopyToClipboard: React.FC<{
   string?: string;
   children?: React.ReactNode;
-  variant?: 'button';
+  variant?: "button";
 }> = ({ string, children, variant }) => {
   const [clipboard, setClipboard] = useState(false);
 
@@ -70,7 +70,7 @@ const CopyToClipboard: React.FC<{
     timeout = setTimeout(() => setClipboard(false), 1000);
   };
 
-  if (variant === 'button')
+  if (variant === "button")
     return (
       <Button
         disabled={!string}

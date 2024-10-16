@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { routes, useContext } from './../../ConnectKit';
+import React, { useEffect, useState } from "react";
+import { ROUTES, useContext } from "./../../ConnectKit";
 
-import { flattenChildren, isMobile } from './../../../utils';
+import { flattenChildren, isMobile } from "./../../../utils";
 
-import defaultTheme from './../../../constants/defaultTheme';
+import defaultTheme from "./../../../constants/defaultTheme";
 
-import styled from './../../../styles/styled';
-import { css } from 'styled-components';
-import { motion } from 'framer-motion';
+import styled from "./../../../styles/styled";
+import { css } from "styled-components";
+import { motion } from "framer-motion";
 
-import Tooltip from '../Tooltip';
-import ChainSelectDropdown from '../ChainSelectDropdown';
-import Chain from '../Chain';
-import useLocales from '../../../hooks/useLocales';
+import Tooltip from "../Tooltip";
+import ChainSelectDropdown from "../ChainSelectDropdown";
+import Chain from "../Chain";
+import useLocales from "../../../hooks/useLocales";
 
-import { useAccount, useSwitchChain } from 'wagmi';
+import { useAccount, useSwitchChain } from "wagmi";
 
 const Container = styled(motion.div)``;
 
@@ -164,7 +164,7 @@ const ChainSelector: React.FC = () => {
             disabled={disabled}
             onClick={() => {
               if (mobile) {
-                context.setRoute(routes.SWITCHNETWORKS);
+                context.setRoute(ROUTES.SWITCHNETWORKS);
               } else {
                 setIsOpen(!isOpen);
               }

@@ -1,7 +1,7 @@
-import { motion } from 'framer-motion';
-import styled from './../../../styles/styled';
-import { css } from 'styled-components';
-import defaultTheme from '../../../constants/defaultTheme';
+import { motion } from "framer-motion";
+import styled from "./../../../styles/styled";
+import { css } from "styled-components";
+import defaultTheme from "../../../constants/defaultTheme";
 
 const imageHeight = 208;
 
@@ -117,14 +117,16 @@ export const Dot = styled.button<{ $active: boolean }>`
     }
   }
   &:before {
-    content: '';
+    content: "";
     display: block;
     width: 16px;
     height: 3px;
     opacity: 0.12;
     border-radius: 4px;
     background: var(--ck-accent-color, var(--ck-body-color));
-    transition: transform 200ms ease, opacity 180ms ease;
+    transition:
+      transform 200ms ease,
+      opacity 180ms ease;
   }
   ${(props) =>
     props.$active

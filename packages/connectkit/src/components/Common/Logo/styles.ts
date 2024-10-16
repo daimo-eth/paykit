@@ -1,9 +1,9 @@
-import styled from './../../../styles/styled';
+import styled from "./../../../styles/styled";
 
 export const LogoContainer = styled.div<{ $width?: number; $height?: number }>`
   position: relative;
-  width: ${({ $width }) => $width + 'px' || '100%'};
-  height: ${({ $height }) => $height + 'px' || '100%'};
+  width: ${({ $width }) => $width + "px" || "100%"};
+  height: ${({ $height }) => $height + "px" || "100%"};
 `;
 export const Squircle = styled.svg`
   z-index: 1;

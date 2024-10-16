@@ -1,11 +1,11 @@
-import styled from './../../../styles/styled';
-import { css } from 'styled-components';
-import { motion } from 'framer-motion';
+import styled from "./../../../styles/styled";
+import { css } from "styled-components";
+import { motion } from "framer-motion";
 
 function addressToNumber(address: string) {
   return (
     (address
-      .split('')
+      .split("")
       .map((l) => l.charCodeAt(0))
       .reduce((a, b) => a + b) %
       100) /
@@ -29,7 +29,7 @@ export const EnsAvatar = styled(motion.div)<{
   height: ${(props) => `${props.$size}px`};
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
   &:before {
-    content: '';
+    content: "";
     z-index: 1;
     position: absolute;
     inset: 0;

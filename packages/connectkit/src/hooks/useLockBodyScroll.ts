@@ -1,8 +1,8 @@
-import { useEffect, useState, useLayoutEffect } from 'react';
-import { useContext } from '../components/ConnectKit';
+import { useEffect, useState, useLayoutEffect } from "react";
+import { useContext } from "../components/ConnectKit";
 
 const useIsomorphicLayoutEffect =
-  typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 export default function useLockBodyScroll(initialLocked: boolean) {
   const [locked, setLocked] = useState(initialLocked);
@@ -32,20 +32,20 @@ export default function useLockBodyScroll(initialLocked: boolean) {
     const scrollBarWidth =
       window.innerWidth - document.body.offsetWidth - offsetX;
     document.documentElement.style.setProperty(
-      '--ck-scrollbar-width',
-      `${scrollBarWidth}px`
+      "--ck-scrollbar-width",
+      `${scrollBarWidth}px`,
     );
 
-    document.body.style.overflow = 'hidden';
-    document.body.style.position = 'relative';
-    document.body.style.touchAction = 'none';
+    document.body.style.overflow = "hidden";
+    document.body.style.position = "relative";
+    document.body.style.touchAction = "none";
     //document.documentElement.style.overflow = 'hidden'; // overflow:hidden; on <html> breaks position:sticky;
     if (context.options?.avoidLayoutShift) {
       document.body.style.paddingRight = `${scrollBarWidth}px`;
     }
 
     return () => {
-      document.documentElement.style.removeProperty('--ck-scrollbar-width');
+      document.documentElement.style.removeProperty("--ck-scrollbar-width");
 
       document.body.style.overflow = original.overflow;
       document.body.style.position = original.position;

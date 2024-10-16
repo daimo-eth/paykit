@@ -1,6 +1,5 @@
 {
-  "name": "nextjs",
-  "version": "0.1.0",
+  "name": "@daimo/pay-nextjs-example",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,20 +8,19 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@tanstack/react-query": "^5.17.15",
-    "connectkit": "workspace:packages/connectkit",
-    "next": "14.0.4",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "viem": "^2.13.0",
-    "wagmi": "^2.10.2"
+    "@daimo/pay": "*",
+    "@tanstack/react-query": "^5.51.11",
+    "next": "14.2.13",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "tslib": "^2.7.0",
+    "viem": "^2.21.10",
+    "wagmi": "^2.12.0"
   },
   "devDependencies": {
-    "@types/node": "^18.19.3",
-    "@types/react": "^18.2.43",
-    "eslint": "^8.15.0",
-    "eslint-config-next": "^14.0.4",
-    "next": "^14.0.4",
-    "typescript": "^5.0.4"
+    "@types/node": "^20.14.12",
+    "@types/react": "^18.2.47",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "14.2.13"
   }
 }

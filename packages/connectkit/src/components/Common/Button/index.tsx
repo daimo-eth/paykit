@@ -1,5 +1,5 @@
-import React from 'react';
-import { ButtonProps } from './types';
+import React from "react";
+import { ButtonProps } from "./types";
 import {
   ButtonContainer,
   InnerContainer,
@@ -11,11 +11,11 @@ import {
   DownloadArrowInner,
   ButtonContainerInner,
   SpinnerContainer,
-} from './styles';
-import { AnimatePresence } from 'framer-motion';
-import { flattenChildren } from '../../../utils';
-import FitText from '../FitText';
-import { Spinner } from '../Spinner';
+} from "./styles";
+import { AnimatePresence } from "framer-motion";
+import { flattenChildren } from "../../../utils";
+import FitText from "../FitText";
+import { Spinner } from "../Spinner";
 
 const transition = {
   duration: 0.4,
@@ -24,10 +24,10 @@ const transition = {
 
 const Button: React.FC<ButtonProps> = ({
   children,
-  variant = 'secondary', // unique aspect to how we're handling buttons
+  variant = "secondary", // unique aspect to how we're handling buttons
   disabled,
   icon,
-  iconPosition = 'left',
+  iconPosition = "left",
   roundedIcon,
   waiting,
   arrow,
@@ -37,22 +37,22 @@ const Button: React.FC<ButtonProps> = ({
   onClick,
 }) => {
   const key =
-    typeof children === 'string'
+    typeof children === "string"
       ? children
-      : flattenChildren(children).join(''); // Need to generate a string for the key so we can automatically animate between content
+      : flattenChildren(children).join(""); // Need to generate a string for the key so we can automatically animate between content
 
   const hrefUrl =
-    typeof href === 'string' ? href : flattenChildren(href).join(''); // Need to have a flat string for the href
+    typeof href === "string" ? href : flattenChildren(href).join(""); // Need to have a flat string for the href
 
   return (
     <ButtonContainer
-      as={href ? 'a' : undefined}
+      as={href ? "a" : undefined}
       onClick={(event: any) => {
         if (!disabled && onClick) onClick(event);
       }}
       href={hrefUrl}
-      target={href && '_blank'}
-      rel={href && 'noopener noreferrer'}
+      target={href && "_blank"}
+      rel={href && "noopener noreferrer"}
       disabled={disabled}
       $variant={variant}
       style={style}
@@ -66,7 +66,7 @@ const Button: React.FC<ButtonProps> = ({
             y: -1,
           }}
           exit={{
-            position: 'absolute',
+            position: "absolute",
             opacity: 0,
             y: 10,
             transition: {
@@ -78,7 +78,7 @@ const Button: React.FC<ButtonProps> = ({
             delay: 0.2,
           }}
         >
-          {icon && iconPosition === 'left' && (
+          {icon && iconPosition === "left" && (
             <IconContainer $rounded={roundedIcon}>{icon}</IconContainer>
           )}
           {download && (
@@ -113,7 +113,7 @@ const Button: React.FC<ButtonProps> = ({
           <InnerContainer style={{ paddingLeft: arrow ? 6 : 0 }}>
             <FitText>{children}</FitText>
           </InnerContainer>
-          {icon && iconPosition === 'right' && (
+          {icon && iconPosition === "right" && (
             <IconContainer $rounded={roundedIcon}>{icon}</IconContainer>
           )}
           {arrow && (

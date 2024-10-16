@@ -1,13 +1,13 @@
-import { createContext } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { Address } from 'viem';
+import { createContext } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Address } from "viem";
 
 export enum StatusState {
-  READY = 'ready',
-  LOADING = 'loading',
-  SUCCESS = 'success',
-  REJECTED = 'rejected',
-  ERROR = 'error',
+  READY = "ready",
+  LOADING = "loading",
+  SUCCESS = "success",
+  REJECTED = "rejected",
+  ERROR = "error",
 }
 
 export type SIWESession = {

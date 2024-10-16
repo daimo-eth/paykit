@@ -1,34 +1,34 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
-import { useContext } from '../../ConnectKit';
+import { useContext } from "../../ConnectKit";
 
 import {
   PageContent,
   ModalBody,
   ModalContent,
-} from '../../Common/Modal/styles';
+} from "../../Common/Modal/styles";
 import {
   StatusGraphic,
   LogoContainer,
   StatusIcon,
   StatusGraphicBgSvg,
   ContentContainer,
-} from './styles';
+} from "./styles";
 
-import { useAccount } from 'wagmi';
-import { SIWEButton } from '../../Standard/SIWE';
-import { useSIWE } from '../../../siwe';
+import { useAccount } from "wagmi";
+import { SIWEButton } from "../../Standard/SIWE";
+import { useSIWE } from "../../../siwe";
 
-import { TickIcon } from '../../../assets/icons';
-import Chains from '../../../assets/chains';
-import Avatar from '../../Common/Avatar';
-import { getAppIcon } from '../../../defaultConfig';
+import { TickIcon } from "../../../assets/icons";
+import Chains from "../../../assets/chains";
+import Avatar from "../../Common/Avatar";
+import { getAppIcon } from "../../../defaultConfig";
 
-import { AnimatePresence, motion } from 'framer-motion';
-import LazyImage from '../../Common/LazyImage';
-import { isMobile, flattenChildren } from '../../../utils';
-import useLocales from '../../../hooks/useLocales';
-import FitText from '../../Common/FitText';
+import { AnimatePresence, motion } from "framer-motion";
+import LazyImage from "../../Common/LazyImage";
+import { isMobile, flattenChildren } from "../../../utils";
+import useLocales from "../../../hooks/useLocales";
+import FitText from "../../Common/FitText";
 
 const transition = { duration: 0.2, ease: [0.26, 0.08, 0.25, 1] };
 const copyTransition = { duration: 0.16, ease: [0.26, 0.08, 0.25, 1] };
@@ -38,13 +38,13 @@ const SignInWithEthereum: React.FC = () => {
   const { isSignedIn, reset } = useSIWE();
   const mobile = isMobile();
 
-  const [status, setStatus] = useState<'signedOut' | 'signedIn'>(
-    isSignedIn ? 'signedIn' : 'signedOut'
+  const [status, setStatus] = useState<"signedOut" | "signedIn">(
+    isSignedIn ? "signedIn" : "signedOut",
   );
 
   const locales = useLocales({});
   const copy =
-    status === 'signedIn'
+    status === "signedIn"
       ? {
           heading: locales.signInWithEthereumScreen_signedIn_heading,
           h1: locales.signInWithEthereumScreen_signedIn_h1,
@@ -59,11 +59,11 @@ const SignInWithEthereum: React.FC = () => {
         };
 
   useEffect(() => {
-    if (isSignedIn) setStatus('signedIn');
+    if (isSignedIn) setStatus("signedIn");
   }, []);
 
   useEffect(() => {
-    if (!isSignedIn) setStatus('signedOut');
+    if (!isSignedIn) setStatus("signedOut");
   }, [isSignedIn]);
 
   const { address } = useAccount();
@@ -76,17 +76,17 @@ const SignInWithEthereum: React.FC = () => {
       default: null,
     };
     const nodeList: HTMLCollectionOf<HTMLLinkElement> =
-      document.getElementsByTagName('link');
+      document.getElementsByTagName("link");
     Array.from(nodeList).forEach((node) => {
       if (
-        (node.getAttribute('rel') === 'icon' ||
-          node.getAttribute('rel') === 'shortcut icon') &&
-        node.getAttribute('href')
+        (node.getAttribute("rel") === "icon" ||
+          node.getAttribute("rel") === "shortcut icon") &&
+        node.getAttribute("href")
       ) {
-        if (node.getAttribute('type') === 'image/svg+xml') {
-          favicons.svg = node.getAttribute('href');
+        if (node.getAttribute("type") === "image/svg+xml") {
+          favicons.svg = node.getAttribute("href");
         } else {
-          favicons.default = node.getAttribute('href');
+          favicons.default = node.getAttribute("href");
         }
       }
     });
@@ -114,7 +114,7 @@ const SignInWithEthereum: React.FC = () => {
           </AnimatePresence>
         </ContentContainer>
         <StatusGraphic $connected={isSignedIn} key="status">
-          <div style={{ position: 'absolute', inset: 0 }}>
+          <div style={{ position: "absolute", inset: 0 }}>
             <StatusGraphicBgSvg
               width="262"
               height="134"
@@ -134,7 +134,7 @@ const SignInWithEthereum: React.FC = () => {
                 }}
                 transition={{
                   duration: 0.4,
-                  ease: 'linear',
+                  ease: "linear",
                   repeat: Infinity,
                 }}
               />
@@ -205,7 +205,7 @@ const SignInWithEthereum: React.FC = () => {
           >
             <LogoContainer>
               {favicon ? (
-                <LazyImage src={favicon} alt={'app'} />
+                <LazyImage src={favicon} alt={"app"} />
               ) : (
                 <Chains.UnknownChain />
               )}
@@ -227,7 +227,7 @@ const SignInWithEthereum: React.FC = () => {
           </motion.div>
         </AnimatePresence>
         <SIWEButton
-          showSignOutButton={status === 'signedIn'}
+          showSignOutButton={status === "signedIn"}
           onSignIn={() => {
             setTimeout(() => {
               context.setOpen(false);

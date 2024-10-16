@@ -1,15 +1,15 @@
-import { ReactNode, useContext, useEffect, useState } from 'react';
-import { useAccount, useAccountEffect, useSignMessage } from 'wagmi';
-import { getAddress } from 'viem';
-import { useQuery } from '@tanstack/react-query';
+import { ReactNode, useContext, useEffect, useState } from "react";
+import { useAccount, useAccountEffect, useSignMessage } from "wagmi";
+import { getAddress } from "viem";
+import { useQuery } from "@tanstack/react-query";
 
-import { Context as ConnectKitContext } from './../components/ConnectKit';
+import { Context as ConnectKitContext } from "./../components/ConnectKit";
 import {
   SIWEContext,
   SIWEConfig,
   StatusState,
   SIWESession,
-} from './SIWEContext';
+} from "./SIWEContext";
 
 type Props = SIWEConfig & {
   children: ReactNode;
@@ -17,8 +17,8 @@ type Props = SIWEConfig & {
   onSignOut?: () => void;
 };
 
-export const SIWE_NONCE_QUERY_KEY = 'ckSiweNonce';
-export const SIWE_SESSION_QUERY_KEY = 'ckSiweSession';
+export const SIWE_NONCE_QUERY_KEY = "ckSiweNonce";
+export const SIWE_SESSION_QUERY_KEY = "ckSiweSession";
 
 export const SIWEProvider = ({
   children,
@@ -39,13 +39,13 @@ export const SIWEProvider = ({
   // collisions.
   if (useContext(SIWEContext)) {
     throw new Error(
-      'Multiple, nested usages of SIWEProvider detected. Please use only one.'
+      "Multiple, nested usages of SIWEProvider detected. Please use only one.",
     );
   }
   // SIWEProvider must be wrapped outside of ConnectKitProvider so that the
   // ConnectKitButton and other UI can use SIWE context values.
   if (useContext(ConnectKitContext)) {
-    throw new Error('ConnectKitProvider must be mounted inside SIWEProvider.');
+    throw new Error("ConnectKitProvider must be mounted inside SIWEProvider.");
   }
 
   const nonce = useQuery({
@@ -66,7 +66,7 @@ export const SIWEProvider = ({
     if (!sessionData) return false; // No session to sign out of
     setStatus(StatusState.LOADING);
     if (!(await siweConfig.signOut())) {
-      throw new Error('Failed to sign out.');
+      throw new Error("Failed to sign out.");
     }
     await Promise.all([session.refetch(), nonce.refetch()]);
     setStatus(StatusState.READY);
@@ -88,11 +88,11 @@ export const SIWEProvider = ({
   const { signMessageAsync } = useSignMessage();
 
   const onError = (error: any) => {
-    console.error('signIn error', error, error.message);
+    console.error("signIn error", error, error.message);
     switch (error.code) {
       case -32000: // WalletConnect: user rejected
       case 4001: // MetaMask: user rejected
-      case 'ACTION_REJECTED': // MetaMask: user rejected
+      case "ACTION_REJECTED": // MetaMask: user rejected
         setStatus(StatusState.REJECTED);
         break;
       default:
@@ -103,15 +103,15 @@ export const SIWEProvider = ({
   const signIn = async () => {
     try {
       if (!siweConfig) {
-        throw new Error('SIWE not configured');
+        throw new Error("SIWE not configured");
       }
 
       const chainId = chain?.id;
-      if (!address) throw new Error('No address found');
-      if (!chainId) throw new Error('No chainId found');
+      if (!address) throw new Error("No address found");
+      if (!chainId) throw new Error("No chainId found");
 
       if (!nonce.data) {
-        throw new Error('Could not fetch nonce');
+        throw new Error("Could not fetch nonce");
       }
 
       setStatus(StatusState.LOADING);
@@ -129,7 +129,7 @@ export const SIWEProvider = ({
 
       // Verify signature
       if (!(await siweConfig.verifyMessage({ message, signature }))) {
-        throw new Error('Error verifying SIWE signature');
+        throw new Error("Error verifying SIWE signature");
       }
 
       const data = await session.refetch().then((res) => {
@@ -156,7 +156,7 @@ export const SIWEProvider = ({
       signOutOnAccountChange &&
       getAddress(sessionData.address) !== getAddress(connectedAddress)
     ) {
-      console.warn('Wallet account changed, signing out of SIWE session');
+      console.warn("Wallet account changed, signing out of SIWE session");
       signOutAndRefetch();
     }
     // The SIWE spec includes a chainId parameter for contract-based accounts,
@@ -164,7 +164,7 @@ export const SIWEProvider = ({
     // connected account/network in sync. But this can be disabled when
     // configuring the SIWEProvider.
     else if (signOutOnNetworkChange && sessionData.chainId !== chain.id) {
-      console.warn('Wallet network changed, signing out of SIWE session');
+      console.warn("Wallet network changed, signing out of SIWE session");
       signOutAndRefetch();
     }
   }, [sessionData, connectedAddress, chain]);

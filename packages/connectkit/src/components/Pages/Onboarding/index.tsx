@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Graphic,
   LogoGroup,
@@ -9,20 +9,20 @@ import {
   LogoGraphic,
   GraphicBackground,
   RotateWrapper,
-} from './styles';
+} from "./styles";
 
 import {
   PageContent,
   ModalBody,
   ModalContent,
   ModalH1,
-} from '../../Common/Modal/styles';
-import Logos from '../../../assets/logos';
-import wave from '../../../assets/wave';
+} from "../../Common/Modal/styles";
+import Logos from "../../../assets/logos";
+import wave from "../../../assets/wave";
 
-import Button from '../../Common/Button';
-import useLocales from '../../../hooks/useLocales';
-import { useContext } from '../../ConnectKit';
+import Button from "../../Common/Button";
+import useLocales from "../../../hooks/useLocales";
+import { useContext } from "../../ConnectKit";
 
 const Introduction: React.FC = () => {
   const context = useContext();

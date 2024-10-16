@@ -1,4 +1,4 @@
-import { SpinnerContainer } from './styles';
+import { SpinnerContainer } from "./styles";
 
 const transition = {
   duration: 0.4,
@@ -13,7 +13,7 @@ export const Spinner = () => (
       rotate: 0,
     }}
     exit={{
-      position: 'absolute',
+      position: "absolute",
       opacity: 0,
       rotate: -180,
       transition: {

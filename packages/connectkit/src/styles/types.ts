@@ -70,14 +70,14 @@ export type Theme = {
 };
 
 export type ThemeMode = {
-  preferred: 'light' | 'dark';
+  preferred: "light" | "dark";
   light: Theme;
   dark: Theme;
 };
 export type CustomTheme = {
   connectKit: {
     options?: {
-      iconStyle?: 'light' | 'regular' | 'heavy';
+      iconStyle?: "light" | "regular" | "heavy";
     };
     theme?: Theme | ThemeMode;
   };

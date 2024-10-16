@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useConfig } from 'wagmi';
+import { useEffect, useState } from "react";
+import { useConfig } from "wagmi";
 
 export const useLastConnector = () => {
   const { storage } = useConfig();
@@ -7,14 +7,14 @@ export const useLastConnector = () => {
 
   useEffect(() => {
     const init = async () => {
-      const id = await storage?.getItem('recentConnectorId');
-      setLastConnectorId(id ?? '');
+      const id = await storage?.getItem("recentConnectorId");
+      setLastConnectorId(id ?? "");
     };
     init();
   }, []);
 
   const update = (id: string) => {
-    storage?.setItem('recentConnectorId', id);
+    storage?.setItem("recentConnectorId", id);
   };
 
   return {

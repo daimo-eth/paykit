@@ -1,5 +1,5 @@
-import { css, keyframes } from 'styled-components';
-import styled from '../../../styles/styled';
+import { css, keyframes } from "styled-components";
+import styled from "../../../styles/styled";
 
 export const ScrollContainer = styled.div`
   position: relative;
@@ -62,13 +62,13 @@ export const ScrollAreaContainer = styled.div<{
   $backgroundColor?: string;
 }>`
   --bg: ${({ $backgroundColor }) =>
-    $backgroundColor || 'var(--ck-body-background)'};
+    $backgroundColor || "var(--ck-body-background)"};
   --fade-height: 1px;
   position: relative;
   z-index: 1;
 
   ${({ $mobile, $height, $mobileDirection }) =>
-    $mobile && $mobileDirection === 'horizontal'
+    $mobile && $mobileDirection === "horizontal"
       ? css`
           overflow-x: scroll;
           margin: 0 -24px;
@@ -78,7 +78,7 @@ export const ScrollAreaContainer = styled.div<{
           &:after {
             pointer-events: none;
             z-index: 10;
-            content: '';
+            content: "";
             display: block;
             position: sticky;
             top: 0;
@@ -111,7 +111,7 @@ export const ScrollAreaContainer = styled.div<{
           }
         `
       : css`
-          max-height: ${$height ? `${$height}px` : '310px'};
+          max-height: ${$height ? `${$height}px` : "310px"};
           overflow-y: scroll;
           padding: 0 10px;
           margin: calc(var(--fade-height) * -1) -16px 0 -10px;
@@ -120,7 +120,7 @@ export const ScrollAreaContainer = styled.div<{
           &:after {
             pointer-events: none;
             z-index: 10;
-            content: '';
+            content: "";
             display: block;
             position: sticky;
             left: 0;

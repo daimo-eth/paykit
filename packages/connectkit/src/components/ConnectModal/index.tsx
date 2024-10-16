@@ -1,22 +1,27 @@
-import { useEffect } from 'react';
-import { useAccount } from 'wagmi';
-import { routes, useContext } from '../ConnectKit';
-import { CustomTheme, Languages, Mode, Theme } from '../../types';
-import Modal from '../Common/Modal';
+import { useEffect } from "react";
+import { useAccount } from "wagmi";
+import { ROUTES, useContext } from "../ConnectKit";
+import { CustomTheme, Languages, Mode, Theme } from "../../types";
+import Modal from "../Common/Modal";
 
-import Onboarding from '../Pages/Onboarding';
-import About from '../Pages/About';
-import Connectors from '../Pages/Connectors';
-import MobileConnectors from '../Pages/MobileConnectors';
-import ConnectUsing from './ConnectUsing';
-import DownloadApp from '../Pages/DownloadApp';
-import Profile from '../Pages/Profile';
-import SwitchNetworks from '../Pages/SwitchNetworks';
-import SignInWithEthereum from '../Pages/SignInWithEthereum';
+import Onboarding from "../Pages/Onboarding";
+import About from "../Pages/About";
+import Connectors from "../Pages/Connectors";
+import MobileConnectors from "../Pages/MobileConnectors";
+import ConnectUsing from "./ConnectUsing";
+import DownloadApp from "../Pages/DownloadApp";
+import Profile from "../Pages/Profile";
+import SwitchNetworks from "../Pages/SwitchNetworks";
+import SignInWithEthereum from "../Pages/SignInWithEthereum";
 
-import { getAppIcon, getAppName } from '../../defaultConfig';
-import { ConnectKitThemeProvider } from '../ConnectKitThemeProvider/ConnectKitThemeProvider';
-import { useChainIsSupported } from '../../hooks/useChainIsSupported';
+import { getAppIcon, getAppName } from "../../defaultConfig";
+import { ConnectKitThemeProvider } from "../ConnectKitThemeProvider/ConnectKitThemeProvider";
+import { useChainIsSupported } from "../../hooks/useChainIsSupported";
+import SelectMethod from "../Pages/SelectMethod";
+import SelectToken from "../Pages/SelectToken";
+import WaitingOther from "../Pages/WaitingOther";
+import Confirmation from "../Pages/Confirmation";
+import PayWithToken from "../Pages/PayWithToken";
 
 const customThemeDefault: object = {};
 
@@ -26,12 +31,14 @@ const ConnectModal: React.FC<{
   customTheme?: CustomTheme;
   lang?: Languages;
 }> = ({
-  mode = 'auto',
-  theme = 'auto',
+  mode = "auto",
+  theme = "auto",
   customTheme = customThemeDefault,
-  lang = 'en-US',
+  lang = "en-US",
 }) => {
   const context = useContext();
+  const { setSelectedExternalOption, setSelectedTokenOption } =
+    context.paymentInfo;
   const { isConnected, chain } = useAccount();
   const chainIsSupported = useChainIsSupported(chain?.id);
 
@@ -44,24 +51,41 @@ const ConnectModal: React.FC<{
 
   const showBackButton =
     closeable &&
-    context.route !== routes.CONNECTORS &&
-    context.route !== routes.PROFILE;
+    context.route !== ROUTES.PROFILE &&
+    context.route !== ROUTES.SELECT_METHOD &&
+    context.route !== ROUTES.CONFIRMATION;
 
-  const showInfoButton = closeable && context.route !== routes.PROFILE;
+  const showInfoButton = closeable && context.route !== ROUTES.PROFILE;
 
   const onBack = () => {
-    if (context.route === routes.SIGNINWITHETHEREUM) {
-      context.setRoute(routes.PROFILE);
-    } else if (context.route === routes.SWITCHNETWORKS) {
-      context.setRoute(routes.PROFILE);
-    } else if (context.route === routes.DOWNLOAD) {
-      context.setRoute(routes.CONNECT);
+    if (context.route === ROUTES.SIGNINWITHETHEREUM) {
+      context.setRoute(ROUTES.PROFILE);
+    } else if (context.route === ROUTES.SWITCHNETWORKS) {
+      context.setRoute(ROUTES.PROFILE);
+    } else if (context.route === ROUTES.DOWNLOAD) {
+      context.setRoute(ROUTES.CONNECT);
+    } else if (context.route === ROUTES.CONNECTORS) {
+      context.setRoute(ROUTES.SELECT_METHOD);
+    } else if (context.route === ROUTES.SELECT_TOKEN) {
+      context.setRoute(ROUTES.SELECT_METHOD);
+    } else if (context.route === ROUTES.WAITING_OTHER) {
+      setSelectedExternalOption(undefined);
+      context.setRoute(ROUTES.SELECT_METHOD);
+    } else if (context.route === ROUTES.PAY_WITH_TOKEN) {
+      setSelectedTokenOption(undefined);
+      context.setRoute(ROUTES.SELECT_TOKEN);
     } else {
-      context.setRoute(routes.CONNECTORS);
+      context.setRoute(ROUTES.SELECT_METHOD);
     }
   };
 
-  const pages: any = {
+  const pages: Record<ROUTES, React.ReactNode> = {
+    daimoPaySelectMethod: <SelectMethod />,
+    daimoPaySelectToken: <SelectToken />,
+    daimoPayWaitingOther: <WaitingOther />,
+    daimoPayConfirmation: <Confirmation />,
+    daimoPayPayWithToken: <PayWithToken />,
+
     onboarding: <Onboarding />,
     about: <About />,
     download: <DownloadApp />,
@@ -77,26 +101,6 @@ const ConnectModal: React.FC<{
     context.setOpen(false);
   }
 
-  useEffect(() => {
-    if (isConnected) {
-      if (
-        context.route !== routes.PROFILE ||
-        context.route !== routes.SIGNINWITHETHEREUM
-      ) {
-        if (
-          context.signInWithEthereum &&
-          !context.options?.disableSiweRedirect
-        ) {
-          context.setRoute(routes.SIGNINWITHETHEREUM);
-        } else {
-          hide(); // Hide on connect
-        }
-      }
-    } else {
-      hide(); // Hide on connect
-    }
-  }, [isConnected]);
-
   useEffect(() => context.setMode(mode), [mode]);
   useEffect(() => context.setTheme(theme), [theme]);
   useEffect(() => context.setCustomTheme(customTheme), [customTheme]);
@@ -107,9 +111,9 @@ const ConnectModal: React.FC<{
     const appName = getAppName();
     if (!appName || !context.open) return;
 
-    const title = document.createElement('meta');
-    title.setAttribute('property', 'og:title');
-    title.setAttribute('content', appName);
+    const title = document.createElement("meta");
+    title.setAttribute("property", "og:title");
+    title.setAttribute("content", appName);
     document.head.prepend(title);
 
     /*
@@ -139,9 +143,7 @@ const ConnectModal: React.FC<{
         pages={pages}
         pageId={context.route}
         onClose={closeable ? hide : undefined}
-        onInfo={
-          showInfoButton ? () => context.setRoute(routes.ABOUT) : undefined
-        }
+        onInfo={undefined}
         onBack={showBackButton ? onBack : undefined}
       />
     </ConnectKitThemeProvider>
