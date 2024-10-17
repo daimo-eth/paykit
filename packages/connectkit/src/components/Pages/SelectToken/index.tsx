@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { ROUTES, useContext } from "../../DaimoPay";
 
 import {
+  ModalContent,
+  ModalH1,
   PageContent
 } from "../../Common/Modal/styles";
 
@@ -86,6 +88,12 @@ const SelectToken: React.FC = () => {
   return (
     <PageContent>
       <OrderHeader minified />
+
+      {!isLoadingOptions && paymentOptions?.length === 0 && (
+        <ModalContent style={{ display: "flex", alignItems: "center", justifyContent: "center", paddingTop: 16, paddingBottom: 16 }}>
+          <ModalH1>Insufficient balance. Please select an alternative payment method.</ModalH1>
+        </ModalContent>
+      )}
 
       <OptionsList
         requiredSkeletons={4}
