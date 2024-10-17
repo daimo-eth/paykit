@@ -7,6 +7,7 @@ import {
 
 import {
   ExternalPaymentOptionMetadata,
+  ExternalPaymentOptions,
   getAddressContraction,
 } from "@daimo/common";
 import { ethereum } from "@daimo/contract";
@@ -20,6 +21,13 @@ import { detectPlatform } from "../../../utils/platform";
 import { trpc } from "../../../utils/trpc";
 import OptionsList from "../../Common/OptionsList";
 import { OrderHeader } from "../../Common/OrderHeader";
+
+const DEFAULT_EXTERNAL_PAYMENT_OPTIONS = [
+  ExternalPaymentOptions.Coinbase,
+  ExternalPaymentOptions.Binance,
+  ExternalPaymentOptions.Daimo,
+  ExternalPaymentOptions.RampNetwork,
+];
 
 const SelectMethod: React.FC = () => {
   const { address, isConnected, connector } = useAccount();
@@ -63,7 +71,15 @@ const SelectMethod: React.FC = () => {
         platform: detectPlatform(window.navigator.userAgent),
       });
 
-      setExternalPaymentOptions(options);
+      // Filter out options not in options JSON
+      const enabledExtPaymentOptions =
+        daimoPayOrder?.metadata.payer?.paymentOptions ||
+        DEFAULT_EXTERNAL_PAYMENT_OPTIONS;
+      const filteredOptions = options.filter((option) =>
+        enabledExtPaymentOptions.includes(option.id),
+      );
+
+      setExternalPaymentOptions(filteredOptions);
       setLoadingExternalPaymentOptions(false);
     };
 
