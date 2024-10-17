@@ -1,24 +1,13 @@
 import React, { useEffect } from "react";
 import { useContext } from "../../DaimoPay";
 
-import {
-  ModalContent,
-  PageContent
-} from "../../Common/Modal/styles";
+import { ModalContent, PageContent } from "../../Common/Modal/styles";
 
-import {
-  capitalize,
-  DaimoPayOrder,
-  DaimoPayOrderMode,
-  getChainExplorerTxUrl
-} from "@daimo/common";
-import { getChainName } from "@daimo/contract";
+import { capitalize, DaimoPayOrder, DaimoPayOrderMode } from "@daimo/common";
+import { getChainExplorerTxUrl, getChainName } from "@daimo/contract";
 import { motion } from "framer-motion";
 import { css } from "styled-components";
-import {
-  LoadingCircleIcon,
-  TickIcon
-} from "../../../assets/icons";
+import { LoadingCircleIcon, TickIcon } from "../../../assets/icons";
 import styled from "../../../styles/styled";
 import Button from "../../Common/Button";
 

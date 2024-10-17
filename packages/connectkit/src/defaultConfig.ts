@@ -4,6 +4,7 @@ import {
   arbitrum,
   base,
   Chain,
+  linea,
   mainnet,
   optimism,
   polygon,
@@ -37,6 +38,7 @@ export const REQUIRED_CHAINS: CreateConfigParameters["chains"] = [
   polygon,
   optimism,
   arbitrum,
+  linea,
   sepolia,
 ];
 
