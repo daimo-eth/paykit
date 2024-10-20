@@ -34,7 +34,6 @@ export default {
   "--ck-body-action-color": "#373737",
   "--ck-body-color-danger": "#FC6464",
   "--ck-body-color-valid": "#32D74B",
-  "--ck-body-color-valid-muted": "#80E38F",
 
   "--ck-body-divider": "#919B9C",
   "--ck-body-divider-box-shadow": "0px 1px 0px #FBFBF8",

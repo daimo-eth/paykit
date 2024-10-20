@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { ROUTES, useContext } from "../../DaimoPay";
 
-import {
-  ModalContent,
-  ModalH1,
-  PageContent
-} from "../../Common/Modal/styles";
+import { ModalContent, ModalH1, PageContent } from "../../Common/Modal/styles";
 
 import { AnimatePresence, motion } from "framer-motion";
 import { css } from "styled-components";
-import { ConnectorChainMismatchError, useChainId, useSwitchChain } from "wagmi";
+import { useChainId, useSwitchChain } from "wagmi";
 import { chainToLogo } from "../../../assets/chains";
 import styled from "../../../styles/styled";
 import { PaymentOption } from "../../../utils/getPaymentInfo";
@@ -29,7 +25,6 @@ const PayWithToken: React.FC = () => {
   const [payState, setPayState] = useState<PayState>(
     PayState.RequestingPayment,
   );
-  const [triggered, setTriggered] = useState<boolean>(false);
 
   const walletChainId = useChainId();
   const { switchChainAsync } = useSwitchChain();
@@ -76,8 +71,8 @@ const PayWithToken: React.FC = () => {
       setTimeout(() => {
         setRoute(ROUTES.CONFIRMATION);
       }, 200);
-    } catch (e) {
-      if (e instanceof ConnectorChainMismatchError) {
+    } catch (e: any) {
+      if (e?.name === "ConnectorChainMismatchError") {
         // Workaround for Rainbow wallet bug -- user is able to switch chain without
         // the wallet updating the chain ID for wagmi.
         console.log("Chain mismatch detected, attempting to switch and retry");
@@ -100,10 +95,17 @@ const PayWithToken: React.FC = () => {
     }
   };
 
+  let transferTimeout: any; // Prevent double-triggering in React dev strict mode.
   useEffect(() => {
-    if (!selectedTokenOption || triggered) return;
-    setTriggered(true);
-    handleTransfer(selectedTokenOption);
+    if (!selectedTokenOption) return;
+
+    // Give user time to see the UI before opening
+    transferTimeout = setTimeout(() => {
+      handleTransfer(selectedTokenOption);
+    }, 100);
+    return () => {
+      clearTimeout(transferTimeout);
+    };
   }, []);
 
   useEffect(() => {

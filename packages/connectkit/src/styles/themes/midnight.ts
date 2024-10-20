@@ -53,7 +53,6 @@ export default {
   "--ck-body-divider": "rgba(255,255,255,0.1)",
   "--ck-body-color-danger": "#FF4E4E",
   "--ck-body-color-valid": "#32D74B",
-  "--ck-body-color-valid-muted": "#80E38F",
 
   "--ck-body-disclaimer-background": "#2B2D31",
   "--ck-body-disclaimer-box-shadow": "none",

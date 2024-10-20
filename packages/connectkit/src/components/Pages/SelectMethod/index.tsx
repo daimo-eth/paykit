@@ -1,9 +1,7 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ROUTES, useContext } from "../../DaimoPay";
 
-import {
-  PageContent
-} from "../../Common/Modal/styles";
+import { PageContent } from "../../Common/Modal/styles";
 
 import {
   ExternalPaymentOptionMetadata,
@@ -11,16 +9,14 @@ import {
   getAddressContraction,
 } from "@daimo/common";
 import { ethereum } from "@daimo/contract";
-import { useAccount, useEnsName } from "wagmi";
-import {
-  Coinbase,
-  MetaMask,
-  Rainbow
-} from "../../../assets/logos";
+import { Connector, useAccount, useDisconnect, useEnsName } from "wagmi";
+import { Coinbase, MetaMask, Rabby, Rainbow } from "../../../assets/logos";
+import useIsMobile from "../../../hooks/useIsMobile";
 import { detectPlatform } from "../../../utils/platform";
 import { trpc } from "../../../utils/trpc";
 import OptionsList from "../../Common/OptionsList";
 import { OrderHeader } from "../../Common/OrderHeader";
+import PoweredByFooter from "../../Common/PoweredByFooter";
 
 const DEFAULT_EXTERNAL_PAYMENT_OPTIONS = [
   ExternalPaymentOptions.Coinbase,
@@ -29,8 +25,29 @@ const DEFAULT_EXTERNAL_PAYMENT_OPTIONS = [
   ExternalPaymentOptions.RampNetwork,
 ];
 
+// Get 3 icons, skipping the one that is already connected
+function getBestUnconnectedWalletIcons(connector: Connector | undefined) {
+  const icons: JSX.Element[] = [];
+  const strippedId = connector?.id.toLowerCase(); // some connector ids can have weird casing and or suffixes and prefixes
+  const [isMetaMask, isRainbow, isCoinbase] = [
+    strippedId?.includes("metamask"),
+    strippedId?.includes("rainbow"),
+    strippedId?.includes("coinbase"),
+  ];
+
+  if (!isMetaMask) icons.push(<MetaMask />);
+  if (!isRainbow) icons.push(<Rainbow />);
+  if (!isCoinbase) icons.push(<Coinbase />);
+  if (icons.length < 3) icons.push(<Rabby />);
+
+  return icons;
+}
+
 const SelectMethod: React.FC = () => {
+  const isMobile = useIsMobile();
+
   const { address, isConnected, connector } = useAccount();
+  const { disconnectAsync } = useDisconnect();
   const { data: ensName } = useEnsName({
     chainId: ethereum.chainId,
     address: address,
@@ -42,20 +59,30 @@ const SelectMethod: React.FC = () => {
   const { setRoute, paymentInfo } = useContext();
   const { daimoPayOrder, setSelectedExternalOption } = paymentInfo;
 
-  const onWalletClick = useCallback(() => {
-    if (isConnected) setRoute(ROUTES.SELECT_TOKEN);
-    else setRoute(ROUTES.CONNECTORS);
-  }, [isConnected]);
+  const connectedWalletOption = isConnected
+    ? {
+        id: "connectedWallet",
+        title: `Pay with ${displayName}`,
+        icons: connector && connector.icon ? [connector.icon] : [<MetaMask />],
+        onClick: () => {
+          setRoute(ROUTES.SELECT_TOKEN);
+        },
+      }
+    : null;
 
-  const walletOption = {
-    id: "wallet",
-    title: `Pay with ${displayName}`,
-    icons:
-      connector && connector.icon
-        ? [connector.icon]
-        : [<MetaMask />, <Rainbow />, <Coinbase />],
-    onClick: onWalletClick,
+  const unconnectedWalletOption = {
+    id: "unconnectedWallet",
+    title: isConnected ? `Pay with another wallet` : `Pay with wallet`,
+    icons: getBestUnconnectedWalletIcons(connector),
+    onClick: async () => {
+      await disconnectAsync();
+      setRoute(ROUTES.CONNECTORS);
+    },
   };
+
+  const walletOptions = connectedWalletOption
+    ? [connectedWalletOption, unconnectedWalletOption]
+    : [unconnectedWalletOption];
 
   const [externalPaymentOptions, setExternalPaymentOptions] = useState<
     ExternalPaymentOptionMetadata[]
@@ -94,10 +121,10 @@ const SelectMethod: React.FC = () => {
       <OrderHeader />
 
       <OptionsList
-        requiredSkeletons={4}
+        requiredSkeletons={isMobile ? 4 : 3} // TODO: programmatically determine skeletons to best avoid layout shifts
         isLoading={loadingExternalPaymentOptions}
         options={[
-          walletOption,
+          ...walletOptions,
           ...(externalPaymentOptions ?? []).map((option) => ({
             id: option.id,
             title: option.cta,
@@ -109,6 +136,7 @@ const SelectMethod: React.FC = () => {
           })),
         ]}
       />
+      <PoweredByFooter />
     </PageContent>
   );
 };

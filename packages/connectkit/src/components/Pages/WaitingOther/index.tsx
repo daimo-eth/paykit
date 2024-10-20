@@ -1,23 +1,45 @@
 import React, { useEffect } from "react";
-import { useContext } from "../../DaimoPay";
+import { ROUTES, useContext } from "../../DaimoPay";
 
 import {
   ModalBody,
   ModalContent,
   ModalH1,
-  PageContent
+  PageContent,
 } from "../../Common/Modal/styles";
 
 import { AnimatePresence, motion } from "framer-motion";
 import { css } from "styled-components";
 import styled from "../../../styles/styled";
+import { trpc } from "../../../utils/trpc";
 import CircleSpinner from "../../Spinners/CircleSpinner";
 import SquircleSpinner from "../../Spinners/SquircleSpinner";
 
 const WaitingOther: React.FC = () => {
-  const { triggerResize, paymentInfo } = useContext();
-  const { selectedExternalOption, payWithExternal, paymentWaitingMessage } =
-    paymentInfo;
+  const { triggerResize, paymentInfo, setRoute } = useContext();
+  const {
+    selectedExternalOption,
+    payWithExternal,
+    paymentWaitingMessage,
+    daimoPayOrder,
+  } = paymentInfo;
+
+  useEffect(() => {
+    const checkForSourcePayment = async () => {
+      if (!daimoPayOrder) return;
+
+      const found = await trpc.findSourcePayment.query({
+        orderId: daimoPayOrder.id.toString(),
+      });
+
+      if (found) {
+        setRoute(ROUTES.CONFIRMATION);
+      }
+    };
+
+    const interval = setInterval(checkForSourcePayment, 1000);
+    return () => clearInterval(interval);
+  }, [daimoPayOrder?.id]);
 
   if (!selectedExternalOption) {
     return <PageContent></PageContent>;

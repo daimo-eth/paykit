@@ -67,7 +67,6 @@ export default {
   "--ck-body-divider": "#DFE4EC",
   "--ck-body-color-danger": "#FF4E4E",
   "--ck-body-color-valid": "#32D74B",
-  "--ck-body-color-valid-muted": "#80E38F",
 
   "--ck-body-disclaimer-background": "#F9FAFB",
   "--ck-body-disclaimer-font-size": "14px",

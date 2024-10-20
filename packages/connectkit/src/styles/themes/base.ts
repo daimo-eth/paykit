@@ -67,7 +67,6 @@ export default {
     "--ck-body-divider-secondary": "rgba(0, 0, 0, 0.06)",
     "--ck-body-color-danger": "#FF4E4E",
     "--ck-body-color-valid": "#32D74B",
-    "--ck-body-color-valid-muted": "#80E38F",
     "--ck-siwe-border": "#F0F0F0",
 
     /** Disclaimer */

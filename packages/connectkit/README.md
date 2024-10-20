@@ -1,7 +1,6 @@
-<!-- TODO -->
-<!-- <a href="https://docs.family.co/connectkit">
-  <img width="1080" alt="connectkit" src="https://github.com/family/connectkit/assets/1930210/87c2e868-3228-44b8-82c3-a38adf6d1bbf">
-</a> -->
+<a href="https://paydocs.daimo.com">
+  <img src="./header.png">
+</a>
 
 # Daimo Pay
 
@@ -25,11 +24,11 @@ You can find the full Daimo Pay documentation [here](https://paydocs.daimo.com).
 
 ## Examples
 
-Check out https://github.com/daimo-eth/pay-hello-world. More coming soon.
+Check out https://github.com/daimo-eth/daimo-pay-demo
 
 ### Try in CodeSandbox
 
-Coming soon
+Coming soon.
 
 ### Local Development
 
