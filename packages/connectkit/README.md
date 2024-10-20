@@ -1,5 +1,5 @@
 <a href="https://paydocs.daimo.com">
-  <img src="./header.png">
+  <img src="https://raw.githubusercontent.com/daimo-eth/paykit/refs/heads/main/packages/connectkit/header.png">
 </a>
 
 # Daimo Pay
