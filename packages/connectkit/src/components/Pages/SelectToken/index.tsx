@@ -1,30 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { ROUTES, useContext } from "../../DaimoPay";
 
-import {
-  ModalContent,
-  ModalH1,
-  PageContent
-} from "../../Common/Modal/styles";
+import { ModalContent, ModalH1, PageContent } from "../../Common/Modal/styles";
 
-import {
-  capitalize,
-  DaimoPayToken,
-  getDisplayPrice
-} from "@daimo/common";
-import {
-  getChainName
-} from "@daimo/contract";
+import { capitalize, DaimoPayToken, getDisplayPrice } from "@daimo/common";
+import { getChainName } from "@daimo/contract";
 import { motion } from "framer-motion";
-import {
-  useAccount
-} from "wagmi";
-import {
-  chainToLogo
-} from "../../../assets/chains";
+import { useAccount } from "wagmi";
+import { chainToLogo } from "../../../assets/chains";
 import styled from "../../../styles/styled";
 import { PaymentOption } from "../../../utils/getPaymentInfo";
 import { trpc } from "../../../utils/trpc";
+import Button from "../../Common/Button";
 import OptionsList from "../../Common/OptionsList";
 import { OrderHeader } from "../../Common/OrderHeader";
 
@@ -90,8 +77,21 @@ const SelectToken: React.FC = () => {
       <OrderHeader minified />
 
       {!isLoadingOptions && paymentOptions?.length === 0 && (
-        <ModalContent style={{ display: "flex", alignItems: "center", justifyContent: "center", paddingTop: 16, paddingBottom: 16 }}>
-          <ModalH1>Insufficient balance. Please select an alternative payment method.</ModalH1>
+        <ModalContent
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            paddingTop: 16,
+            paddingBottom: 16,
+          }}
+        >
+          <ModalH1>
+            Insufficient balance. Please select an alternative payment method.
+          </ModalH1>
+          <Button onClick={() => setRoute(ROUTES.SELECT_METHOD)}>
+            Select another method
+          </Button>
         </ModalContent>
       )}
 

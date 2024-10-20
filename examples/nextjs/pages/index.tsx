@@ -1,3 +1,4 @@
+import { writeDaimoPayOrderID } from "@daimo/common";
 import { DaimoPayButton, useDaimoPayStatus } from "@daimo/pay";
 import type { NextPage } from "next";
 
@@ -15,7 +16,11 @@ const Home: NextPage = () => {
       }}
     >
       {status?.status === "payment_completed" ? "🎉" : "💰"}
-      <DaimoPayButton payId="BXgCraFgBhfLEpLqBLgydsgvXTnRt8d2BP95BmAQK6MS" />
+      <DaimoPayButton
+        payId={writeDaimoPayOrderID(
+          128137641854706417766070727187199052376376149641762183903264079086073036664n,
+        )}
+      />
     </div>
   );
 };
