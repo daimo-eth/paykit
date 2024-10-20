@@ -3,6 +3,7 @@ import { http } from "wagmi";
 import {
   arbitrum,
   base,
+  baseSepolia,
   Chain,
   linea,
   mainnet,
@@ -40,6 +41,7 @@ export const REQUIRED_CHAINS: CreateConfigParameters["chains"] = [
   arbitrum,
   linea,
   sepolia,
+  baseSepolia,
 ];
 
 const defaultConfig = ({
