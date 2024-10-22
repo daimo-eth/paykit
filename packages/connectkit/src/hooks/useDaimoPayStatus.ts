@@ -1,6 +1,6 @@
 import {
+  DaimoPayIntentStatus,
   DaimoPayOrderMode,
-  DaimoPayOrderStatusDest,
   DaimoPayOrderStatusSource,
   writeDaimoPayOrderID,
 } from "@daimo/common";
@@ -14,16 +14,12 @@ export function useDaimoPayStatus() {
     const order = paymentInfo.daimoPayOrder;
     const paymentId = writeDaimoPayOrderID(order.id);
     if (order.mode === DaimoPayOrderMode.HYDRATED) {
-      if (
-        order.destStatus in
-        [
-          DaimoPayOrderStatusDest.FAST_FINISH_SUBMITTED, // Frontends are optimistic, assume submits will be successful
-          DaimoPayOrderStatusDest.FAST_FINISH_SUCCESSFUL,
-          DaimoPayOrderStatusDest.CLAIM_SUCCESSFUL,
-        ]
-      ) {
+      if (order.intentStatus != DaimoPayIntentStatus.PENDING) {
         return {
-          status: "payment_completed" as const,
+          status:
+            order.intentStatus === DaimoPayIntentStatus.SUCCESSFUL
+              ? "payment_completed"
+              : "payment_bounced",
           paymentId,
         };
       } else if (
