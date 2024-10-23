@@ -31,7 +31,7 @@ const Confirmation: React.FC = () => {
         daimoPayOrder.destStatus in
         [
           DaimoPayOrderStatusDest.FAST_FINISH_SUBMITTED, // Frontends are optimistic, assume submits will be successful
-          DaimoPayOrderStatusDest.FAST_FINISH_SUCCESSFUL,
+          DaimoPayOrderStatusDest.FAST_FINISHED,
           DaimoPayOrderStatusDest.CLAIM_SUCCESSFUL,
         ]
       ) {
