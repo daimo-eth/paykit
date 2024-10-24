@@ -73,7 +73,7 @@ const ConnectModal: React.FC<{
       context.setRoute(ROUTES.SELECT_TOKEN);
     } else if (context.route === ROUTES.ONBOARDING) {
       context.setRoute(ROUTES.CONNECTORS);
-    }else {
+    } else {
       context.setRoute(ROUTES.SELECT_METHOD);
     }
   };
@@ -100,7 +100,11 @@ const ConnectModal: React.FC<{
   }
 
   useEffect(() => {
-    if (context.route === ROUTES.CONNECT || context.route === ROUTES.CONNECTORS || context.route === ROUTES.MOBILECONNECTORS) {
+    if (
+      context.route === ROUTES.CONNECT ||
+      context.route === ROUTES.CONNECTORS ||
+      context.route === ROUTES.MOBILECONNECTORS
+    ) {
       if (isConnected) {
         context.setRoute(ROUTES.SELECT_TOKEN);
       }

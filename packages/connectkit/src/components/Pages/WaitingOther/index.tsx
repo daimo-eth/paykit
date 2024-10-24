@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ROUTES, useContext } from "../../DaimoPay";
 
 import {
@@ -10,8 +10,10 @@ import {
 
 import { AnimatePresence, motion } from "framer-motion";
 import { css } from "styled-components";
+import { ExternalLinkIcon } from "../../../assets/icons";
 import styled from "../../../styles/styled";
 import { trpc } from "../../../utils/trpc";
+import Button from "../../Common/Button";
 import CircleSpinner from "../../Spinners/CircleSpinner";
 import SquircleSpinner from "../../Spinners/SquircleSpinner";
 
@@ -23,6 +25,8 @@ const WaitingOther: React.FC = () => {
     paymentWaitingMessage,
     daimoPayOrder,
   } = paymentInfo;
+
+  const [externalURL, setExternalURL] = useState<string | null>(null);
 
   useEffect(() => {
     const checkForSourcePayment = async () => {
@@ -40,6 +44,22 @@ const WaitingOther: React.FC = () => {
     const interval = setInterval(checkForSourcePayment, 1000);
     return () => clearInterval(interval);
   }, [daimoPayOrder?.id]);
+
+  useEffect(() => {
+    if (!selectedExternalOption) return;
+
+    payWithExternal(selectedExternalOption.id).then((url) => {
+      setExternalURL(url);
+      setTimeout(() => {
+        window.open(url, "_blank");
+      });
+    });
+  }, [selectedExternalOption]);
+
+  const waitingMessageLength = paymentWaitingMessage?.length;
+  useEffect(() => {
+    triggerResize();
+  }, [waitingMessageLength, externalURL]);
 
   if (!selectedExternalOption) {
     return <PageContent></PageContent>;
@@ -64,23 +84,6 @@ const WaitingOther: React.FC = () => {
     }
   })();
 
-  useEffect(() => {
-    if (!selectedExternalOption) return;
-
-    // Note: Safari doesn't support window.open in an async function.
-    // We need to trigger this in the main thread:
-    // https://stackoverflow.com/a/39387533
-    const windowOpen = window.open("about:blank", "_blank");
-    payWithExternal(selectedExternalOption.id).then((url) => {
-      if (windowOpen) windowOpen.location.href = url;
-    });
-  }, [selectedExternalOption]);
-
-  const waitingMessageLength = paymentWaitingMessage?.length;
-  useEffect(() => {
-    triggerResize();
-  }, [waitingMessageLength]);
-
   return (
     <PageContent>
       <LoadingContainer>
@@ -93,10 +96,18 @@ const WaitingOther: React.FC = () => {
       <ModalContent style={{ marginLeft: 24, marginRight: 24 }}>
         <ModalH1>Waiting for Payment</ModalH1>
         {paymentWaitingMessage && (
-          <ModalBody style={{ marginTop: 12 }}>
+          <ModalBody style={{ marginTop: 12, marginBottom: 12 }}>
             {paymentWaitingMessage}
           </ModalBody>
         )}
+        <Button
+          icon={<ExternalLinkIcon />}
+          onClick={() => {
+            if (externalURL) window.open(externalURL, "_blank");
+          }}
+        >
+          Open in New Tab
+        </Button>
       </ModalContent>
     </PageContent>
   );

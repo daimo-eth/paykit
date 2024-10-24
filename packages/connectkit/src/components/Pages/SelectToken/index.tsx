@@ -90,7 +90,7 @@ const SelectToken: React.FC = () => {
             Insufficient balance. Please select an alternative payment method.
           </ModalH1>
           <Button onClick={() => setRoute(ROUTES.SELECT_METHOD)}>
-            Select another method
+            Select Another Method
           </Button>
         </ModalContent>
       )}
