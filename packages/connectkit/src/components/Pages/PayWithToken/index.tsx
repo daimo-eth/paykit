@@ -20,7 +20,7 @@ enum PayState {
 }
 
 const PayWithToken: React.FC = () => {
-  const { triggerResize, paymentInfo, setRoute } = useContext();
+  const { triggerResize, paymentInfo, setRoute, log } = useContext();
   const { selectedTokenOption, payWithToken } = paymentInfo;
   const [payState, setPayState] = useState<PayState>(
     PayState.RequestingPayment,
@@ -59,7 +59,7 @@ const PayWithToken: React.FC = () => {
     const switchChain = await trySwitchingChain(option);
 
     if (!switchChain) {
-      console.log("Switching chain failed");
+      console.error("Switching chain failed");
       setPayState(PayState.RequestCancelled);
       return;
     }
@@ -75,7 +75,7 @@ const PayWithToken: React.FC = () => {
       if (e?.name === "ConnectorChainMismatchError") {
         // Workaround for Rainbow wallet bug -- user is able to switch chain without
         // the wallet updating the chain ID for wagmi.
-        console.log("Chain mismatch detected, attempting to switch and retry");
+        log("Chain mismatch detected, attempting to switch and retry");
         const switchSuccessful = await trySwitchingChain(option, true);
         if (switchSuccessful) {
           try {

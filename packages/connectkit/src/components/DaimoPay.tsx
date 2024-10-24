@@ -236,7 +236,7 @@ export const DaimoPayProvider = ({
 
   const log = debugMode ? console.log : () => {};
 
-  const paymentInfo = getPaymentInfo();
+  const paymentInfo = getPaymentInfo(log);
 
   const loadPayment = async (payId: string) => {
     await paymentInfo.setPayId(payId);

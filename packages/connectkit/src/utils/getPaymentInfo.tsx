@@ -5,13 +5,10 @@ import {
   DaimoPayTokenAmount,
   ExternalPaymentOptionMetadata,
   ExternalPaymentOptions,
-  readDaimoPayOrderID
+  readDaimoPayOrderID,
 } from "@daimo/common";
 import { erc20Abi } from "@daimo/contract";
-import {
-  useCallback,
-  useState
-} from "react";
+import { useCallback, useState } from "react";
 import { parseUnits, zeroAddress } from "viem";
 import { useAccount, useSendTransaction, useWriteContract } from "wagmi";
 
@@ -42,7 +39,7 @@ export interface PaymentInfo {
   refreshOrder: () => Promise<void>;
 }
 
-export function getPaymentInfo() {
+export function getPaymentInfo(log: (...args: any[]) => void) {
   // Wallet state.
   const { address: senderAddr } = useAccount();
   const { writeContractAsync } = useWriteContract();
@@ -70,7 +67,7 @@ export function getPaymentInfo() {
       refundAddress: senderAddr,
     });
 
-    console.log(
+    log(
       `[CHECKOUT] Hydrated order: ${JSON.stringify(
         hydratedOrder,
       )}, checking out with ${tokenAmount.token.token}`,
@@ -141,7 +138,7 @@ export function getPaymentInfo() {
   }, [daimoPayOrder?.id]);
 
   const setChosenUsd = (usdAmount: number) => {
-    console.log(`[CHECKOUT] Setting chosen USD amount to ${usdAmount}`);
+    log(`[CHECKOUT] Setting chosen USD amount to ${usdAmount}`);
     assert(!!daimoPayOrder);
     const token = daimoPayOrder.destFinalCallTokenAmount.token;
     const tokenAmount = parseUnits(
@@ -175,7 +172,7 @@ export function getPaymentInfo() {
         return;
       }
 
-      console.log(`[CHECKOUT] Parsed order: ${JSON.stringify(order)}`);
+      log(`[CHECKOUT] Parsed order: ${JSON.stringify(order)}`);
 
       setDaimoPayOrder(order);
     },

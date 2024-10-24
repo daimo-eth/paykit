@@ -79,6 +79,7 @@ const InputField = styled(motion.input)<{ $width?: string }>`
   line-height: inherit;
   font-size: inherit;
   font-weight: inherit;
+  color: inherit;
   border: none;
   padding: 0;
   &:focus {

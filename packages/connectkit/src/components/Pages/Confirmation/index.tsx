@@ -28,12 +28,10 @@ const Confirmation: React.FC = () => {
   const { done, txURL, currency } = (() => {
     if (daimoPayOrder && daimoPayOrder.mode === DaimoPayOrderMode.HYDRATED) {
       if (
-        daimoPayOrder.destStatus in
-        [
-          DaimoPayOrderStatusDest.FAST_FINISH_SUBMITTED, // Frontends are optimistic, assume submits will be successful
-          DaimoPayOrderStatusDest.FAST_FINISHED,
-          DaimoPayOrderStatusDest.CLAIM_SUCCESSFUL,
-        ]
+        daimoPayOrder.destStatus ===
+          DaimoPayOrderStatusDest.FAST_FINISH_SUBMITTED || // Frontends are optimistic, assume submits will be successful
+        daimoPayOrder.destStatus === DaimoPayOrderStatusDest.FAST_FINISHED ||
+        daimoPayOrder.destStatus === DaimoPayOrderStatusDest.CLAIM_SUCCESSFUL
       ) {
         const txHash =
           daimoPayOrder.destFastFinishTxHash ?? daimoPayOrder.destClaimTxHash;

@@ -59,6 +59,7 @@ const SelectToken: React.FC = () => {
 
   useEffect(() => {
     if (!payerAddress || !daimoPayOrder) return;
+    setPaymentOptions(null);
     setIsLoadingOptions(true);
 
     const destChainId = daimoPayOrder!.destFinalCallTokenAmount.token.chainId;

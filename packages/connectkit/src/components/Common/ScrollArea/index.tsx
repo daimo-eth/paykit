@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import useIsMobile from "../../../hooks/useIsMobile";
+import { useContext } from "../../DaimoPay";
 import { MoreIndicator, ScrollAreaContainer, ScrollContainer } from "./styles";
 
 const ArrowDown = () => (
@@ -30,6 +31,7 @@ export const ScrollArea = ({
   backgroundColor?: string;
   mobileDirection?: "horizontal" | "vertical";
 }) => {
+  const { log } = useContext();
   const ref = useRef<HTMLDivElement>(null);
   const moreRef = useRef<HTMLDivElement>(null);
 
@@ -45,7 +47,7 @@ export const ScrollArea = ({
         moreRef.current.classList.remove("hide");
       }
     }
-    console.log(`[SCROLL AREA]: ${el.scrollHeight}, ${el.clientHeight}`);
+    log(`[SCROLL AREA]: ${el.scrollHeight}, ${el.clientHeight}`);
 
     const handleScroll = (e: any) => {
       const {

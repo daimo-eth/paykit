@@ -30,11 +30,11 @@ const OptionsList = ({
   isLoading?: boolean;
   requiredSkeletons?: number;
 }) => {
-  const { triggerResize } = useContext();
+  const { triggerResize, log } = useContext();
   const optionsLength = options.length;
 
   useEffect(() => {
-    console.log(`[OPTIONS RESIZE]: ${optionsLength}, triggering resize`);
+    log(`[OPTIONS RESIZE]: ${optionsLength}, triggering resize`);
     if (optionsLength > 0) {
       triggerResize();
     }
