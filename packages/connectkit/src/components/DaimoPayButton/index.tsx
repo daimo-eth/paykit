@@ -3,7 +3,6 @@ import { useAccount, useEnsName } from "wagmi";
 import useIsMounted from "../../hooks/useIsMounted";
 import { truncateEthAddress } from "./../../utils";
 
-import { useModal } from "../../hooks/useModal";
 import { useContext } from "../DaimoPay";
 import { TextContainer } from "./styles";
 
@@ -44,7 +43,11 @@ const contentVariants: Variants = {
 type Hash = `0x${string}`;
 
 type DaimoPayButtonRendererProps = {
+  /** The payment ID, generated via the Daimo Pay API. */
   payId: string;
+  /** Automatically close the modal after a successful payment. */
+  closeOnSuccess?: boolean;
+  /** Custom renderer */
   children?: (renderProps: {
     show?: () => void;
     hide?: () => void;
@@ -63,13 +66,13 @@ type DaimoPayButtonRendererProps = {
 
 const DaimoPayButtonRenderer: React.FC<DaimoPayButtonRendererProps> = ({
   payId,
+  closeOnSuccess,
   children,
 }) => {
   const isMounted = useIsMounted();
   const context = useContext();
-  const { open, setOpen } = useModal();
 
-  const { address, isConnected, chain } = useAccount();
+  const { address, chain } = useAccount();
   const isChainSupported = useChainIsSupported(chain?.id);
 
   const { data: ensName } = useEnsName({
@@ -77,20 +80,16 @@ const DaimoPayButtonRenderer: React.FC<DaimoPayButtonRendererProps> = ({
     address: address,
   });
 
-  function hide() {
-    setOpen(false);
-  }
-
   // Pre-load payment info in background.
   const { setPayId } = context.paymentInfo;
   useEffect(() => {
     setPayId(payId);
   }, [payId]);
 
-  async function show() {
-    await context.loadPayment(payId); // ensure payment info is loaded before opening.
-    context.setOpen(true);
-  }
+  const hide = () => context.setOpen(false);
+
+  const modalOptions = { closeOnSuccess };
+  const show = () => context.loadAndShowPayment(payId, modalOptions);
 
   if (!children) return null;
   if (!isMounted) return null;
@@ -104,7 +103,7 @@ const DaimoPayButtonRenderer: React.FC<DaimoPayButtonRendererProps> = ({
         chain: chain,
         unsupported: !isChainSupported,
         isConnected: !!address,
-        isConnecting: open, // Using `open` to determine if connecting as wagmi isConnecting only is set to true when an active connector is awaiting connection
+        isConnecting: context.open,
         address: address,
         truncatedAddress: address ? truncateEthAddress(address) : undefined,
         ensName: ensName?.toString(),
@@ -157,6 +156,7 @@ export function DaimoPayButton({
   theme,
   mode,
   customTheme,
+  closeOnSuccess,
   onClick,
 }: DaimoPayButtonProps) {
   const isMounted = useIsMounted();
@@ -169,10 +169,8 @@ export function DaimoPayButton({
     setPayId(payId);
   }, [payId]);
 
-  async function show() {
-    await context.loadPayment(payId); // ensure payment info is loaded
-    context.setOpen(true);
-  }
+  const modalOptions = { closeOnSuccess };
+  const show = () => context.loadAndShowPayment(payId, modalOptions);
 
   if (!isMounted) return null;
 

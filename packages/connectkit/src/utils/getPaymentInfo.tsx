@@ -12,22 +12,27 @@ import { useCallback, useState } from "react";
 import { parseUnits, zeroAddress } from "viem";
 import { useAccount, useSendTransaction, useWriteContract } from "wagmi";
 
-import { DaimoPayOptions } from "../types";
+import { DaimoPayModalOptions } from "../types";
 import { detectPlatform } from "./platform";
 import { trpc } from "./trpc";
 
-export type SourcePayment = Parameters<
-  typeof trpc.processSourcePayment.mutate
->[0];
-
+/** Wallet payment options. User picks one. */
 export type PaymentOption = Awaited<
   ReturnType<typeof trpc.getWalletPaymentOptions.query>
 >[0];
 
+/** Wallet payment details, sent to processSourcePayment after submitting tx. */
+export type SourcePayment = Parameters<
+  typeof trpc.processSourcePayment.mutate
+>[0];
+
+/** Loads a DaimoPayOrder + manages the corresponding modal. */
 export interface PaymentInfo {
   setPayId: (id: string | null) => Promise<void>;
-  daimoPayOrder: DaimoPayOrder | null;
-  paymentWaitingMessage: string | null;
+  daimoPayOrder: DaimoPayOrder | undefined;
+  modalOptions: DaimoPayModalOptions;
+  setModalOptions: (modalOptions: DaimoPayModalOptions) => void;
+  paymentWaitingMessage: string | undefined;
   selectedExternalOption: ExternalPaymentOptionMetadata | undefined;
   selectedTokenOption: PaymentOption | undefined;
   setSelectedExternalOption: (
@@ -42,7 +47,6 @@ export interface PaymentInfo {
 }
 
 export function getPaymentInfo(
-  options: DaimoPayOptions,
   setOpen: (showModal: boolean) => void,
   log: (...args: any[]) => void,
 ) {
@@ -52,13 +56,13 @@ export function getPaymentInfo(
   const { sendTransactionAsync } = useSendTransaction();
 
   // Daimo Pay order state.
-  const [daimoPayOrder, setDaimoPayOrder] = useState<DaimoPayOrder | null>(
-    null,
-  );
-  const [paymentWaitingMessage, setPaymentWaitingMessage] = useState<
-    string | null
-  >(null);
+  const [daimoPayOrder, setDaimoPayOrder] = useState<DaimoPayOrder>();
+  const [paymentWaitingMessage, setPaymentWaitingMessage] = useState<string>();
 
+  // Payment UI config.
+  const [modalOptions, setModalOptions] = useState<DaimoPayModalOptions>({});
+
+  // UI state. Selection for external payment (Binance, etc) vs wallet payment.
   const [selectedExternalOption, setSelectedExternalOption] =
     useState<ExternalPaymentOptionMetadata>();
   const [selectedTokenOption, setSelectedTokenOption] =
@@ -143,6 +147,7 @@ export function getPaymentInfo(
     setDaimoPayOrder(order);
   }, [daimoPayOrder?.id]);
 
+  /** User picked a different deposit amount. */
   const setChosenUsd = (usdAmount: number) => {
     log(`[CHECKOUT] Setting chosen USD amount to ${usdAmount}`);
     assert(!!daimoPayOrder);
@@ -186,8 +191,8 @@ export function getPaymentInfo(
   );
 
   const onSuccess = ({ txHash, txURL }: { txHash: string; txURL?: string }) => {
-    if (options?.closeOnSuccess) {
-      console.log(`Transaction succeeded, closing: ${txHash} ${txURL}`);
+    if (modalOptions?.closeOnSuccess) {
+      log(`[CHECKOUT] transaction succeeded, closing: ${txHash} ${txURL}`);
       setTimeout(() => setOpen(false), 1000);
     }
   };
@@ -195,6 +200,8 @@ export function getPaymentInfo(
   return {
     setPayId,
     daimoPayOrder,
+    modalOptions,
+    setModalOptions,
     paymentWaitingMessage,
     selectedExternalOption,
     selectedTokenOption,

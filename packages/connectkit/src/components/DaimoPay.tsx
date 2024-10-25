@@ -2,13 +2,13 @@ import { Buffer } from "buffer";
 import React, {
   createContext,
   createElement,
-  ReactNode,
   useEffect,
   useState,
 } from "react";
 import {
-  CustomAvatarProps,
   CustomTheme,
+  DaimoPayContextOptions,
+  DaimoPayModalOptions,
   Languages,
   Mode,
   Theme,
@@ -16,7 +16,7 @@ import {
 
 import defaultTheme from "../styles/defaultTheme";
 
-import { DaimoPayOrderMode } from "@daimo/common";
+import { DaimoPayOrderMode, debugJson } from "@daimo/common";
 import { ThemeProvider } from "styled-components";
 import { useAccount, WagmiContext } from "wagmi";
 import { REQUIRED_CHAINS } from "../defaultConfig";
@@ -76,50 +76,25 @@ type ContextValue = {
   displayError: (message: string | React.ReactNode | null, code?: any) => void;
   resize: number;
   triggerResize: () => void;
-  /** Payment UX options. */
-  options?: DaimoPayOptions;
-  /** Updates paymentInfo, loading the latest status for a given payment. */
-  loadPayment: (payId: string) => Promise<void>;
+  /** Global options, across all pay buttons and payments. */
+  options?: DaimoPayContextOptions;
+  /** Loads a payment, then shows the modal to complete payment. */
+  loadAndShowPayment: (
+    payId: string,
+    modalOptions: DaimoPayModalOptions,
+  ) => Promise<void>;
   /** Payment status & callbacks. */
   paymentInfo: PaymentInfo;
 } & useConnectCallbackProps;
 
 export const Context = createContext<ContextValue | null>(null);
 
-export type DaimoPayOptions = {
-  language?: Languages;
-  hideBalance?: boolean;
-  hideTooltips?: boolean;
-  hideQuestionMarkCTA?: boolean;
-  hideNoWalletCTA?: boolean;
-  hideRecentBadge?: boolean;
-  walletConnectCTA?: "link" | "modal" | "both";
-  /** Avoids layout shift when the DaimoPay modal is open by adding padding to the body */
-  avoidLayoutShift?: boolean;
-  /** Automatically embeds Google Font of the current theme. Does not work with custom themes */
-  embedGoogleFonts?: boolean;
-  truncateLongENSAddress?: boolean;
-  walletConnectName?: string;
-  reducedMotion?: boolean;
-  disclaimer?: ReactNode | string;
-  bufferPolyfill?: boolean;
-  customAvatar?: React.FC<CustomAvatarProps>;
-  initialChainId?: number;
-  enforceSupportedChains?: boolean;
-  ethereumOnboardingUrl?: string;
-  walletOnboardingUrl?: string;
-  /** Blur the background when the modal is open */
-  overlayBlur?: number;
-  /** Automatically close the modal on successful payment. */
-  closeOnSuccess?: boolean;
-};
-
 type DaimoPayProviderProps = {
   children?: React.ReactNode;
   theme?: Theme;
   mode?: Mode;
   customTheme?: CustomTheme;
-  options?: DaimoPayOptions;
+  options?: DaimoPayContextOptions;
   debugMode?: boolean;
 } & useConnectCallbackProps;
 
@@ -164,7 +139,7 @@ export const DaimoPayProvider = ({
   const injectedConnector = useConnector("injected");
 
   // Default config options
-  const defaultOptions: DaimoPayOptions = {
+  const defaultOptions: DaimoPayContextOptions = {
     language: "en-US",
     hideBalance: false,
     hideTooltips: false,
@@ -185,10 +160,13 @@ export const DaimoPayProvider = ({
     ethereumOnboardingUrl: undefined,
     walletOnboardingUrl: undefined,
     overlayBlur: undefined,
-    closeOnSuccess: undefined,
   };
 
-  const opts: DaimoPayOptions = Object.assign({}, defaultOptions, options);
+  const opts: DaimoPayContextOptions = Object.assign(
+    {},
+    defaultOptions,
+    options,
+  );
 
   if (typeof window !== "undefined") {
     // Buffer Polyfill, needed for bundlers that don't provide Node polyfills (e.g CRA, Vite, etc.)
@@ -246,11 +224,17 @@ export const DaimoPayProvider = ({
 
   const log = debugMode ? console.log : () => {};
 
-  // TODO: PaymentInfo actually includes callbacks and state, too..
-  const paymentInfo: PaymentInfo = getPaymentInfo(opts, setOpen, log);
+  const paymentInfo: PaymentInfo = getPaymentInfo(setOpen, log);
 
-  const loadPayment = async (payId: string) => {
+  const loadAndShowPayment = async (
+    payId: string,
+    modalOptions: DaimoPayModalOptions,
+  ) => {
+    log(`[PAY] showing order ${payId}, options ${debugJson(modalOptions)}`);
     await paymentInfo.setPayId(payId);
+
+    paymentInfo.setModalOptions(modalOptions);
+
     const daimoPayOrder = paymentInfo.daimoPayOrder;
     if (
       daimoPayOrder &&
@@ -261,6 +245,8 @@ export const DaimoPayProvider = ({
     } else {
       setRoute(ROUTES.SELECT_METHOD);
     }
+
+    setOpen(true);
   };
 
   const value = {
@@ -276,7 +262,7 @@ export const DaimoPayProvider = ({
     setOpen,
     route,
     setRoute,
-    loadPayment,
+    loadAndShowPayment,
     connector,
     setConnector,
     onConnect,
