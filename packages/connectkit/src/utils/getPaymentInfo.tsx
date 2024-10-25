@@ -12,6 +12,7 @@ import { useCallback, useState } from "react";
 import { parseUnits, zeroAddress } from "viem";
 import { useAccount, useSendTransaction, useWriteContract } from "wagmi";
 
+import { DaimoPayOptions } from "../types";
 import { detectPlatform } from "./platform";
 import { trpc } from "./trpc";
 
@@ -37,9 +38,14 @@ export interface PaymentInfo {
   payWithToken: (tokenAmount: DaimoPayTokenAmount) => Promise<void>;
   payWithExternal: (option: ExternalPaymentOptions) => Promise<string>;
   refreshOrder: () => Promise<void>;
+  onSuccess: (args: { txHash: string; txURL?: string }) => void;
 }
 
-export function getPaymentInfo(log: (...args: any[]) => void) {
+export function getPaymentInfo(
+  options: DaimoPayOptions,
+  setOpen: (showModal: boolean) => void,
+  log: (...args: any[]) => void,
+) {
   // Wallet state.
   const { address: senderAddr } = useAccount();
   const { writeContractAsync } = useWriteContract();
@@ -179,6 +185,13 @@ export function getPaymentInfo(log: (...args: any[]) => void) {
     [daimoPayOrder],
   );
 
+  const onSuccess = ({ txHash, txURL }: { txHash: string; txURL?: string }) => {
+    if (options?.closeOnSuccess) {
+      console.log(`Transaction succeeded, closing: ${txHash} ${txURL}`);
+      setTimeout(() => setOpen(false), 1000);
+    }
+  };
+
   return {
     setPayId,
     daimoPayOrder,
@@ -191,5 +204,6 @@ export function getPaymentInfo(log: (...args: any[]) => void) {
     payWithToken,
     payWithExternal,
     refreshOrder,
+    onSuccess,
   };
 }

@@ -15,7 +15,7 @@ const Home: NextPage = () => {
       }}
     >
       {status?.status === "payment_completed" ? "🎉" : "💰"}
-      <DaimoPayButton payId={"GgQn1RGAXx2QufJ6mwtZty6cJGMzQBMx8qQL8Dw7Jw8Y"} />
+      <DaimoPayButton payId={"GwAZy5porp29kCZieFCxHfwkfojqmNBcg1UDkqF4bC6s"} />
     </div>
   );
 };

@@ -24,7 +24,7 @@ import WaitingOther from "../Pages/WaitingOther";
 
 const customThemeDefault: object = {};
 
-const ConnectModal: React.FC<{
+export const DaimoPayModal: React.FC<{
   mode?: Mode;
   theme?: Theme;
   customTheme?: CustomTheme;
@@ -155,5 +155,3 @@ const ConnectModal: React.FC<{
     </DaimoPayThemeProvider>
   );
 };
-
-export default ConnectModal;

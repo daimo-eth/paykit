@@ -5,9 +5,7 @@ import { truncateEthAddress } from "./../../utils";
 
 import { useModal } from "../../hooks/useModal";
 import { useContext } from "../DaimoPay";
-import {
-  TextContainer
-} from "./styles";
+import { TextContainer } from "./styles";
 
 import { AnimatePresence, Variants } from "framer-motion";
 import { Chain } from "viem";
@@ -119,7 +117,7 @@ DaimoPayButtonRenderer.displayName = "DaimoPayButton.Custom";
 
 function DaimoPayButtonInner() {
   const { paymentInfo } = useContext();
-  const label = paymentInfo?.daimoPayOrder?.metadata.intent ?? "Pay";
+  const label = paymentInfo?.daimoPayOrder?.metadata?.intent ?? "Pay";
 
   return (
     <AnimatePresence initial={false}>
@@ -131,7 +129,6 @@ function DaimoPayButtonInner() {
         variants={contentVariants}
         style={{
           height: 40,
-          //padding: '0 5px',
         }}
       >
         {label}
@@ -141,27 +138,25 @@ function DaimoPayButtonInner() {
 }
 
 type DaimoPayButtonProps = {
-  // Daimo Pay Order ID.
+  /** The payment ID, generated via the Daimo Pay API. */
   payId: string;
-
-  // Theming
-  theme?: Theme;
+  /** Light mode, dark mode, or auto. */
   mode?: Mode;
+  /** Named theme. See docs for options. */
+  theme?: Theme;
+  /** Custom theme. See docs for options. */
   customTheme?: CustomTheme;
-
-  // Events
+  /** Automatically close the modal after a successful payment. */
+  closeOnSuccess?: boolean;
+  /** Get notified when the user clicks, opening the payment modal. */
   onClick?: (open: () => void) => void;
 };
 
 export function DaimoPayButton({
   payId,
-
-  // Theming
   theme,
   mode,
   customTheme,
-
-  // Events
   onClick,
 }: DaimoPayButtonProps) {
   const isMounted = useIsMounted();

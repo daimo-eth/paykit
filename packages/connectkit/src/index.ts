@@ -3,7 +3,11 @@ export { default as getDefaultConnectors } from "./defaultConnectors";
 export * as Types from "./types";
 export { wallets } from "./wallets";
 
-export { Context, DaimoPayProvider } from "./components/DaimoPay";
+export {
+  Context,
+  DaimoPayOptions,
+  DaimoPayProvider,
+} from "./components/DaimoPay";
 export { DaimoPayButton } from "./components/DaimoPayButton";
 export { useModal } from "./hooks/useModal";
 

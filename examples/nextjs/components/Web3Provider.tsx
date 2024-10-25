@@ -1,6 +1,10 @@
 import React from "react";
 
-import { DaimoPayProvider, getDefaultConfig } from "@daimo/pay";
+import {
+  DaimoPayOptions,
+  DaimoPayProvider,
+  getDefaultConfig,
+} from "@daimo/pay";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider, createConfig } from "wagmi";
 
@@ -13,11 +17,17 @@ const config = createConfig(
 
 const queryClient = new QueryClient();
 
+const options: DaimoPayOptions = {
+  closeOnSuccess: true,
+};
+
 export const Web3Provider = ({ children }: { children: React.ReactNode }) => {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <DaimoPayProvider debugMode>{children}</DaimoPayProvider>
+        <DaimoPayProvider debugMode options={options}>
+          {children}
+        </DaimoPayProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );

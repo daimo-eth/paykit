@@ -30,7 +30,7 @@ import { useConnector } from "../hooks/useConnectors";
 import { useThemeFont } from "../hooks/useGoogleFont";
 import { getPaymentInfo, PaymentInfo } from "../utils/getPaymentInfo";
 import { isFamily } from "../utils/wallets";
-import DaimoPayModal from "./ConnectModal";
+import { DaimoPayModal } from "./DaimoPayModal";
 import { Web3ContextProvider } from "./contexts/web3";
 
 export enum ROUTES {
@@ -68,16 +68,19 @@ type ContextValue = {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   route: string;
   setRoute: React.Dispatch<React.SetStateAction<ROUTES>>;
-  loadPayment: (payId: string) => Promise<void>;
   connector: Connector;
   setConnector: React.Dispatch<React.SetStateAction<Connector>>;
   errorMessage: Error;
-  options?: DaimoPayOptions;
   debugMode?: boolean;
   log: (...props: any) => void;
   displayError: (message: string | React.ReactNode | null, code?: any) => void;
   resize: number;
   triggerResize: () => void;
+  /** Payment UX options. */
+  options?: DaimoPayOptions;
+  /** Updates paymentInfo, loading the latest status for a given payment. */
+  loadPayment: (payId: string) => Promise<void>;
+  /** Payment status & callbacks. */
   paymentInfo: PaymentInfo;
 } & useConnectCallbackProps;
 
@@ -91,8 +94,10 @@ export type DaimoPayOptions = {
   hideNoWalletCTA?: boolean;
   hideRecentBadge?: boolean;
   walletConnectCTA?: "link" | "modal" | "both";
-  avoidLayoutShift?: boolean; // Avoids layout shift when the DaimoPay modal is open by adding padding to the body
-  embedGoogleFonts?: boolean; // Automatically embeds Google Font of the current theme. Does not work with custom themes
+  /** Avoids layout shift when the DaimoPay modal is open by adding padding to the body */
+  avoidLayoutShift?: boolean;
+  /** Automatically embeds Google Font of the current theme. Does not work with custom themes */
+  embedGoogleFonts?: boolean;
   truncateLongENSAddress?: boolean;
   walletConnectName?: string;
   reducedMotion?: boolean;
@@ -103,7 +108,10 @@ export type DaimoPayOptions = {
   enforceSupportedChains?: boolean;
   ethereumOnboardingUrl?: string;
   walletOnboardingUrl?: string;
-  overlayBlur?: number; // Blur the background when the modal is open
+  /** Blur the background when the modal is open */
+  overlayBlur?: number;
+  /** Automatically close the modal on successful payment. */
+  closeOnSuccess?: boolean;
 };
 
 type DaimoPayProviderProps = {
@@ -176,6 +184,8 @@ export const DaimoPayProvider = ({
     enforceSupportedChains: false,
     ethereumOnboardingUrl: undefined,
     walletOnboardingUrl: undefined,
+    overlayBlur: undefined,
+    closeOnSuccess: undefined,
   };
 
   const opts: DaimoPayOptions = Object.assign({}, defaultOptions, options);
@@ -236,7 +246,8 @@ export const DaimoPayProvider = ({
 
   const log = debugMode ? console.log : () => {};
 
-  const paymentInfo = getPaymentInfo(log);
+  // TODO: PaymentInfo actually includes callbacks and state, too..
+  const paymentInfo: PaymentInfo = getPaymentInfo(opts, setOpen, log);
 
   const loadPayment = async (payId: string) => {
     await paymentInfo.setPayId(payId);

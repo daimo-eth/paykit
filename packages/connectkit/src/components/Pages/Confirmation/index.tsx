@@ -4,11 +4,11 @@ import { useContext } from "../../DaimoPay";
 import { ModalContent, ModalH1, PageContent } from "../../Common/Modal/styles";
 
 import {
-  capitalize,
+  assert,
   DaimoPayOrderMode,
   DaimoPayOrderStatusDest,
 } from "@daimo/common";
-import { getChainExplorerTxUrl, getChainName } from "@daimo/contract";
+import { getChainExplorerTxUrl } from "@daimo/contract";
 import { motion } from "framer-motion";
 import { LoadingCircleIcon, TickIcon } from "../../../assets/icons";
 import styled from "../../../styles/styled";
@@ -25,29 +25,31 @@ const Confirmation: React.FC = () => {
     return () => clearInterval(interval);
   }, [refreshOrder]);
 
-  const { done, txURL, currency } = (() => {
+  const { done, txURL } = (() => {
     if (daimoPayOrder && daimoPayOrder.mode === DaimoPayOrderMode.HYDRATED) {
+      // Frontends are optimistic, assume submits will be successful
+      const { destStatus } = daimoPayOrder;
       if (
-        daimoPayOrder.destStatus ===
-          DaimoPayOrderStatusDest.FAST_FINISH_SUBMITTED || // Frontends are optimistic, assume submits will be successful
-        daimoPayOrder.destStatus === DaimoPayOrderStatusDest.FAST_FINISHED ||
-        daimoPayOrder.destStatus === DaimoPayOrderStatusDest.CLAIM_SUCCESSFUL
+        destStatus === DaimoPayOrderStatusDest.FAST_FINISH_SUBMITTED ||
+        destStatus === DaimoPayOrderStatusDest.FAST_FINISHED ||
+        destStatus === DaimoPayOrderStatusDest.CLAIM_SUCCESSFUL
       ) {
         const txHash =
           daimoPayOrder.destFastFinishTxHash ?? daimoPayOrder.destClaimTxHash;
         const chainId = daimoPayOrder.destFinalCallTokenAmount.token.chainId;
-        const currency = `${capitalize(getChainName(chainId))} ${daimoPayOrder.destFinalCallTokenAmount.token.symbol}`;
+        assert(txHash != null, `Dest ${destStatus}, but missing txHash`);
+        const txURL = getChainExplorerTxUrl(chainId, txHash);
+
+        paymentInfo.onSuccess({ txHash, txURL });
         return {
           done: true,
-          txURL: txHash ? getChainExplorerTxUrl(chainId, txHash) : undefined,
-          currency,
+          txURL,
         };
       }
     }
     return {
       done: false,
       txURL: undefined,
-      currency: undefined,
     };
   })();
 
@@ -79,7 +81,7 @@ const Confirmation: React.FC = () => {
         ) : (
           <ModalH1>
             <Link href={txURL} target="_blank" rel="noopener noreferrer">
-              Payment completed in {currency}
+              Payment completed
             </Link>
           </ModalH1>
         )}
