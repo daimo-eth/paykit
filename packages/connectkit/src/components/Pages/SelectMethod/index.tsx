@@ -111,7 +111,7 @@ const SelectMethod: React.FC = () => {
     };
 
     const usd = daimoPayOrder?.destFinalCallTokenAmount.usd;
-    if (usd) {
+    if (usd != null) {
       refreshExternalPaymentOptions(usd);
     }
   }, [daimoPayOrder?.destFinalCallTokenAmount.usd]);

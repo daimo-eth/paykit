@@ -54,6 +54,12 @@ const InputUnderlineField = ({
 }) => {
   // subtract width for decimal point if necessary
   const width = value.length - 0.5 * (value.includes(".") ? 1 : 0) + "ch";
+
+  const selectAll = (e: React.FocusEvent<HTMLInputElement>) => {
+    // When entering edit mode, select the amount for quicker editing
+    setTimeout(() => e.target.select(), 100);
+  };
+
   return (
     <div style={{ width: "auto", position: "relative" }}>
       <InputField
@@ -63,6 +69,7 @@ const InputUnderlineField = ({
         value={value}
         onChange={onChange}
         onBlur={onBlur}
+        onFocus={selectAll}
         onKeyDown={onKeyDown}
         autoFocus
       />
@@ -101,19 +108,19 @@ const Underline = styled(motion.div)`
 export const OrderHeader = ({ minified = false }: { minified?: boolean }) => {
   const { paymentInfo } = useContext();
 
-  const price =
+  const amount =
     paymentInfo.daimoPayOrder?.destFinalCallTokenAmount.usd.toFixed(2);
   const isEditable =
     paymentInfo.daimoPayOrder?.mode === DaimoPayOrderMode.CHOOSE_AMOUNT;
 
-  const [editablePrice, setEditablePrice] = useState<string>(price ?? "");
+  const [editableAmount, setEditableAmount] = useState<string>(amount ?? "");
 
-  // Start out in edit mode immediately if price = 0.
-  const [isEditing, setIsEditing] = useState<boolean>(price === "0.00");
+  // Start out in edit mode immediately if amount = 0.
+  const [isEditing, setIsEditing] = useState<boolean>(amount === "0.00");
 
   const handleSave = () => {
     if (!isEditing) return;
-    paymentInfo.setChosenUsd(Number(editablePrice));
+    paymentInfo.setChosenUsd(Number(editableAmount));
     setIsEditing(false);
   };
 
@@ -123,20 +130,20 @@ export const OrderHeader = ({ minified = false }: { minified?: boolean }) => {
     }
   };
 
-  const sanitizeAndSetPrice = (price: string) => {
-    if (!price.match(/^[0-9]*(\.[0-9]{0,2})?$/)) {
+  const sanitizeAndSetAmount = (amount: string) => {
+    if (!amount.match(/^[0-9]*(\.[0-9]{0,2})?$/)) {
       return;
     }
 
     const [digitsBeforeDecimal, digitsAfterDecimal] = (() => {
-      if (price.includes(".")) return price.split(".");
-      else return [price, ""];
+      if (amount.includes(".")) return amount.split(".");
+      else return [amount, ""];
     })();
 
     if (digitsBeforeDecimal.length > 5 || digitsAfterDecimal.length > 2) {
       return;
     }
-    setEditablePrice(price);
+    setEditableAmount(amount);
   };
 
   const titleAmountContent = (() => {
@@ -167,13 +174,13 @@ export const OrderHeader = ({ minified = false }: { minified?: boolean }) => {
           ></div>
         )}
         {!isEditing ? (
-          <span>${price}</span>
+          <span>${amount}</span>
         ) : (
           <div style={{ display: "flex" }}>
             $
             <InputUnderlineField
-              value={editablePrice}
-              onChange={(e) => sanitizeAndSetPrice(e.target.value)}
+              value={editableAmount}
+              onChange={(e) => sanitizeAndSetAmount(e.target.value)}
               onBlur={(e) => {
                 if (!e.relatedTarget) {
                   setIsEditing(false);
