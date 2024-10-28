@@ -107,7 +107,9 @@ export const OrderHeader = ({ minified = false }: { minified?: boolean }) => {
     paymentInfo.daimoPayOrder?.mode === DaimoPayOrderMode.CHOOSE_AMOUNT;
 
   const [editablePrice, setEditablePrice] = useState<string>(price ?? "");
-  const [isEditing, setIsEditing] = useState<boolean>(false);
+
+  // Start out in edit mode immediately if price = 0.
+  const [isEditing, setIsEditing] = useState<boolean>(price === "0.00");
 
   const handleSave = () => {
     if (!isEditing) return;
