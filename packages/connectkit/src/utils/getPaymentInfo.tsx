@@ -46,17 +46,23 @@ export interface PaymentInfo {
   onSuccess: (args: { txHash: string; txURL?: string }) => void;
 }
 
-export function getPaymentInfo(
-  setOpen: (showModal: boolean) => void,
-  log: (...args: any[]) => void,
-) {
+export function getPaymentInfo({
+  daimoPayOrder,
+  setDaimoPayOrder,
+  setOpen,
+  log,
+}: {
+  daimoPayOrder: DaimoPayOrder | undefined;
+  setDaimoPayOrder: (o: DaimoPayOrder) => void;
+  setOpen: (showModal: boolean) => void;
+  log: (...args: any[]) => void;
+}) {
   // Wallet state.
   const { address: senderAddr } = useAccount();
   const { writeContractAsync } = useWriteContract();
   const { sendTransactionAsync } = useSendTransaction();
 
   // Daimo Pay order state.
-  const [daimoPayOrder, setDaimoPayOrder] = useState<DaimoPayOrder>();
   const [paymentWaitingMessage, setPaymentWaitingMessage] = useState<string>();
 
   // Payment UI config.

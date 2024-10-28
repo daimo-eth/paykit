@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useContext } from "../../DaimoPay";
 
 import { ModalContent, ModalH1, PageContent } from "../../Common/Modal/styles";
@@ -16,14 +16,7 @@ import PoweredByFooter from "../../Common/PoweredByFooter";
 
 const Confirmation: React.FC = () => {
   const { paymentInfo } = useContext();
-  const { daimoPayOrder, refreshOrder } = paymentInfo;
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      refreshOrder();
-    }, 300);
-    return () => clearInterval(interval);
-  }, [refreshOrder]);
+  const { daimoPayOrder } = paymentInfo;
 
   const { done, txURL } = (() => {
     if (daimoPayOrder && daimoPayOrder.mode === DaimoPayOrderMode.HYDRATED) {

@@ -16,7 +16,14 @@ import {
 
 import defaultTheme from "../styles/defaultTheme";
 
-import { DaimoPayOrderMode, debugJson } from "@daimo/common";
+import {
+  DaimoPayIntentStatus,
+  DaimoPayOrder,
+  DaimoPayOrderMode,
+  DaimoPayOrderStatusSource,
+  debugJson,
+  retryBackoff,
+} from "@daimo/common";
 import { ThemeProvider } from "styled-components";
 import { useAccount, WagmiContext } from "wagmi";
 import { REQUIRED_CHAINS } from "../defaultConfig";
@@ -224,7 +231,40 @@ export const DaimoPayProvider = ({
 
   const log = debugMode ? console.log : () => {};
 
-  const paymentInfo: PaymentInfo = getPaymentInfo(setOpen, log);
+  // PaymentInfo is a second, inner context object containing a DaimoPayOrder
+  // plus all associated status and callbacks. In order for useContext() and
+  // downstream hooks like useDaimoPayStatus() to work correctly, we must set
+  // set refresh context when payment status changes; done via setDaimoPayOrder.
+  const [daimoPayOrder, setDaimoPayOrder] = useState<DaimoPayOrder>();
+  const paymentInfo: PaymentInfo = getPaymentInfo({
+    daimoPayOrder,
+    setDaimoPayOrder,
+    setOpen,
+    log,
+  });
+
+  // When a payment is in progress, poll for status updates. Do this regardless
+  // of whether the modal is still being displayed for useDaimoPayStatus().
+  useEffect(() => {
+    // Order just updated...
+    if (daimoPayOrder?.mode !== DaimoPayOrderMode.HYDRATED) return;
+
+    const { sourceStatus, intentStatus } = daimoPayOrder;
+    let intervalMs = 0;
+    if (sourceStatus === DaimoPayOrderStatusSource.WAITING_PAYMENT) {
+      intervalMs = 2500; // additional, faster polling in WaitingOther
+    } else if (intentStatus === DaimoPayIntentStatus.PENDING) {
+      intervalMs = 300; // poll fast from (payment initiated) to (finished)
+    } else {
+      return;
+    }
+
+    log(`[PAY] polling in ${intervalMs}ms`);
+    setTimeout(
+      () => retryBackoff("refreshOrder", () => paymentInfo.refreshOrder()),
+      intervalMs,
+    );
+  }, [daimoPayOrder]);
 
   const loadAndShowPayment = async (
     payId: string,
@@ -262,7 +302,6 @@ export const DaimoPayProvider = ({
     setOpen,
     route,
     setRoute,
-    loadAndShowPayment,
     connector,
     setConnector,
     onConnect,
@@ -280,6 +319,10 @@ export const DaimoPayProvider = ({
     },
     resize,
     triggerResize: () => onResize((prev) => prev + 1),
+
+    // Above: generic ConnectKit context
+    // Below: Daimo Pay context
+    loadAndShowPayment,
     paymentInfo,
   };
 
