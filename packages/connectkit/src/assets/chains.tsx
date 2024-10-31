@@ -1,11 +1,13 @@
 import {
-  ethereum,
-  ethereumSepolia,
   arbitrum,
   base,
+  baseSepolia,
+  bsc,
+  ethereum,
+  ethereumSepolia,
+  linea,
   optimism,
   polygon,
-  baseSepolia,
 } from "@daimo/contract";
 
 type Logo = {
@@ -857,6 +859,40 @@ const Zora = ({ testnet, ...props }: { testnet?: boolean }) => (
   </svg>
 );
 
+const Linea = ({ testnet, ...props }: { testnet?: boolean }) => (
+  <svg
+    {...props}
+    width="44"
+    height="44"
+    viewBox="0 0 200 200"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M200 0H0V200H200V0Z" fill="#121212" />
+    <mask
+      id="mask0_267_10"
+      style={{ maskType: "luminance" }}
+      maskUnits="userSpaceOnUse"
+      x="50"
+      y="48"
+      width="100"
+      height="104"
+    >
+      <path d="M149.541 48H50V151.977H149.541V48Z" fill="white" />
+    </mask>
+    <g mask="url(#mask0_267_10)">
+      <path
+        d="M132.669 151.977H50V64.8721H68.9147V135.096H132.669V151.968V151.977Z"
+        fill="white"
+      />
+      <path
+        d="M132.669 81.7441C141.987 81.7441 149.541 74.1902 149.541 64.8721C149.541 55.5539 141.987 48 132.669 48C123.35 48 115.797 55.5539 115.797 64.8721C115.797 74.1902 123.35 81.7441 132.669 81.7441Z"
+        fill="white"
+      />
+    </g>
+  </svg>
+);
+
 export const chainToLogo = {
   [ethereum.chainId]: <Ethereum />,
   [arbitrum.chainId]: <Arbitrum />,
@@ -865,6 +901,8 @@ export const chainToLogo = {
   [polygon.chainId]: <Polygon />,
   [ethereumSepolia.chainId]: <Ethereum />,
   [baseSepolia.chainId]: <Base />,
+  [linea.chainId]: <Linea />,
+  [bsc.chainId]: <BinanceSmartChain />,
 };
 
 export default {
