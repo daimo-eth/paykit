@@ -1,29 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { ROUTES, useContext } from "../../DaimoPay";
 
 import { PageContent } from "../../Common/Modal/styles";
 
-import {
-  ExternalPaymentOptionMetadata,
-  ExternalPaymentOptions,
-  getAddressContraction,
-} from "@daimo/common";
-import { ethereum } from "@daimo/contract";
-import { Connector, useAccount, useDisconnect, useEnsName } from "wagmi";
+import { getAddressContraction } from "@daimo/common";
+import { Connector, useAccount, useDisconnect } from "wagmi";
 import { Coinbase, MetaMask, Rabby, Rainbow } from "../../../assets/logos";
 import useIsMobile from "../../../hooks/useIsMobile";
-import { detectPlatform } from "../../../utils/platform";
-import { trpc } from "../../../utils/trpc";
 import OptionsList from "../../Common/OptionsList";
 import { OrderHeader } from "../../Common/OrderHeader";
 import PoweredByFooter from "../../Common/PoweredByFooter";
-
-const DEFAULT_EXTERNAL_PAYMENT_OPTIONS = [
-  ExternalPaymentOptions.Coinbase,
-  ExternalPaymentOptions.Binance,
-  ExternalPaymentOptions.Daimo,
-  ExternalPaymentOptions.RampNetwork,
-];
 
 // Get 3 icons, skipping the one that is already connected
 function getBestUnconnectedWalletIcons(connector: Connector | undefined) {
@@ -48,16 +34,12 @@ const SelectMethod: React.FC = () => {
 
   const { address, isConnected, connector } = useAccount();
   const { disconnectAsync } = useDisconnect();
-  const { data: ensName } = useEnsName({
-    chainId: ethereum.chainId,
-    address: address,
-  });
 
+  const { setRoute, paymentInfo, log } = useContext();
+  const { setSelectedExternalOption, externalPaymentOptions, senderEnsName } =
+    paymentInfo;
   const displayName =
-    ensName ?? (address ? getAddressContraction(address) : "wallet");
-
-  const { setRoute, paymentInfo } = useContext();
-  const { daimoPayOrder, setSelectedExternalOption } = paymentInfo;
+    senderEnsName ?? (address ? getAddressContraction(address) : "wallet");
 
   const connectedWalletOption = isConnected
     ? {
@@ -84,37 +66,11 @@ const SelectMethod: React.FC = () => {
     ? [connectedWalletOption, unconnectedWalletOption]
     : [unconnectedWalletOption];
 
-  const [externalPaymentOptions, setExternalPaymentOptions] = useState<
-    ExternalPaymentOptionMetadata[]
-  >([]);
-  const [loadingExternalPaymentOptions, setLoadingExternalPaymentOptions] =
-    useState(true);
-
-  useEffect(() => {
-    const refreshExternalPaymentOptions = async (usd: number) => {
-      setLoadingExternalPaymentOptions(true);
-      const options = await trpc.getExternalPaymentOptions.query({
-        usdRequired: usd,
-        platform: detectPlatform(window.navigator.userAgent),
-      });
-
-      // Filter out options not in options JSON
-      const enabledExtPaymentOptions =
-        daimoPayOrder?.metadata.payer?.paymentOptions ||
-        DEFAULT_EXTERNAL_PAYMENT_OPTIONS;
-      const filteredOptions = options.filter((option) =>
-        enabledExtPaymentOptions.includes(option.id),
-      );
-
-      setExternalPaymentOptions(filteredOptions);
-      setLoadingExternalPaymentOptions(false);
-    };
-
-    const usd = daimoPayOrder?.destFinalCallTokenAmount.usd;
-    if (usd != null) {
-      refreshExternalPaymentOptions(usd);
-    }
-  }, [daimoPayOrder?.destFinalCallTokenAmount.usd]);
+  log(
+    `[SELECT_METHOD] loading: ${externalPaymentOptions.loading}, options: ${JSON.stringify(
+      externalPaymentOptions.options,
+    )}`,
+  );
 
   return (
     <PageContent>
@@ -122,10 +78,10 @@ const SelectMethod: React.FC = () => {
 
       <OptionsList
         requiredSkeletons={isMobile ? 4 : 3} // TODO: programmatically determine skeletons to best avoid layout shifts
-        isLoading={loadingExternalPaymentOptions}
+        isLoading={externalPaymentOptions.loading}
         options={[
           ...walletOptions,
-          ...(externalPaymentOptions ?? []).map((option) => ({
+          ...(externalPaymentOptions.options ?? []).map((option) => ({
             id: option.id,
             title: option.cta,
             icons: [option.logoURI],
