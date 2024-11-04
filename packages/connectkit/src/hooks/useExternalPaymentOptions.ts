@@ -30,20 +30,25 @@ export function useExternalPaymentOptions({
       if (!platform) return;
 
       setLoading(true);
-      const options = await trpc.getExternalPaymentOptions.query({
-        usdRequired: usd,
-        platform,
-      });
+      try {
+        const newOptions = await trpc.getExternalPaymentOptions.query({
+          usdRequired: usd,
+          platform,
+        });
 
-      // Filter out options not in options JSON
-      const enabledExtPaymentOptions =
-        filterIds || DEFAULT_EXTERNAL_PAYMENT_OPTIONS;
-      const filteredOptions = options.filter((option) =>
-        enabledExtPaymentOptions.includes(option.id),
-      );
+        // Filter out options not in options JSON
+        const enabledExtPaymentOptions =
+          filterIds || DEFAULT_EXTERNAL_PAYMENT_OPTIONS;
+        const filteredOptions = newOptions.filter((option) =>
+          enabledExtPaymentOptions.includes(option.id),
+        );
 
-      setOptions(filteredOptions);
-      setLoading(false);
+        setOptions(filteredOptions);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     if (usdRequired != null) {

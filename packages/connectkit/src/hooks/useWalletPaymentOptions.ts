@@ -19,19 +19,28 @@ export function useWalletPaymentOptions({
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    const refreshWalletPaymentOptions = async () => {
+      setOptions(null);
+      setIsLoading(true);
+      try {
+        const newOptions = await trpc.getWalletPaymentOptions.query({
+          payerAddress: address,
+          usdRequired,
+          destChainId,
+        });
+        setOptions(newOptions);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     if (!address || !usdRequired || !destChainId) return;
 
-    setOptions(null);
-    setIsLoading(true);
-
-    trpc.getWalletPaymentOptions
-      .query({
-        payerAddress: address,
-        usdRequired,
-        destChainId,
-      })
-      .then(setOptions)
-      .finally(() => setIsLoading(false));
+    if (address && usdRequired != null && destChainId) {
+      refreshWalletPaymentOptions();
+    }
   }, [address, usdRequired, destChainId]);
 
   return {
