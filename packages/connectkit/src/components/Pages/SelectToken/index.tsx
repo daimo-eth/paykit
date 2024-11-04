@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { ROUTES, useContext } from "../../DaimoPay";
 
 import { ModalContent, ModalH1, PageContent } from "../../Common/Modal/styles";
@@ -6,11 +6,8 @@ import { ModalContent, ModalH1, PageContent } from "../../Common/Modal/styles";
 import { capitalize, DaimoPayToken, getDisplayPrice } from "@daimo/common";
 import { getChainName } from "@daimo/contract";
 import { motion } from "framer-motion";
-import { useAccount } from "wagmi";
 import { chainToLogo } from "../../../assets/chains";
 import styled from "../../../styles/styled";
-import { PaymentOption } from "../../../utils/getPaymentInfo";
-import { trpc } from "../../../utils/trpc";
 import Button from "../../Common/Button";
 import OptionsList from "../../Common/OptionsList";
 import { OrderHeader } from "../../Common/OrderHeader";
@@ -49,58 +46,37 @@ const ChainContainer = styled(motion.div)`
 
 const SelectToken: React.FC = () => {
   const { setRoute, paymentInfo } = useContext();
-  const { daimoPayOrder, setSelectedTokenOption } = paymentInfo;
-  const { address: payerAddress } = useAccount();
-
-  const [paymentOptions, setPaymentOptions] = useState<PaymentOption[] | null>(
-    null,
-  );
-  const [isLoadingOptions, setIsLoadingOptions] = useState(true);
-
-  useEffect(() => {
-    if (!payerAddress || !daimoPayOrder) return;
-    setPaymentOptions(null);
-    setIsLoadingOptions(true);
-
-    const destChainId = daimoPayOrder!.destFinalCallTokenAmount.token.chainId;
-    trpc.getWalletPaymentOptions
-      .query({
-        payerAddress,
-        usdRequired: daimoPayOrder!.destFinalCallTokenAmount.usd,
-        destChainId,
-      })
-      .then(setPaymentOptions)
-      .finally(() => setIsLoadingOptions(false));
-  }, [payerAddress, daimoPayOrder]);
+  const { setSelectedTokenOption, walletPaymentOptions } = paymentInfo;
 
   return (
     <PageContent>
       <OrderHeader minified />
 
-      {!isLoadingOptions && paymentOptions?.length === 0 && (
-        <ModalContent
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            paddingTop: 16,
-            paddingBottom: 16,
-          }}
-        >
-          <ModalH1>
-            Insufficient balance. Please select an alternative payment method.
-          </ModalH1>
-          <Button onClick={() => setRoute(ROUTES.SELECT_METHOD)}>
-            Select Another Method
-          </Button>
-        </ModalContent>
-      )}
+      {walletPaymentOptions.isLoading &&
+        walletPaymentOptions.options?.length === 0 && (
+          <ModalContent
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              paddingTop: 16,
+              paddingBottom: 16,
+            }}
+          >
+            <ModalH1>
+              Insufficient balance. Please select an alternative payment method.
+            </ModalH1>
+            <Button onClick={() => setRoute(ROUTES.SELECT_METHOD)}>
+              Select Another Method
+            </Button>
+          </ModalContent>
+        )}
 
       <OptionsList
         requiredSkeletons={4}
-        isLoading={isLoadingOptions}
+        isLoading={walletPaymentOptions.isLoading}
         options={
-          paymentOptions?.map((option) => {
+          walletPaymentOptions.options?.map((option) => {
             const capitalizedChainName = capitalize(
               getChainName(option.required.token.chainId),
             );

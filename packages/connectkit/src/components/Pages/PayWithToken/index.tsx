@@ -7,8 +7,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { css } from "styled-components";
 import { useChainId, useSwitchChain } from "wagmi";
 import { chainToLogo } from "../../../assets/chains";
+import { WalletPaymentOption } from "../../../hooks/useWalletPaymentOptions";
 import styled from "../../../styles/styled";
-import { PaymentOption } from "../../../utils/getPaymentInfo";
 import Button from "../../Common/Button";
 import CircleSpinner from "../../Spinners/CircleSpinner";
 
@@ -30,7 +30,7 @@ const PayWithToken: React.FC = () => {
   const { switchChainAsync } = useSwitchChain();
 
   const trySwitchingChain = async (
-    option: PaymentOption,
+    option: WalletPaymentOption,
     forceSwitch: boolean = false,
   ): Promise<boolean> => {
     if (walletChainId !== option.required.token.chainId || forceSwitch) {
@@ -53,7 +53,7 @@ const PayWithToken: React.FC = () => {
     return true;
   };
 
-  const handleTransfer = async (option: PaymentOption) => {
+  const handleTransfer = async (option: WalletPaymentOption) => {
     // Switch chain if necessary
     setPayState(PayState.SwitchingChain);
     const switchChain = await trySwitchingChain(option);

@@ -35,7 +35,7 @@ import {
 } from "../hooks/useConnectCallback";
 import { useConnector } from "../hooks/useConnectors";
 import { useThemeFont } from "../hooks/useGoogleFont";
-import { getPaymentInfo, PaymentInfo } from "../utils/getPaymentInfo";
+import { PaymentInfo, usePaymentInfo } from "../hooks/usePaymentInfo";
 import { isFamily } from "../utils/wallets";
 import { DaimoPayModal } from "./DaimoPayModal";
 import { Web3ContextProvider } from "./contexts/web3";
@@ -236,7 +236,7 @@ export const DaimoPayProvider = ({
   // downstream hooks like useDaimoPayStatus() to work correctly, we must set
   // set refresh context when payment status changes; done via setDaimoPayOrder.
   const [daimoPayOrder, setDaimoPayOrder] = useState<DaimoPayOrder>();
-  const paymentInfo: PaymentInfo = getPaymentInfo({
+  const paymentInfo: PaymentInfo = usePaymentInfo({
     daimoPayOrder,
     setDaimoPayOrder,
     setOpen,

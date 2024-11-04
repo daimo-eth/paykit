@@ -5,21 +5,27 @@ import {
   DaimoPayTokenAmount,
   ExternalPaymentOptionMetadata,
   ExternalPaymentOptions,
+  PlatformType,
   readDaimoPayOrderID,
 } from "@daimo/common";
-import { erc20Abi } from "@daimo/contract";
-import { useCallback, useState } from "react";
+import { erc20Abi, ethereum } from "@daimo/contract";
+import { useCallback, useEffect, useState } from "react";
 import { parseUnits, zeroAddress } from "viem";
-import { useAccount, useSendTransaction, useWriteContract } from "wagmi";
+import {
+  useAccount,
+  useEnsName,
+  useSendTransaction,
+  useWriteContract,
+} from "wagmi";
 
 import { DaimoPayModalOptions } from "../types";
-import { detectPlatform } from "./platform";
-import { trpc } from "./trpc";
-
-/** Wallet payment options. User picks one. */
-export type PaymentOption = Awaited<
-  ReturnType<typeof trpc.getWalletPaymentOptions.query>
->[0];
+import { detectPlatform } from "../utils/platform";
+import { trpc } from "../utils/trpc";
+import { useExternalPaymentOptions } from "./useExternalPaymentOptions";
+import {
+  useWalletPaymentOptions,
+  WalletPaymentOption,
+} from "./useWalletPaymentOptions";
 
 /** Wallet payment details, sent to processSourcePayment after submitting tx. */
 export type SourcePayment = Parameters<
@@ -33,20 +39,23 @@ export interface PaymentInfo {
   modalOptions: DaimoPayModalOptions;
   setModalOptions: (modalOptions: DaimoPayModalOptions) => void;
   paymentWaitingMessage: string | undefined;
+  externalPaymentOptions: ReturnType<typeof useExternalPaymentOptions>;
+  walletPaymentOptions: ReturnType<typeof useWalletPaymentOptions>;
   selectedExternalOption: ExternalPaymentOptionMetadata | undefined;
-  selectedTokenOption: PaymentOption | undefined;
+  selectedTokenOption: WalletPaymentOption | undefined;
   setSelectedExternalOption: (
     option: ExternalPaymentOptionMetadata | undefined,
   ) => void;
-  setSelectedTokenOption: (option: PaymentOption | undefined) => void;
+  setSelectedTokenOption: (option: WalletPaymentOption | undefined) => void;
   setChosenUsd: (amount: number) => void;
   payWithToken: (tokenAmount: DaimoPayTokenAmount) => Promise<void>;
   payWithExternal: (option: ExternalPaymentOptions) => Promise<string>;
   refreshOrder: () => Promise<void>;
   onSuccess: (args: { txHash: string; txURL?: string }) => void;
+  senderEnsName: string | undefined;
 }
 
-export function getPaymentInfo({
+export function usePaymentInfo({
   daimoPayOrder,
   setDaimoPayOrder,
   setOpen,
@@ -56,9 +65,19 @@ export function getPaymentInfo({
   setDaimoPayOrder: (o: DaimoPayOrder) => void;
   setOpen: (showModal: boolean) => void;
   log: (...args: any[]) => void;
-}) {
+}): PaymentInfo {
+  // Browser state.
+  const [platform, setPlatform] = useState<PlatformType>();
+  useEffect(() => {
+    setPlatform(detectPlatform(window.navigator.userAgent));
+  }, []);
+
   // Wallet state.
   const { address: senderAddr } = useAccount();
+  const { data: senderEnsName } = useEnsName({
+    chainId: ethereum.chainId,
+    address: senderAddr,
+  });
   const { writeContractAsync } = useWriteContract();
   const { sendTransactionAsync } = useSendTransaction();
 
@@ -69,17 +88,29 @@ export function getPaymentInfo({
   const [modalOptions, setModalOptions] = useState<DaimoPayModalOptions>({});
 
   // UI state. Selection for external payment (Binance, etc) vs wallet payment.
+  const externalPaymentOptions = useExternalPaymentOptions({
+    filterIds: daimoPayOrder?.metadata.payer?.paymentOptions,
+    usdRequired: daimoPayOrder?.destFinalCallTokenAmount.usd,
+    platform,
+  });
+  const walletPaymentOptions = useWalletPaymentOptions({
+    address: senderAddr,
+    usdRequired: daimoPayOrder?.destFinalCallTokenAmount.usd,
+    destChainId: daimoPayOrder?.destFinalCallTokenAmount.token.chainId,
+  });
+
   const [selectedExternalOption, setSelectedExternalOption] =
     useState<ExternalPaymentOptionMetadata>();
+
   const [selectedTokenOption, setSelectedTokenOption] =
-    useState<PaymentOption>();
+    useState<WalletPaymentOption>();
 
   const payWithToken = async (tokenAmount: DaimoPayTokenAmount) => {
-    assert(!!daimoPayOrder);
+    assert(!!daimoPayOrder && !!platform);
     const { hydratedOrder } = await trpc.hydrateOrder.query({
       id: daimoPayOrder.id.toString(),
       chosenFinalTokenAmount: daimoPayOrder.destFinalCallTokenAmount.amount,
-      platform: detectPlatform(window.navigator.userAgent),
+      platform,
       refundAddress: senderAddr,
     });
 
@@ -126,13 +157,13 @@ export function getPaymentInfo({
   };
 
   const payWithExternal = async (option: ExternalPaymentOptions) => {
-    assert(!!daimoPayOrder);
+    assert(!!daimoPayOrder && !!platform);
     const { hydratedOrder, externalPaymentOptionData } =
       await trpc.hydrateOrder.query({
         id: daimoPayOrder.id.toString(),
         externalPaymentOption: option,
         chosenFinalTokenAmount: daimoPayOrder.destFinalCallTokenAmount.amount,
-        platform: detectPlatform(window.navigator.userAgent),
+        platform,
       });
 
     assert(!!externalPaymentOptionData);
@@ -211,6 +242,8 @@ export function getPaymentInfo({
     paymentWaitingMessage,
     selectedExternalOption,
     selectedTokenOption,
+    externalPaymentOptions,
+    walletPaymentOptions,
     setSelectedExternalOption,
     setSelectedTokenOption,
     setChosenUsd,
@@ -218,5 +251,6 @@ export function getPaymentInfo({
     payWithExternal,
     refreshOrder,
     onSuccess,
+    senderEnsName: senderEnsName ?? undefined,
   };
 }
