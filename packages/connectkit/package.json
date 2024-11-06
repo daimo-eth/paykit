@@ -1,7 +1,7 @@
 {
   "name": "@daimo/pay",
   "private": false,
-  "version": "0.3.9",
+  "version": "0.3.11",
   "author": "Daimo",
   "homepage": "https://pay.daimo.com",
   "license": "BSD-2-Clause license",
@@ -40,8 +40,8 @@
     "crypto"
   ],
   "dependencies": {
-    "@daimo/common": "0.3.6",
-    "@daimo/contract": "0.3.6",
+    "@daimo/common": "0.3.11",
+    "@daimo/contract": "0.3.11",
     "@trpc/client": "^11.0.0-next-beta.318",
     "@trpc/server": "^11.0.0-next-beta.318",
     "buffer": "^6.0.3",
