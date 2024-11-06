@@ -124,7 +124,7 @@ export function usePaymentInfo({
       try {
         if (tokenAmount.token.token === zeroAddress) {
           return await sendTransactionAsync({
-            to: hydratedOrder.handoffAddr!,
+            to: hydratedOrder.intentAddr,
             value: BigInt(tokenAmount.amount),
           });
         } else {
@@ -132,7 +132,7 @@ export function usePaymentInfo({
             abi: erc20Abi,
             address: tokenAmount.token.token,
             functionName: "transfer",
-            args: [hydratedOrder.handoffAddr!, BigInt(tokenAmount.amount)],
+            args: [hydratedOrder.intentAddr, BigInt(tokenAmount.amount)],
           });
         }
       } catch (e) {
