@@ -52,7 +52,7 @@ const SelectToken: React.FC = () => {
     <PageContent>
       <OrderHeader minified />
 
-      {walletPaymentOptions.isLoading &&
+      {!walletPaymentOptions.isLoading &&
         walletPaymentOptions.options?.length === 0 && (
           <ModalContent
             style={{
