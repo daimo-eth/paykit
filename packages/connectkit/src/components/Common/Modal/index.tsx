@@ -27,7 +27,7 @@ import {
   ModalHeading,
   PageContainer,
   PageContents,
-  TextWithHr
+  TextWithHr,
 } from "./styles";
 
 import useLockBodyScroll from "../../../hooks/useLockBodyScroll";
@@ -335,6 +335,10 @@ const Modal: React.FC<ModalProps> = ({
         } else {
           return walletInfo?.name;
         }
+      case ROUTES.SOLANA_CONNECT:
+        return "Connect Solana Wallet";
+      case ROUTES.SOLANA_CONNECTOR:
+        return context.solanaConnector ?? "Solana Wallet";
       case ROUTES.CONNECTORS:
         return locales.connectorsScreen_heading;
       case ROUTES.MOBILECONNECTORS:
@@ -348,8 +352,8 @@ const Modal: React.FC<ModalProps> = ({
       case ROUTES.SWITCHNETWORKS:
         return locales.switchNetworkScreen_heading;
       case ROUTES.SELECT_METHOD:
-        return daimoPayOrder?.metadata.intent;
       case ROUTES.SELECT_TOKEN:
+      case ROUTES.SOLANA_SELECT_TOKEN:
         return daimoPayOrder?.metadata.intent;
       case ROUTES.WAITING_OTHER:
         return selectedExternalOption?.cta;

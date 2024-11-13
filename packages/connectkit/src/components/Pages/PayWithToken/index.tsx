@@ -130,7 +130,7 @@ const PayWithToken: React.FC = () => {
                   key={selectedTokenOption?.required.token.logoURI}
                 />
               }
-              connecting={true}
+              loading={true}
               unavailable={false}
             />
           </AnimatePresence>

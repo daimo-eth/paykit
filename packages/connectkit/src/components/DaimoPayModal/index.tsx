@@ -20,6 +20,10 @@ import Confirmation from "../Pages/Confirmation";
 import PayWithToken from "../Pages/PayWithToken";
 import SelectMethod from "../Pages/SelectMethod";
 import SelectToken from "../Pages/SelectToken";
+import ConnectorSolana from "../Pages/Solana/ConnectorSolana";
+import ConnectSolana from "../Pages/Solana/ConnectSolana";
+import PayWithSolanaToken from "../Pages/Solana/PayWithSolanaToken";
+import SelectSolanaToken from "../Pages/Solana/SelectSolanaToken";
 import WaitingOther from "../Pages/WaitingOther";
 
 const customThemeDefault: object = {};
@@ -84,6 +88,10 @@ export const DaimoPayModal: React.FC<{
     daimoPayWaitingOther: <WaitingOther />,
     daimoPayConfirmation: <Confirmation />,
     daimoPayPayWithToken: <PayWithToken />,
+    daimoPaySolanaConnect: <ConnectSolana />,
+    daimoPaySolanaConnector: <ConnectorSolana />,
+    daimoPaySolanaSelectToken: <SelectSolanaToken />,
+    daimoPaySolanaPayWithToken: <PayWithSolanaToken />,
 
     onboarding: <Onboarding />,
     about: <About />,

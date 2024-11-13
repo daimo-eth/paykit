@@ -12,13 +12,13 @@ import React from "react";
 const CircleSpinner = ({
   logo,
   smallLogo,
-  connecting = true,
+  loading = true,
   unavailable = false,
   countdown = false,
 }: {
   logo?: React.ReactNode;
   smallLogo?: boolean;
-  connecting?: boolean;
+  loading?: boolean;
   unavailable?: boolean;
   countdown?: boolean;
 }) => {
@@ -34,7 +34,7 @@ const CircleSpinner = ({
       </Logo>
       <SpinnerContainer>
         <AnimatePresence>
-          {connecting && (
+          {loading && (
             <Spinner
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}

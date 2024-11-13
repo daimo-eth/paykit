@@ -70,7 +70,7 @@ const WaitingOther: React.FC = () => {
       return (
         <CircleSpinner
           logo={<img src={selectedExternalOption.logoURI} />}
-          connecting={true}
+          loading={true}
           unavailable={false}
         />
       );
@@ -78,7 +78,7 @@ const WaitingOther: React.FC = () => {
       return (
         <SquircleSpinner
           logo={<img src={selectedExternalOption.logoURI} />}
-          connecting={true}
+          loading={true}
         />
       );
     }

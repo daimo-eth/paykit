@@ -33,11 +33,10 @@ import {
   useConnectCallback,
   useConnectCallbackProps,
 } from "../hooks/useConnectCallback";
-import { useConnector } from "../hooks/useConnectors";
 import { useThemeFont } from "../hooks/useGoogleFont";
 import { PaymentInfo, usePaymentInfo } from "../hooks/usePaymentInfo";
-import { isFamily } from "../utils/wallets";
 import { DaimoPayModal } from "./DaimoPayModal";
+import { SolanaContextProvider, SolanaWalletName } from "./contexts/solana";
 import { Web3ContextProvider } from "./contexts/web3";
 
 export enum ROUTES {
@@ -46,6 +45,10 @@ export enum ROUTES {
   WAITING_OTHER = "daimoPayWaitingOther",
   PAY_WITH_TOKEN = "daimoPayPayWithToken",
   CONFIRMATION = "daimoPayConfirmation",
+  SOLANA_CONNECT = "daimoPaySolanaConnect",
+  SOLANA_CONNECTOR = "daimoPaySolanaConnector",
+  SOLANA_SELECT_TOKEN = "daimoPaySolanaSelectToken",
+  SOLANA_PAY_WITH_TOKEN = "daimoPaySolanaPayWithToken",
 
   ONBOARDING = "onboarding",
   ABOUT = "about",
@@ -77,6 +80,10 @@ type ContextValue = {
   setRoute: React.Dispatch<React.SetStateAction<ROUTES>>;
   connector: Connector;
   setConnector: React.Dispatch<React.SetStateAction<Connector>>;
+  solanaConnector: SolanaWalletName | undefined;
+  setSolanaConnector: React.Dispatch<
+    React.SetStateAction<SolanaWalletName | undefined>
+  >;
   errorMessage: Error;
   debugMode?: boolean;
   log: (...props: any) => void;
@@ -105,7 +112,7 @@ type DaimoPayProviderProps = {
   debugMode?: boolean;
 } & useConnectCallbackProps;
 
-export const DaimoPayProvider = ({
+const DaimoPayProviderWithoutSolana = ({
   children,
   theme = "auto",
   mode = "auto",
@@ -142,8 +149,6 @@ export const DaimoPayProvider = ({
       );
     }
   }
-
-  const injectedConnector = useConnector("injected");
 
   // Default config options
   const defaultOptions: DaimoPayContextOptions = {
@@ -197,6 +202,9 @@ export const DaimoPayProvider = ({
   const [connector, setConnector] = useState<ContextValue["connector"]>({
     id: "",
   });
+  const [solanaConnector, setSolanaConnector] = useState<
+    SolanaWalletName | undefined
+  >();
   const [route, setRoute] = useState<ROUTES>(ROUTES.SELECT_METHOD);
   const [errorMessage, setErrorMessage] = useState<Error>("");
 
@@ -221,14 +229,6 @@ export const DaimoPayProvider = ({
     }
   }, [isConnected, isChainSupported, chain, route, open]);
 
-  // Autoconnect to Family wallet if available
-  // TODO: Does this work for all injected providers?
-  useEffect(() => {
-    if (isFamily()) {
-      injectedConnector?.connect();
-    }
-  }, [injectedConnector]);
-
   const log = debugMode ? console.log : () => {};
 
   // PaymentInfo is a second, inner context object containing a DaimoPayOrder
@@ -236,7 +236,7 @@ export const DaimoPayProvider = ({
   // downstream hooks like useDaimoPayStatus() to work correctly, we must set
   // set refresh context when payment status changes; done via setDaimoPayOrder.
   const [daimoPayOrder, setDaimoPayOrder] = useState<DaimoPayOrder>();
-  const paymentInfo: PaymentInfo = usePaymentInfo({
+  const paymentInfo = usePaymentInfo({
     daimoPayOrder,
     setDaimoPayOrder,
     setOpen,
@@ -304,6 +304,8 @@ export const DaimoPayProvider = ({
     setRoute,
     connector,
     setConnector,
+    solanaConnector,
+    setSolanaConnector,
     onConnect,
     // Other configuration
     options: opts,
@@ -340,6 +342,14 @@ export const DaimoPayProvider = ({
         />
       </ThemeProvider>
     </Web3ContextProvider>,
+  );
+};
+
+export const DaimoPayProvider = (props: DaimoPayProviderProps) => {
+  return (
+    <SolanaContextProvider>
+      <DaimoPayProviderWithoutSolana {...props} />
+    </SolanaContextProvider>
   );
 };
 

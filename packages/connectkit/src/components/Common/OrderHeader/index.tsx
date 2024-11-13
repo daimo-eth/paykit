@@ -7,6 +7,7 @@ import {
   Ethereum,
   Optimism,
   Polygon,
+  Solana,
 } from "../../../assets/chains";
 import { USDC } from "../../../assets/coins";
 import defaultTheme from "../../../constants/defaultTheme";
@@ -22,6 +23,7 @@ const CoinLogos = ({ $size = 24 }: { $size?: number }) => {
     <Arbitrum />,
     <Base />,
     <Polygon />,
+    <Solana />,
   ];
 
   const logoBlock = (element: React.ReactElement, index: number) => (

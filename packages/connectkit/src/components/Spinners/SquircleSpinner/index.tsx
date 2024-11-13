@@ -3,10 +3,10 @@ import { Logo, LogoContainer, Spinner, SpinnerContainer } from "./styles";
 
 const SquircleSpinner = ({
   logo,
-  connecting = true,
+  loading = true,
 }: {
   logo?: React.ReactNode;
-  connecting?: boolean;
+  loading?: boolean;
 }) => {
   return (
     <LogoContainer
@@ -15,7 +15,7 @@ const SquircleSpinner = ({
       <Logo>{logo}</Logo>
       <SpinnerContainer>
         <AnimatePresence>
-          {connecting && (
+          {loading && (
             <Spinner
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}

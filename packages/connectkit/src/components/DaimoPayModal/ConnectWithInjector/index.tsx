@@ -294,7 +294,7 @@ const ConnectWithInjector: React.FC<{
                   )
                 }
                 smallLogo={walletInfo.iconShouldShrink}
-                connecting={status === states.CONNECTING}
+                loading={status === states.CONNECTING}
                 unavailable={status === states.UNAVAILABLE}
               />
             ) : (
@@ -314,7 +314,7 @@ const ConnectWithInjector: React.FC<{
                     <>{walletInfo.icon}</>
                   )
                 }
-                connecting={status === states.CONNECTING}
+                loading={status === states.CONNECTING}
                 //unavailable={status === states.UNAVAILABLE}
               />
             )}

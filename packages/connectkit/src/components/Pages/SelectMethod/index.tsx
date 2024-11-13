@@ -4,7 +4,9 @@ import { ROUTES, useContext } from "../../DaimoPay";
 import { PageContent } from "../../Common/Modal/styles";
 
 import { getAddressContraction } from "@daimo/common";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { Connector, useAccount, useDisconnect } from "wagmi";
+import { Solana } from "../../../assets/chains";
 import { Coinbase, MetaMask, Rabby, Rainbow } from "../../../assets/logos";
 import useIsMobile from "../../../hooks/useIsMobile";
 import OptionsList from "../../Common/OptionsList";
@@ -27,6 +29,22 @@ function getBestUnconnectedWalletIcons(connector: Connector | undefined) {
   if (icons.length < 3) icons.push(<Rabby />);
 
   return icons;
+}
+
+function getSolanaOption() {
+  const { wallets } = useWallet();
+  const { setRoute } = useContext();
+
+  if (wallets.length === 0) return null;
+
+  return {
+    id: "solana",
+    title: "Pay on Solana",
+    icons: [<Solana />],
+    onClick: () => {
+      setRoute(ROUTES.SOLANA_CONNECT);
+    },
+  };
 }
 
 const SelectMethod: React.FC = () => {
@@ -72,6 +90,8 @@ const SelectMethod: React.FC = () => {
     )}`,
   );
 
+  const solanaOption = getSolanaOption();
+
   return (
     <PageContent>
       <OrderHeader />
@@ -81,6 +101,7 @@ const SelectMethod: React.FC = () => {
         isLoading={externalPaymentOptions.loading}
         options={[
           ...walletOptions,
+          ...(solanaOption ? [solanaOption] : []),
           ...(externalPaymentOptions.options ?? []).map((option) => ({
             id: option.id,
             title: option.cta,

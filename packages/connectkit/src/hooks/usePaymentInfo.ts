@@ -7,10 +7,11 @@ import {
   ExternalPaymentOptions,
   PlatformType,
   readDaimoPayOrderID,
+  SolanaPublicKey,
 } from "@daimo/common";
 import { erc20Abi, ethereum } from "@daimo/contract";
 import { useCallback, useEffect, useState } from "react";
-import { parseUnits, zeroAddress } from "viem";
+import { getAddress, parseUnits, zeroAddress } from "viem";
 import {
   useAccount,
   useEnsName,
@@ -18,10 +19,16 @@ import {
   useWriteContract,
 } from "wagmi";
 
+import { useWallet } from "@solana/wallet-adapter-react";
 import { DaimoPayModalOptions } from "../types";
 import { detectPlatform } from "../utils/platform";
 import { trpc } from "../utils/trpc";
 import { useExternalPaymentOptions } from "./useExternalPaymentOptions";
+import { usePayWithSolanaToken } from "./usePayWithSolanaToken";
+import {
+  SolanaPaymentOption,
+  useSolanaPaymentOptions,
+} from "./useSolanaPaymentOptions";
 import {
   useWalletPaymentOptions,
   WalletPaymentOption,
@@ -41,15 +48,23 @@ export interface PaymentInfo {
   paymentWaitingMessage: string | undefined;
   externalPaymentOptions: ReturnType<typeof useExternalPaymentOptions>;
   walletPaymentOptions: ReturnType<typeof useWalletPaymentOptions>;
+  solanaPaymentOptions: ReturnType<typeof useSolanaPaymentOptions>;
   selectedExternalOption: ExternalPaymentOptionMetadata | undefined;
   selectedTokenOption: WalletPaymentOption | undefined;
+  selectedSolanaTokenOption: SolanaPaymentOption | undefined;
   setSelectedExternalOption: (
     option: ExternalPaymentOptionMetadata | undefined,
   ) => void;
   setSelectedTokenOption: (option: WalletPaymentOption | undefined) => void;
+  setSelectedSolanaTokenOption: (
+    option: SolanaPaymentOption | undefined,
+  ) => void;
   setChosenUsd: (amount: number) => void;
   payWithToken: (tokenAmount: DaimoPayTokenAmount) => Promise<void>;
   payWithExternal: (option: ExternalPaymentOptions) => Promise<string>;
+  payWithSolanaToken: (
+    inputToken: SolanaPublicKey,
+  ) => Promise<string | undefined>;
   refreshOrder: () => Promise<void>;
   onSuccess: (args: { txHash: string; txURL?: string }) => void;
   senderEnsName: string | undefined;
@@ -81,6 +96,10 @@ export function usePaymentInfo({
   const { writeContractAsync } = useWriteContract();
   const { sendTransactionAsync } = useSendTransaction();
 
+  // Solana wallet state.
+  const solanaWallet = useWallet();
+  const solanaPubKey = solanaWallet.publicKey?.toBase58();
+
   // Daimo Pay order state.
   const [paymentWaitingMessage, setPaymentWaitingMessage] = useState<string>();
 
@@ -98,12 +117,26 @@ export function usePaymentInfo({
     usdRequired: daimoPayOrder?.destFinalCallTokenAmount.usd,
     destChainId: daimoPayOrder?.destFinalCallTokenAmount.token.chainId,
   });
+  const solanaPaymentOptions = useSolanaPaymentOptions({
+    address: solanaPubKey,
+    usdRequired: daimoPayOrder?.destFinalCallTokenAmount.usd,
+  });
+
+  const { payWithSolanaToken } = usePayWithSolanaToken(
+    daimoPayOrder?.id ?? undefined,
+    setDaimoPayOrder,
+    daimoPayOrder?.destFinalCallTokenAmount.amount ?? undefined,
+    platform,
+  );
 
   const [selectedExternalOption, setSelectedExternalOption] =
     useState<ExternalPaymentOptionMetadata>();
 
   const [selectedTokenOption, setSelectedTokenOption] =
     useState<WalletPaymentOption>();
+
+  const [selectedSolanaTokenOption, setSelectedSolanaTokenOption] =
+    useState<SolanaPaymentOption>();
 
   const payWithToken = async (tokenAmount: DaimoPayTokenAmount) => {
     assert(!!daimoPayOrder && !!platform);
@@ -130,7 +163,7 @@ export function usePaymentInfo({
         } else {
           return await writeContractAsync({
             abi: erc20Abi,
-            address: tokenAmount.token.token,
+            address: getAddress(tokenAmount.token.token),
             functionName: "transfer",
             args: [hydratedOrder.intentAddr, BigInt(tokenAmount.amount)],
           });
@@ -242,13 +275,17 @@ export function usePaymentInfo({
     paymentWaitingMessage,
     selectedExternalOption,
     selectedTokenOption,
+    selectedSolanaTokenOption,
     externalPaymentOptions,
     walletPaymentOptions,
+    solanaPaymentOptions,
     setSelectedExternalOption,
     setSelectedTokenOption,
+    setSelectedSolanaTokenOption,
     setChosenUsd,
     payWithToken,
     payWithExternal,
+    payWithSolanaToken,
     refreshOrder,
     onSuccess,
     senderEnsName: senderEnsName ?? undefined,
