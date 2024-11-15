@@ -61,8 +61,8 @@ function CustomQRCode({
             >
               <QRCode
                 uri={value}
-                size={288}
-                ecl="M"
+                size={576}
+                ecl="H"
                 clearArea={!!(imagePosition === "center" && image)}
               />
             </motion.div>

@@ -43,6 +43,7 @@ export enum ROUTES {
   SELECT_METHOD = "daimoPaySelectMethod",
   SELECT_TOKEN = "daimoPaySelectToken",
   WAITING_OTHER = "daimoPayWaitingOther",
+  WAITING_BITCOIN = "daimoPayWaitingBitcoin",
   PAY_WITH_TOKEN = "daimoPayPayWithToken",
   CONFIRMATION = "daimoPayConfirmation",
   SOLANA_CONNECT = "daimoPaySolanaConnect",

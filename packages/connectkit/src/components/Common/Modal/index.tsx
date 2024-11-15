@@ -357,6 +357,8 @@ const Modal: React.FC<ModalProps> = ({
         return daimoPayOrder?.metadata.intent;
       case ROUTES.WAITING_OTHER:
         return selectedExternalOption?.cta;
+      case ROUTES.WAITING_BITCOIN:
+        return "Pay with Bitcoin";
       case ROUTES.PAY_WITH_TOKEN:
         if (!selectedTokenOption) return undefined;
 

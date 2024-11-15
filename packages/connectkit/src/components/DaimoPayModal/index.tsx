@@ -24,6 +24,7 @@ import ConnectorSolana from "../Pages/Solana/ConnectorSolana";
 import ConnectSolana from "../Pages/Solana/ConnectSolana";
 import PayWithSolanaToken from "../Pages/Solana/PayWithSolanaToken";
 import SelectSolanaToken from "../Pages/Solana/SelectSolanaToken";
+import WaitingBitcoin from "../Pages/WaitingBitcoin";
 import WaitingOther from "../Pages/WaitingOther";
 
 const customThemeDefault: object = {};
@@ -86,6 +87,7 @@ export const DaimoPayModal: React.FC<{
     daimoPaySelectMethod: <SelectMethod />,
     daimoPaySelectToken: <SelectToken />,
     daimoPayWaitingOther: <WaitingOther />,
+    daimoPayWaitingBitcoin: <WaitingBitcoin />,
     daimoPayConfirmation: <Confirmation />,
     daimoPayPayWithToken: <PayWithToken />,
     daimoPaySolanaConnect: <ConnectSolana />,

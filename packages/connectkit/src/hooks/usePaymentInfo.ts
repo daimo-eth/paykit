@@ -62,6 +62,11 @@ export interface PaymentInfo {
   setChosenUsd: (amount: number) => void;
   payWithToken: (tokenAmount: DaimoPayTokenAmount) => Promise<void>;
   payWithExternal: (option: ExternalPaymentOptions) => Promise<string>;
+  payWithBitcoin: () => Promise<{
+    address: string;
+    amount: number;
+    uri: string;
+  } | null>;
   payWithSolanaToken: (
     inputToken: SolanaPublicKey,
   ) => Promise<string | undefined>;
@@ -206,6 +211,23 @@ export function usePaymentInfo({
     return externalPaymentOptionData.url;
   };
 
+  const payWithBitcoin = async () => {
+    assert(!!daimoPayOrder && !!platform);
+    const { hydratedOrder } = await trpc.hydrateOrder.query({
+      id: daimoPayOrder.id.toString(),
+      chosenFinalTokenAmount: daimoPayOrder.destFinalCallTokenAmount.amount,
+      platform,
+    });
+
+    setDaimoPayOrder(hydratedOrder);
+
+    const bitcoinOption = await trpc.getBitcoinOption.query({
+      usdRequired: daimoPayOrder.destFinalCallTokenAmount.usd,
+      toAddress: assertNotNull(hydratedOrder.intentAddr),
+    });
+    return bitcoinOption;
+  };
+
   const refreshOrder = useCallback(async () => {
     const id = daimoPayOrder?.id?.toString();
     if (!id) return;
@@ -285,6 +307,7 @@ export function usePaymentInfo({
     setChosenUsd,
     payWithToken,
     payWithExternal,
+    payWithBitcoin,
     payWithSolanaToken,
     refreshOrder,
     onSuccess,

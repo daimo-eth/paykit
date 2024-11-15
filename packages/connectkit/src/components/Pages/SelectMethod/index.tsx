@@ -6,7 +6,7 @@ import { PageContent } from "../../Common/Modal/styles";
 import { getAddressContraction } from "@daimo/common";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connector, useAccount, useDisconnect } from "wagmi";
-import { Solana } from "../../../assets/chains";
+import { Bitcoin, Solana } from "../../../assets/chains";
 import { Coinbase, MetaMask, Rabby, Rainbow } from "../../../assets/logos";
 import useIsMobile from "../../../hooks/useIsMobile";
 import OptionsList from "../../Common/OptionsList";
@@ -47,6 +47,21 @@ function getSolanaOption() {
   };
 }
 
+function getBitcoinOption(usdRequired: number) {
+  const { setRoute } = useContext();
+
+  if (usdRequired < 20) return null;
+
+  return {
+    id: "bitcoin",
+    title: "Pay with Bitcoin",
+    icons: [<Bitcoin />],
+    onClick: () => {
+      setRoute(ROUTES.WAITING_BITCOIN);
+    },
+  };
+}
+
 const SelectMethod: React.FC = () => {
   const isMobile = useIsMobile();
 
@@ -54,8 +69,12 @@ const SelectMethod: React.FC = () => {
   const { disconnectAsync } = useDisconnect();
 
   const { setRoute, paymentInfo, log } = useContext();
-  const { setSelectedExternalOption, externalPaymentOptions, senderEnsName } =
-    paymentInfo;
+  const {
+    daimoPayOrder,
+    setSelectedExternalOption,
+    externalPaymentOptions,
+    senderEnsName,
+  } = paymentInfo;
   const displayName =
     senderEnsName ?? (address ? getAddressContraction(address) : "wallet");
 
@@ -91,6 +110,9 @@ const SelectMethod: React.FC = () => {
   );
 
   const solanaOption = getSolanaOption();
+  const bitcoinOption = getBitcoinOption(
+    daimoPayOrder?.destFinalCallTokenAmount.usd ?? 0,
+  );
 
   return (
     <PageContent>
@@ -111,6 +133,7 @@ const SelectMethod: React.FC = () => {
               setRoute(ROUTES.WAITING_OTHER);
             },
           })),
+          ...(bitcoinOption ? [bitcoinOption] : []),
         ]}
       />
       <PoweredByFooter />
