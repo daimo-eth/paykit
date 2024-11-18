@@ -47,7 +47,7 @@ const SelectSolanaToken: React.FC = () => {
             const subtitle = `Balance: ${getDisplayPrice(option.balance)} ${option.balance.token.symbol}`;
 
             return {
-              id: `${option.required.token.token}`,
+              id: `${option.required.token.token}-${option.required.token.symbol}`,
               title,
               subtitle,
               icons: [

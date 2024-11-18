@@ -26,23 +26,13 @@ const ConnectSolana: React.FC = () => {
 
   useEffect(() => {
     if (!solanaConnector) return;
-    async function connect() {
-      if (!solanaConnector) return;
-
-      try {
-        solanaWallets.select(solanaConnector);
-        await solanaWallets.connect();
-      } catch (error) {
-        console.error("Error connecting to wallet", error);
-      }
-    }
-    connect();
+    solanaWallets.select(solanaConnector);
   }, [solanaConnector]);
 
   useEffect(() => {
     if (isConnected) {
       // Wait so user can see it's connected
-      setTimeout(() => setRoute(ROUTES.SOLANA_SELECT_TOKEN), 100);
+      setTimeout(() => setRoute(ROUTES.SOLANA_SELECT_TOKEN), 500);
     }
   }, [isConnected]);
 
@@ -68,8 +58,16 @@ const ConnectSolana: React.FC = () => {
         </AnimationContainer>
       </LoadingContainer>
       <ModalContent style={{ paddingBottom: 0 }}>
-        <ModalH1>Requesting Connection</ModalH1>
-        <ModalBody>Open {selectedWallet?.adapter.name} to continue.</ModalBody>
+        {isConnected ? (
+          <ModalH1>Connected</ModalH1>
+        ) : (
+          <>
+            <ModalH1>Requesting Connection</ModalH1>
+            <ModalBody>
+              Open {selectedWallet?.adapter.name} to continue.
+            </ModalBody>
+          </>
+        )}
       </ModalContent>
     </PageContent>
   );

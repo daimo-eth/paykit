@@ -110,6 +110,12 @@ type DaimoPayProviderProps = {
   customTheme?: CustomTheme;
   options?: DaimoPayContextOptions;
   debugMode?: boolean;
+  /**
+   * Be careful with this endpoint, some endpoints (incl. Alchemy) don't support
+   * `signatureSubscribe` which leads to txes behaving erratically
+   * (ex. successful txes take minutes to confirm instead of seconds)
+   */
+  solanaRpcUrl?: string;
 } & useConnectCallbackProps;
 
 const DaimoPayProviderWithoutSolana = ({
@@ -347,7 +353,7 @@ const DaimoPayProviderWithoutSolana = ({
 
 export const DaimoPayProvider = (props: DaimoPayProviderProps) => {
   return (
-    <SolanaContextProvider>
+    <SolanaContextProvider solanaRpcUrl={props.solanaRpcUrl}>
       <DaimoPayProviderWithoutSolana {...props} />
     </SolanaContextProvider>
   );

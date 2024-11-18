@@ -14,19 +14,19 @@ import { ROUTES, useContext } from "../../../DaimoPay";
 
 const ConnectSolana: React.FC = () => {
   const { setSolanaConnector, setRoute } = useContext();
-  const wallets = useWallet();
+  const solanaWallets = useWallet();
 
-  const options = wallets.wallets.map((wallet) => ({
+  const options = solanaWallets.wallets.map((wallet) => ({
     id: wallet.adapter.name,
     title: `${wallet.adapter.name}`,
     icons: [
       <SquircleIcon icon={wallet.adapter.icon} alt={wallet.adapter.name} />,
     ],
-    onClick: () => {
-      // TODO: Handle wallets that autoconnect seperately, no need to bounce to
-      // connector screen.
-
+    onClick: async () => {
       setSolanaConnector(wallet.adapter.name);
+      if (solanaWallets.connected) {
+        await solanaWallets.disconnect();
+      }
       setRoute(ROUTES.SOLANA_CONNECTOR);
     },
   }));
@@ -35,7 +35,7 @@ const ConnectSolana: React.FC = () => {
     <PageContent>
       <OrderHeader minified />
 
-      {wallets.wallets.length === 0 && (
+      {solanaWallets.wallets.length === 0 && (
         <ModalContent
           style={{
             display: "flex",

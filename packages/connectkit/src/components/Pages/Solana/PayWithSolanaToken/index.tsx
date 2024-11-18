@@ -54,12 +54,8 @@ const PayWithSolanaToken: React.FC = () => {
     if (!selectedSolanaTokenOption) return;
 
     // Give user time to see the UI before opening
-    transferTimeout = setTimeout(() => {
-      handleTransfer();
-    }, 100);
-    return () => {
-      clearTimeout(transferTimeout);
-    };
+    transferTimeout = setTimeout(handleTransfer, 100);
+    return () => clearTimeout(transferTimeout);
   }, []);
 
   useEffect(() => {

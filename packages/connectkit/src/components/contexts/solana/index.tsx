@@ -6,16 +6,17 @@ import {
 
 export type SolanaWalletName = WalletName<string>;
 
+const DEFAULT_SOLANA_RPC_URL =
+  "https://nameless-thrilling-spring.solana-mainnet.quiknode.pro/71d5c9acbf54c7cf00584cf6fab7fc37e844415f/";
+
 export const SolanaContextProvider = ({
   children,
+  solanaRpcUrl,
 }: {
   children: React.ReactNode;
+  solanaRpcUrl?: string;
 }) => {
-  // Be careful with this endpoint, some endpoints (incl. Alchemy) don't support
-  // `signatureSubscribe` which leads to txes behaving erratically
-  // (ex. successful txes take minutes to confirm instead of seconds)
-  const endpoint =
-    "https://nameless-thrilling-spring.solana-mainnet.quiknode.pro/71d5c9acbf54c7cf00584cf6fab7fc37e844415f/";
+  const endpoint = solanaRpcUrl ?? DEFAULT_SOLANA_RPC_URL;
 
   return (
     <ConnectionProvider endpoint={endpoint}>
