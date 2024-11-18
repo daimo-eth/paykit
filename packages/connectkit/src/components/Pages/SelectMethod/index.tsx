@@ -114,6 +114,21 @@ const SelectMethod: React.FC = () => {
     daimoPayOrder?.destFinalCallTokenAmount.usd ?? 0,
   );
 
+  const options = [
+    ...walletOptions,
+    ...(solanaOption ? [solanaOption] : []),
+    ...(externalPaymentOptions.options ?? []).map((option) => ({
+      id: option.id,
+      title: option.cta,
+      icons: [option.logoURI],
+      onClick: () => {
+        setSelectedExternalOption(option);
+        setRoute(ROUTES.WAITING_OTHER);
+      },
+    })),
+    ...(bitcoinOption ? [bitcoinOption] : []),
+  ];
+
   return (
     <PageContent>
       <OrderHeader />
@@ -121,20 +136,7 @@ const SelectMethod: React.FC = () => {
       <OptionsList
         requiredSkeletons={isMobile ? 4 : 3} // TODO: programmatically determine skeletons to best avoid layout shifts
         isLoading={externalPaymentOptions.loading}
-        options={[
-          ...walletOptions,
-          ...(solanaOption ? [solanaOption] : []),
-          ...(externalPaymentOptions.options ?? []).map((option) => ({
-            id: option.id,
-            title: option.cta,
-            icons: [option.logoURI],
-            onClick: () => {
-              setSelectedExternalOption(option);
-              setRoute(ROUTES.WAITING_OTHER);
-            },
-          })),
-          ...(bitcoinOption ? [bitcoinOption] : []),
-        ]}
+        options={externalPaymentOptions.loading ? [] : options}
       />
       <PoweredByFooter />
     </PageContent>
