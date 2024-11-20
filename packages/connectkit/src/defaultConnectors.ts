@@ -14,7 +14,7 @@ type DefaultConnectorsProps = {
     description?: string;
     url?: string;
   };
-  walletConnectProjectId?: string;
+  walletConnectProjectId: string;
   coinbaseWalletPreference?: CoinbaseWalletParameters<"4">["preference"];
 };
 
@@ -49,22 +49,21 @@ const defaultConnectors = ({
     }),
   );
 
-  if (walletConnectProjectId) {
-    connectors.push(
-      walletConnect({
-        showQrModal: false,
-        projectId: walletConnectProjectId,
-        metadata: hasAllAppData
-          ? {
-              name: app.name,
-              description: app.description!,
-              url: app.url!,
-              icons: [app.icon!],
-            }
-          : undefined,
-      }),
-    );
-  }
+  connectors.push(
+    walletConnect({
+      showQrModal: false,
+      projectId: walletConnectProjectId,
+      metadata: hasAllAppData
+        ? {
+            name: app.name,
+            description: app.description!,
+            url: app.url!,
+            icons: [app.icon!],
+          }
+        : undefined,
+    }),
+  );
+
   /*
   connectors.push(
     injected({

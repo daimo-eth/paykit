@@ -1,5 +1,4 @@
 export { default as getDefaultConfig } from "./defaultConfig";
-export { default as getDefaultConnectors } from "./defaultConnectors";
 export * as Types from "./types";
 export { wallets } from "./wallets";
 
