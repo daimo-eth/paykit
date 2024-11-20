@@ -3,10 +3,13 @@ import { ROUTES, useContext } from "../../DaimoPay";
 
 import { PageContent } from "../../Common/Modal/styles";
 
-import { getAddressContraction } from "@daimo/common";
+import {
+  DepositAddressPaymentOptionMetadata,
+  getAddressContraction,
+} from "@daimo/common";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connector, useAccount, useDisconnect } from "wagmi";
-import { Bitcoin, Solana } from "../../../assets/chains";
+import { Bitcoin, Solana, Tron, Zcash } from "../../../assets/chains";
 import { Coinbase, MetaMask, Rabby, Rainbow } from "../../../assets/logos";
 import useIsMobile from "../../../hooks/useIsMobile";
 import OptionsList from "../../Common/OptionsList";
@@ -47,17 +50,31 @@ function getSolanaOption() {
   };
 }
 
-function getBitcoinOption(usdRequired: number) {
+function getDepositAddressOption(depositAddressOptions: {
+  loading: boolean;
+  options: DepositAddressPaymentOptionMetadata[];
+}) {
   const { setRoute } = useContext();
 
-  if (usdRequired < 20) return null;
+  console.log(
+    `[SELECT_METHOD] depositAddressOptions: ${JSON.stringify(
+      depositAddressOptions,
+    )}`,
+  );
+
+  if (
+    !depositAddressOptions.loading &&
+    depositAddressOptions.options.length === 0
+  )
+    return null;
 
   return {
-    id: "bitcoin",
-    title: "Pay with Bitcoin",
-    icons: [<Bitcoin />],
+    id: "depositAddress",
+    title: "Pay on another chain",
+    subtitle: "Bitcoin, Tron, Zcash...",
+    icons: [<Bitcoin />, <Tron />, <Zcash />],
     onClick: () => {
-      setRoute(ROUTES.WAITING_BITCOIN);
+      setRoute(ROUTES.SELECT_DEPOSIT_ADDRESS_CHAIN);
     },
   };
 }
@@ -70,9 +87,9 @@ const SelectMethod: React.FC = () => {
 
   const { setRoute, paymentInfo, log } = useContext();
   const {
-    daimoPayOrder,
     setSelectedExternalOption,
     externalPaymentOptions,
+    depositAddressOptions,
     senderEnsName,
   } = paymentInfo;
   const displayName =
@@ -110,9 +127,7 @@ const SelectMethod: React.FC = () => {
   );
 
   const solanaOption = getSolanaOption();
-  const bitcoinOption = getBitcoinOption(
-    daimoPayOrder?.destFinalCallTokenAmount.usd ?? 0,
-  );
+  const depositAddressOption = getDepositAddressOption(depositAddressOptions);
 
   const options = [
     ...walletOptions,
@@ -126,7 +141,7 @@ const SelectMethod: React.FC = () => {
         setRoute(ROUTES.WAITING_OTHER);
       },
     })),
-    ...(bitcoinOption ? [bitcoinOption] : []),
+    ...(depositAddressOption ? [depositAddressOption] : []),
   ];
 
   return (

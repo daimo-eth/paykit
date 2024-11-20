@@ -9,7 +9,6 @@ import Connectors from "../Pages/Connectors";
 import DownloadApp from "../Pages/DownloadApp";
 import MobileConnectors from "../Pages/MobileConnectors";
 import Onboarding from "../Pages/Onboarding";
-import Profile from "../Pages/Profile";
 import SwitchNetworks from "../Pages/SwitchNetworks";
 import ConnectUsing from "./ConnectUsing";
 
@@ -18,13 +17,14 @@ import { useChainIsSupported } from "../../hooks/useChainIsSupported";
 import { DaimoPayThemeProvider } from "../DaimoPayThemeProvider/DaimoPayThemeProvider";
 import Confirmation from "../Pages/Confirmation";
 import PayWithToken from "../Pages/PayWithToken";
+import SelectDepositAddressChain from "../Pages/SelectDepositAddressChain";
 import SelectMethod from "../Pages/SelectMethod";
 import SelectToken from "../Pages/SelectToken";
 import ConnectorSolana from "../Pages/Solana/ConnectorSolana";
 import ConnectSolana from "../Pages/Solana/ConnectSolana";
 import PayWithSolanaToken from "../Pages/Solana/PayWithSolanaToken";
 import SelectSolanaToken from "../Pages/Solana/SelectSolanaToken";
-import WaitingBitcoin from "../Pages/WaitingBitcoin";
+import WaitingDepositAddress from "../Pages/WaitingDepositAddress";
 import WaitingOther from "../Pages/WaitingOther";
 
 const customThemeDefault: object = {};
@@ -41,8 +41,12 @@ export const DaimoPayModal: React.FC<{
   lang = "en-US",
 }) => {
   const context = useContext();
-  const { setSelectedExternalOption, setSelectedTokenOption } =
-    context.paymentInfo;
+  const {
+    setSelectedExternalOption,
+    setSelectedTokenOption,
+    setSelectedDepositAddressOption,
+    setSelectedSolanaTokenOption,
+  } = context.paymentInfo;
   const { isConnected, chain } = useAccount();
   const chainIsSupported = useChainIsSupported(chain?.id);
 
@@ -55,16 +59,13 @@ export const DaimoPayModal: React.FC<{
 
   const showBackButton =
     closeable &&
-    context.route !== ROUTES.PROFILE &&
     context.route !== ROUTES.SELECT_METHOD &&
     context.route !== ROUTES.CONFIRMATION;
 
-  const showInfoButton = closeable && context.route !== ROUTES.PROFILE;
+  const showInfoButton = closeable;
 
   const onBack = () => {
-    if (context.route === ROUTES.SWITCHNETWORKS) {
-      context.setRoute(ROUTES.PROFILE);
-    } else if (context.route === ROUTES.DOWNLOAD) {
+    if (context.route === ROUTES.DOWNLOAD) {
       context.setRoute(ROUTES.CONNECT);
     } else if (context.route === ROUTES.CONNECTORS) {
       context.setRoute(ROUTES.SELECT_METHOD);
@@ -78,6 +79,12 @@ export const DaimoPayModal: React.FC<{
       context.setRoute(ROUTES.SELECT_TOKEN);
     } else if (context.route === ROUTES.ONBOARDING) {
       context.setRoute(ROUTES.CONNECTORS);
+    } else if (context.route === ROUTES.WAITING_DEPOSIT_ADDRESS) {
+      setSelectedDepositAddressOption(undefined);
+      context.setRoute(ROUTES.SELECT_DEPOSIT_ADDRESS_CHAIN);
+    } else if (context.route === ROUTES.SOLANA_PAY_WITH_TOKEN) {
+      setSelectedSolanaTokenOption(undefined);
+      context.setRoute(ROUTES.SOLANA_SELECT_TOKEN);
     } else {
       context.setRoute(ROUTES.SELECT_METHOD);
     }
@@ -87,7 +94,8 @@ export const DaimoPayModal: React.FC<{
     daimoPaySelectMethod: <SelectMethod />,
     daimoPaySelectToken: <SelectToken />,
     daimoPayWaitingOther: <WaitingOther />,
-    daimoPayWaitingBitcoin: <WaitingBitcoin />,
+    daimoPaySelectDepositAddressChain: <SelectDepositAddressChain />,
+    daimoPayWaitingDepositAddress: <WaitingDepositAddress />,
     daimoPayConfirmation: <Confirmation />,
     daimoPayPayWithToken: <PayWithToken />,
     daimoPaySolanaConnect: <ConnectSolana />,
@@ -101,7 +109,6 @@ export const DaimoPayModal: React.FC<{
     connectors: <Connectors />,
     mobileConnectors: <MobileConnectors />,
     connect: <ConnectUsing />,
-    profile: <Profile />,
     switchNetworks: <SwitchNetworks />,
   };
 

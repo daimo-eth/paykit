@@ -67,15 +67,17 @@ const IconContainer = styled(motion.div)<{ $clipboard?: boolean }>`
 const CopyToClipboardIcon = ({
   copied,
   small,
+  dark,
 }: {
   copied?: boolean;
   small?: boolean;
+  dark?: boolean;
 }) => (
   <IconContainer $clipboard={copied}>
     <Icon
       style={{
         transform: small ? "scale(1)" : "translateX(3px) scale(1.5)",
-        opacity: small || copied ? 1 : 0.3,
+        opacity: small || copied || dark ? 1 : 0.3,
       }}
     />
   </IconContainer>

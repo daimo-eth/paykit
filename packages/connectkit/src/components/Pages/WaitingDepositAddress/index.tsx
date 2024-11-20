@@ -8,8 +8,10 @@ import {
   PageContent,
 } from "../../Common/Modal/styles";
 
-import { getAddressContraction } from "@daimo/common";
-import { Bitcoin } from "../../../assets/chains";
+import {
+  DepositAddressPaymentOptionData,
+  getAddressContraction,
+} from "@daimo/common";
 import ScanIconWithLogos from "../../../assets/ScanIconWithLogos";
 import { trpc } from "../../../utils/trpc";
 import Button from "../../Common/Button";
@@ -17,13 +19,14 @@ import CopyToClipboard from "../../Common/CopyToClipboard";
 import CustomQRCode from "../../Common/CustomQRCode";
 import { OrDivider } from "../../Common/Modal";
 
-const WaitingBitcoin: React.FC = () => {
+const WaitingDepositAddress: React.FC = () => {
   const { triggerResize, paymentInfo, setRoute } = useContext();
-  const { daimoPayOrder, payWithBitcoin } = paymentInfo;
+  const { daimoPayOrder, payWithDepositAddress, selectedDepositAddressOption } =
+    paymentInfo;
 
   useEffect(() => {
     const checkForSourcePayment = async () => {
-      if (!daimoPayOrder) return;
+      if (!daimoPayOrder || !selectedDepositAddressOption) return;
 
       const found = await trpc.findSourcePayment.query({
         orderId: daimoPayOrder.id.toString(),
@@ -39,32 +42,30 @@ const WaitingBitcoin: React.FC = () => {
     return () => clearInterval(interval);
   }, [daimoPayOrder?.id]);
 
-  const [option, setOption] = useState<{
-    address: string;
-    amount: number;
-    uri: string;
-  }>();
+  const [details, setDetails] = useState<DepositAddressPaymentOptionData>();
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
-    payWithBitcoin().then((option) => {
-      if (!option) setFailed(true);
-      else setOption(option);
+    if (!selectedDepositAddressOption) return;
+
+    payWithDepositAddress(selectedDepositAddressOption.id).then((details) => {
+      if (!details) setFailed(true);
+      else setDetails(details);
     });
-  }, []);
+  }, [selectedDepositAddressOption]);
 
   useEffect(() => {
     triggerResize();
-  }, [option]);
+  }, [details]);
 
   return (
     <PageContent>
       {failed ? (
         <ModalContent style={{ marginLeft: 24, marginRight: 24 }}>
-          <ModalH1>Bitcoin unavailable</ModalH1>
+          <ModalH1>{selectedDepositAddressOption?.id} unavailable</ModalH1>
           <ModalBody>
-            We're unable to process Bitcoin payments at this time. Please select
-            another payment method.
+            We're unable to process {selectedDepositAddressOption?.id} payments
+            at this time. Please select another payment method.
           </ModalBody>
           <Button onClick={() => setRoute(ROUTES.SELECT_METHOD)}>
             Select Another Method
@@ -73,25 +74,38 @@ const WaitingBitcoin: React.FC = () => {
       ) : (
         <ModalContent>
           <CustomQRCode
-            value={option?.uri}
-            image={<Bitcoin />}
+            value={details?.uri}
+            image={
+              <img
+                src={selectedDepositAddressOption?.logoURI}
+                width="100%"
+                height="100%"
+              />
+            }
             tooltipMessage={
               <>
-                <ScanIconWithLogos logo={<Bitcoin />} />
-                <span>Use a Bitcoin wallet to scan</span>
+                <ScanIconWithLogos
+                  logo={<img src={selectedDepositAddressOption?.logoURI} />}
+                />
+                <span>
+                  Use a {selectedDepositAddressOption?.id} wallet to scan
+                </span>
               </>
             }
           />
-          {option && (
+          {details && (
             <>
               <OrDivider />
               <ModalBody>
-                Send exactly {option.amount} BTC to{" "}
-                {getAddressContraction(option?.address)} and return to this
+                Send exactly {details.amount} {details.suffix} to{" "}
+                {getAddressContraction(details.address)} and return to this
                 page. Confirmation should appear in a few minutes.
               </ModalBody>
-              <CopyToClipboard variant="button" string={option.address}>
-                Copy Address to Clipboard
+              <CopyToClipboard variant="button" string={details.address}>
+                Copy Address
+              </CopyToClipboard>
+              <CopyToClipboard variant="left" string={details.amount}>
+                Copy Amount
               </CopyToClipboard>
             </>
           )}
@@ -101,4 +115,4 @@ const WaitingBitcoin: React.FC = () => {
   );
 };
 
-export default WaitingBitcoin;
+export default WaitingDepositAddress;
