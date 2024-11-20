@@ -11,9 +11,11 @@ const Container = styled.div<{ $disabled?: boolean }>`
   transition: all 220ms cubic-bezier(0.175, 0.885, 0.32, 1.1);
 
   cursor: pointer;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: 4px;
+  gap: 8px;
 
   ${(props) =>
     props.$disabled
@@ -27,24 +29,11 @@ const Container = styled.div<{ $disabled?: boolean }>`
           }
         `}
 `;
-const OffsetContainer = styled.div`
-  display: block;
-  position: relative;
-  transition: inherit;
-  svg {
-    position: absolute;
-    left: 100%;
-    display: block;
-    top: -1px;
-    margin: 0;
-    margin-left: 4px;
-  }
-`;
 
 const CopyToClipboard: React.FC<{
   string?: string;
   children?: React.ReactNode;
-  variant?: "button";
+  variant?: "button" | "left";
 }> = ({ string, children, variant }) => {
   const [clipboard, setClipboard] = useState(false);
 
@@ -83,10 +72,8 @@ const CopyToClipboard: React.FC<{
 
   return (
     <Container onClick={onCopy} $disabled={!string}>
-      <OffsetContainer>
-        {children}
-        <CopyToClipboardIcon copied={clipboard} small />
-      </OffsetContainer>
+      <CopyToClipboardIcon copied={clipboard} dark />
+      {children}
     </Container>
   );
 };

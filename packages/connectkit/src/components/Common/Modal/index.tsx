@@ -203,8 +203,13 @@ const Modal: React.FC<ModalProps> = ({
   const context = useContext();
   const themeContext = useThemeContext();
   const mobile = isMobile();
-  const { daimoPayOrder, selectedExternalOption, selectedTokenOption } =
-    context.paymentInfo;
+  const {
+    daimoPayOrder,
+    selectedExternalOption,
+    selectedTokenOption,
+    selectedSolanaTokenOption,
+    selectedDepositAddressOption,
+  } = context.paymentInfo;
 
   const wallet = useWallet(context.connector?.id);
 
@@ -347,18 +352,22 @@ const Modal: React.FC<ModalProps> = ({
         return locales.downloadAppScreen_heading;
       case ROUTES.ONBOARDING:
         return locales.onboardingScreen_heading;
-      case ROUTES.PROFILE:
-        return locales.profileScreen_heading;
       case ROUTES.SWITCHNETWORKS:
         return locales.switchNetworkScreen_heading;
       case ROUTES.SELECT_METHOD:
       case ROUTES.SELECT_TOKEN:
       case ROUTES.SOLANA_SELECT_TOKEN:
         return daimoPayOrder?.metadata.intent;
+      case ROUTES.SOLANA_PAY_WITH_TOKEN:
+        if (!selectedSolanaTokenOption) return undefined;
+        return `Pay with ${selectedSolanaTokenOption.required.token.symbol}`;
       case ROUTES.WAITING_OTHER:
         return selectedExternalOption?.cta;
-      case ROUTES.WAITING_BITCOIN:
-        return "Pay with Bitcoin";
+      case ROUTES.SELECT_DEPOSIT_ADDRESS_CHAIN:
+        return "Select Chain";
+      case ROUTES.WAITING_DEPOSIT_ADDRESS:
+        if (!selectedDepositAddressOption) return undefined;
+        return `Pay with ${selectedDepositAddressOption.id}`;
       case ROUTES.PAY_WITH_TOKEN:
         if (!selectedTokenOption) return undefined;
 

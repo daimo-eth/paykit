@@ -3,6 +3,9 @@ import {
   assertNotNull,
   DaimoPayOrder,
   DaimoPayTokenAmount,
+  DepositAddressPaymentOptionData,
+  DepositAddressPaymentOptionMetadata,
+  DepositAddressPaymentOptions,
   ExternalPaymentOptionMetadata,
   ExternalPaymentOptions,
   PlatformType,
@@ -23,6 +26,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { DaimoPayModalOptions } from "../types";
 import { detectPlatform } from "../utils/platform";
 import { trpc } from "../utils/trpc";
+import { useDepositAddressOptions } from "./useDepositAddressOptions";
 import { useExternalPaymentOptions } from "./useExternalPaymentOptions";
 import { usePayWithSolanaToken } from "./usePayWithSolanaToken";
 import {
@@ -49,9 +53,14 @@ export interface PaymentInfo {
   externalPaymentOptions: ReturnType<typeof useExternalPaymentOptions>;
   walletPaymentOptions: ReturnType<typeof useWalletPaymentOptions>;
   solanaPaymentOptions: ReturnType<typeof useSolanaPaymentOptions>;
+  depositAddressOptions: ReturnType<typeof useDepositAddressOptions>;
   selectedExternalOption: ExternalPaymentOptionMetadata | undefined;
   selectedTokenOption: WalletPaymentOption | undefined;
   selectedSolanaTokenOption: SolanaPaymentOption | undefined;
+  selectedDepositAddressOption: DepositAddressPaymentOptionMetadata | undefined;
+  setSelectedDepositAddressOption: (
+    option: DepositAddressPaymentOptionMetadata | undefined,
+  ) => void;
   setSelectedExternalOption: (
     option: ExternalPaymentOptionMetadata | undefined,
   ) => void;
@@ -62,11 +71,9 @@ export interface PaymentInfo {
   setChosenUsd: (amount: number) => void;
   payWithToken: (tokenAmount: DaimoPayTokenAmount) => Promise<void>;
   payWithExternal: (option: ExternalPaymentOptions) => Promise<string>;
-  payWithBitcoin: () => Promise<{
-    address: string;
-    amount: number;
-    uri: string;
-  } | null>;
+  payWithDepositAddress: (
+    option: DepositAddressPaymentOptions,
+  ) => Promise<DepositAddressPaymentOptionData | null>;
   payWithSolanaToken: (
     inputToken: SolanaPublicKey,
   ) => Promise<string | undefined>;
@@ -126,6 +133,9 @@ export function usePaymentInfo({
     address: solanaPubKey,
     usdRequired: daimoPayOrder?.destFinalCallTokenAmount.usd,
   });
+  const depositAddressOptions = useDepositAddressOptions({
+    usdRequired: daimoPayOrder?.destFinalCallTokenAmount.usd ?? 0,
+  });
 
   const { payWithSolanaToken } = usePayWithSolanaToken(
     daimoPayOrder?.id ?? undefined,
@@ -142,6 +152,9 @@ export function usePaymentInfo({
 
   const [selectedSolanaTokenOption, setSelectedSolanaTokenOption] =
     useState<SolanaPaymentOption>();
+
+  const [selectedDepositAddressOption, setSelectedDepositAddressOption] =
+    useState<DepositAddressPaymentOptionMetadata>();
 
   const payWithToken = async (tokenAmount: DaimoPayTokenAmount) => {
     assert(!!daimoPayOrder && !!platform);
@@ -211,7 +224,9 @@ export function usePaymentInfo({
     return externalPaymentOptionData.url;
   };
 
-  const payWithBitcoin = async () => {
+  const payWithDepositAddress = async (
+    option: DepositAddressPaymentOptions,
+  ) => {
     assert(!!daimoPayOrder && !!platform);
     const { hydratedOrder } = await trpc.hydrateOrder.query({
       id: daimoPayOrder.id.toString(),
@@ -221,11 +236,12 @@ export function usePaymentInfo({
 
     setDaimoPayOrder(hydratedOrder);
 
-    const bitcoinOption = await trpc.getBitcoinOption.query({
+    const depositAddressOption = await trpc.getDepositAddressOptionData.query({
+      input: option,
       usdRequired: daimoPayOrder.destFinalCallTokenAmount.usd,
       toAddress: assertNotNull(hydratedOrder.intentAddr),
     });
-    return bitcoinOption;
+    return depositAddressOption;
   };
 
   const refreshOrder = useCallback(async () => {
@@ -301,13 +317,16 @@ export function usePaymentInfo({
     externalPaymentOptions,
     walletPaymentOptions,
     solanaPaymentOptions,
+    depositAddressOptions,
+    selectedDepositAddressOption,
+    setSelectedDepositAddressOption,
     setSelectedExternalOption,
     setSelectedTokenOption,
     setSelectedSolanaTokenOption,
     setChosenUsd,
     payWithToken,
     payWithExternal,
-    payWithBitcoin,
+    payWithDepositAddress,
     payWithSolanaToken,
     refreshOrder,
     onSuccess,

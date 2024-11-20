@@ -43,7 +43,8 @@ export enum ROUTES {
   SELECT_METHOD = "daimoPaySelectMethod",
   SELECT_TOKEN = "daimoPaySelectToken",
   WAITING_OTHER = "daimoPayWaitingOther",
-  WAITING_BITCOIN = "daimoPayWaitingBitcoin",
+  SELECT_DEPOSIT_ADDRESS_CHAIN = "daimoPaySelectDepositAddressChain",
+  WAITING_DEPOSIT_ADDRESS = "daimoPayWaitingDepositAddress",
   PAY_WITH_TOKEN = "daimoPayPayWithToken",
   CONFIRMATION = "daimoPayConfirmation",
   SOLANA_CONNECT = "daimoPaySolanaConnect",
@@ -57,7 +58,6 @@ export enum ROUTES {
   MOBILECONNECTORS = "mobileConnectors",
   CONNECT = "connect",
   DOWNLOAD = "download",
-  PROFILE = "profile",
   SWITCHNETWORKS = "switchNetworks",
 }
 
