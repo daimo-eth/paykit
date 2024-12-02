@@ -12,7 +12,6 @@ export const OptionButton = styled(motion.button)`
   display: flex;
   align-items: center;
   padding: 0 20px;
-  width: 100%;
   height: 64px;
   font-size: 17px;
   font-weight: var(--ck-primary-button-font-weight, 500);
@@ -159,7 +158,6 @@ export const OptionsContainer = styled.div<{
   $disabled?: boolean;
 }>`
   transition: opacity 300ms ease;
-  min-width: fit-content;
   display: flex;
   flex-direction: column;
   gap: 12px;

@@ -100,15 +100,15 @@ const WaitingOther: React.FC = () => {
             {paymentWaitingMessage}
           </ModalBody>
         )}
-        <Button
-          icon={<ExternalLinkIcon />}
-          onClick={() => {
-            if (externalURL) window.open(externalURL, "_blank");
-          }}
-        >
-          Open in New Tab
-        </Button>
       </ModalContent>
+      <Button
+        icon={<ExternalLinkIcon />}
+        onClick={() => {
+          if (externalURL) window.open(externalURL, "_blank");
+        }}
+      >
+        Open in New Tab
+      </Button>
     </PageContent>
   );
 };
