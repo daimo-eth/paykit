@@ -53,7 +53,7 @@ Any changes will be reflected on the Pay button in the example app.
 
 ## Support
 
-Message us on [Telegram](https://t.me/daimo_support) if you're interested in integrating Daimo Pay.
+[Contact us](mailto:support@daimo.com) if you'd like to integrate Daimo Pay.
 
 ## License
 
