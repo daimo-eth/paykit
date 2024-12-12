@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
-import { trpc } from "../utils/trpc";
+import { TrpcClient } from "../utils/trpc";
 
 export type SolanaPaymentOption = Awaited<
-  ReturnType<typeof trpc.getSolanaPaymentOptions.query>
+  ReturnType<TrpcClient["getSolanaPaymentOptions"]["query"]>
 >[0];
 
 export function useSolanaPaymentOptions({
+  trpc,
   address,
   usdRequired,
 }: {
+  trpc: TrpcClient;
   address: string | undefined;
   usdRequired: number | undefined;
 }) {

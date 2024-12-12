@@ -31,7 +31,7 @@ import {
 } from "./styles";
 
 import useLockBodyScroll from "../../../hooks/useLockBodyScroll";
-import { ROUTES, useContext } from "../../DaimoPay";
+import { ROUTES, usePayContext } from "../../DaimoPay";
 
 import { getChainName } from "@daimo/contract";
 import { useTransition } from "react-transition-state";
@@ -200,7 +200,7 @@ const Modal: React.FC<ModalProps> = ({
   onBack,
   onInfo,
 }) => {
-  const context = useContext();
+  const context = usePayContext();
   const themeContext = useThemeContext();
   const mobile = isMobile();
   const {

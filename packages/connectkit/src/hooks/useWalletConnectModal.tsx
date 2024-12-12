@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { Connector, CreateConnectorFn } from "wagmi";
 import { walletConnect } from "wagmi/connectors";
-import { useContext } from "../components/DaimoPay";
+import { usePayContext } from "../components/DaimoPay";
 
 import { isWalletConnectConnector } from "../utils";
 import { useConnect } from "./useConnect";
 
 export function useWalletConnectModal() {
-  const { log } = useContext();
+  const { log } = usePayContext();
   const { connectAsync, connectors } = useConnect();
   const [isOpen, setIsOpen] = useState(false);
 

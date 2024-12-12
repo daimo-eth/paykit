@@ -1,12 +1,12 @@
 import React, { useMemo } from "react";
 import Logos from "../assets/logos";
 
-import { useContext } from "../components/DaimoPay";
+import { usePayContext } from "../components/DaimoPay";
 
 import { getLocale } from "./../localizations";
 
 export default function useLocales(replacements?: any) {
-  const context = useContext();
+  const context = usePayContext();
   const language = context.options?.language ?? "en-US";
 
   const translations = useMemo(() => {

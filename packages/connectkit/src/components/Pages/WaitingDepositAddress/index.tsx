@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ROUTES, useContext } from "../../DaimoPay";
+import { ROUTES, usePayContext } from "../../DaimoPay";
 
 import {
   ModalBody,
@@ -13,14 +13,13 @@ import {
   getAddressContraction,
 } from "@daimo/common";
 import ScanIconWithLogos from "../../../assets/ScanIconWithLogos";
-import { trpc } from "../../../utils/trpc";
 import Button from "../../Common/Button";
 import CopyToClipboard from "../../Common/CopyToClipboard";
 import CustomQRCode from "../../Common/CustomQRCode";
 import { OrDivider } from "../../Common/Modal";
 
 const WaitingDepositAddress: React.FC = () => {
-  const { triggerResize, paymentInfo, setRoute } = useContext();
+  const { trpc, triggerResize, paymentInfo, setRoute } = usePayContext();
   const { daimoPayOrder, payWithDepositAddress, selectedDepositAddressOption } =
     paymentInfo;
 

@@ -12,7 +12,7 @@ import Chain from "../Common/Chain";
 import ChainSelectDropdown from "../Common/ChainSelectDropdown";
 import DynamicContainer from "../Common/DynamicContainer";
 import ThemedButton from "../Common/ThemedButton";
-import { useContext } from "../DaimoPay";
+import { usePayContext } from "../DaimoPay";
 import { DaimoPayThemeProvider } from "../DaimoPayThemeProvider/DaimoPayThemeProvider";
 import styled from "./../../styles/styled";
 
@@ -49,7 +49,7 @@ const NetworkButton: React.FC<NetworkButtonProps & All> = ({
   hideIcon,
   hideName,
 }) => {
-  const context = useContext();
+  const context = usePayContext();
   const isMounted = useIsMounted();
 
   const [open, setOpen] = useState(false);

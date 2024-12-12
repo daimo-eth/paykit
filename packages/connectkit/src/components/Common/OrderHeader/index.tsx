@@ -12,7 +12,7 @@ import {
 import { USDC } from "../../../assets/coins";
 import defaultTheme from "../../../constants/defaultTheme";
 import styled from "../../../styles/styled";
-import { useContext } from "../../DaimoPay";
+import { usePayContext } from "../../DaimoPay";
 import Button from "../Button";
 
 const CoinLogos = ({ $size = 24 }: { $size?: number }) => {
@@ -108,7 +108,7 @@ const Underline = styled(motion.div)`
 `;
 
 export const OrderHeader = ({ minified = false }: { minified?: boolean }) => {
-  const { paymentInfo } = useContext();
+  const { paymentInfo } = usePayContext();
 
   const amount =
     paymentInfo.daimoPayOrder?.destFinalCallTokenAmount.usd.toFixed(2);

@@ -20,7 +20,7 @@ import CopyToClipboard from "../../Common/CopyToClipboard";
 import { ScrollArea } from "../../Common/ScrollArea";
 import { Spinner } from "../../Common/Spinner";
 import { useWeb3 } from "../../contexts/web3";
-import { useContext } from "../../DaimoPay";
+import { usePayContext } from "../../DaimoPay";
 
 const MoreIcon = (
   <svg
@@ -40,7 +40,7 @@ const MoreIcon = (
 );
 
 const MobileConnectors: React.FC = () => {
-  const context = useContext();
+  const context = usePayContext();
   const locales = useLocales();
 
   const {

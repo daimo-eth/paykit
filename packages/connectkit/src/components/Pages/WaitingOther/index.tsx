@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ROUTES, useContext } from "../../DaimoPay";
+import { ROUTES, usePayContext } from "../../DaimoPay";
 
 import {
   ModalBody,
@@ -12,13 +12,12 @@ import { AnimatePresence, motion } from "framer-motion";
 import { css } from "styled-components";
 import { ExternalLinkIcon } from "../../../assets/icons";
 import styled from "../../../styles/styled";
-import { trpc } from "../../../utils/trpc";
 import Button from "../../Common/Button";
 import CircleSpinner from "../../Spinners/CircleSpinner";
 import SquircleSpinner from "../../Spinners/SquircleSpinner";
 
 const WaitingOther: React.FC = () => {
-  const { triggerResize, paymentInfo, setRoute } = useContext();
+  const { trpc, triggerResize, paymentInfo, setRoute } = usePayContext();
   const {
     selectedExternalOption,
     payWithExternal,

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { Connector, useAccount } from "wagmi";
-import { useContext } from "../../components/DaimoPay";
+import { usePayContext } from "../../components/DaimoPay";
 import { useConnect } from "../useConnect";
 import { useWalletConnectConnector } from "./../useConnectors";
 
@@ -14,7 +14,7 @@ export function useWalletConnectUri(
     enabled: true,
   },
 ) {
-  const { log } = useContext();
+  const { log } = usePayContext();
 
   const [uri, setUri] = useState<string | undefined>(undefined);
 

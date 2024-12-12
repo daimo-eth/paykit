@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ROUTES, useContext } from "../../../DaimoPay";
+import { ROUTES, usePayContext } from "../../../DaimoPay";
 
 import { WalletSignTransactionError } from "@solana/wallet-adapter-base";
 import {
@@ -23,7 +23,7 @@ enum PayState {
 }
 
 const PayWithSolanaToken: React.FC = () => {
-  const { triggerResize, paymentInfo, setRoute } = useContext();
+  const { triggerResize, paymentInfo, setRoute } = usePayContext();
   const { selectedSolanaTokenOption, payWithSolanaToken } = paymentInfo;
   const [payState, setPayState] = useState<PayState>(
     PayState.RequestingPayment,

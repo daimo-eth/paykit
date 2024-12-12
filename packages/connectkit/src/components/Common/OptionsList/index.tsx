@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { useEffect } from "react";
 import { keyframes } from "styled-components";
 import styled from "../../../styles/styled";
-import { useContext } from "../../DaimoPay";
+import { usePayContext } from "../../DaimoPay";
 import { ScrollArea } from "../ScrollArea";
 import {
   OptionButton,
@@ -30,7 +30,7 @@ const OptionsList = ({
   isLoading?: boolean;
   requiredSkeletons?: number;
 }) => {
-  const { triggerResize, log } = useContext();
+  const { triggerResize, log } = usePayContext();
   const optionsLength = options.length;
 
   useEffect(() => {

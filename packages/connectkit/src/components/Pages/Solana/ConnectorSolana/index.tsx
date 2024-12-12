@@ -10,7 +10,7 @@ import {
 import { useWallet } from "@solana/wallet-adapter-react";
 import { AnimatePresence, motion } from "framer-motion";
 import styled from "../../../../styles/styled";
-import { ROUTES, useContext } from "../../../DaimoPay";
+import { ROUTES, usePayContext } from "../../../DaimoPay";
 import SquircleSpinner from "../../../Spinners/SquircleSpinner";
 import { LoadingContainer } from "../../WaitingOther";
 
@@ -18,7 +18,7 @@ const ConnectSolana: React.FC = () => {
   const solanaWallets = useWallet();
   const isConnected = solanaWallets.connected;
 
-  const { solanaConnector, setRoute } = useContext();
+  const { solanaConnector, setRoute } = usePayContext();
 
   const selectedWallet = solanaWallets.wallets.find(
     (wallet) => wallet.adapter.name === solanaConnector,

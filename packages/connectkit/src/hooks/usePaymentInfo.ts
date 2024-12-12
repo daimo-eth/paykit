@@ -25,7 +25,7 @@ import {
 import { useWallet } from "@solana/wallet-adapter-react";
 import { DaimoPayModalOptions } from "../types";
 import { detectPlatform } from "../utils/platform";
-import { trpc } from "../utils/trpc";
+import { TrpcClient } from "../utils/trpc";
 import { useDepositAddressOptions } from "./useDepositAddressOptions";
 import { useExternalPaymentOptions } from "./useExternalPaymentOptions";
 import { usePayWithSolanaToken } from "./usePayWithSolanaToken";
@@ -40,7 +40,7 @@ import {
 
 /** Wallet payment details, sent to processSourcePayment after submitting tx. */
 export type SourcePayment = Parameters<
-  typeof trpc.processSourcePayment.mutate
+  TrpcClient["processSourcePayment"]["mutate"]
 >[0];
 
 /** Loads a DaimoPayOrder + manages the corresponding modal. */
@@ -83,11 +83,13 @@ export interface PaymentInfo {
 }
 
 export function usePaymentInfo({
+  trpc,
   daimoPayOrder,
   setDaimoPayOrder,
   setOpen,
   log,
 }: {
+  trpc: TrpcClient;
   daimoPayOrder: DaimoPayOrder | undefined;
   setDaimoPayOrder: (o: DaimoPayOrder) => void;
   setOpen: (showModal: boolean) => void;
@@ -120,29 +122,35 @@ export function usePaymentInfo({
 
   // UI state. Selection for external payment (Binance, etc) vs wallet payment.
   const externalPaymentOptions = useExternalPaymentOptions({
+    trpc,
     filterIds: daimoPayOrder?.metadata.payer?.paymentOptions,
     usdRequired: daimoPayOrder?.destFinalCallTokenAmount.usd,
     platform,
   });
   const walletPaymentOptions = useWalletPaymentOptions({
+    trpc,
     address: senderAddr,
     usdRequired: daimoPayOrder?.destFinalCallTokenAmount.usd,
     destChainId: daimoPayOrder?.destFinalCallTokenAmount.token.chainId,
   });
   const solanaPaymentOptions = useSolanaPaymentOptions({
+    trpc,
     address: solanaPubKey,
     usdRequired: daimoPayOrder?.destFinalCallTokenAmount.usd,
   });
   const depositAddressOptions = useDepositAddressOptions({
+    trpc,
     usdRequired: daimoPayOrder?.destFinalCallTokenAmount.usd ?? 0,
   });
 
-  const { payWithSolanaToken } = usePayWithSolanaToken(
-    daimoPayOrder?.id ?? undefined,
+  const { payWithSolanaToken } = usePayWithSolanaToken({
+    trpc,
+    orderId: daimoPayOrder?.id ?? undefined,
     setDaimoPayOrder,
-    daimoPayOrder?.destFinalCallTokenAmount.amount ?? undefined,
+    chosenFinalTokenAmount:
+      daimoPayOrder?.destFinalCallTokenAmount.amount ?? undefined,
     platform,
-  );
+  });
 
   const [selectedExternalOption, setSelectedExternalOption] =
     useState<ExternalPaymentOptionMetadata>();
@@ -233,7 +241,6 @@ export function usePaymentInfo({
       chosenFinalTokenAmount: daimoPayOrder.destFinalCallTokenAmount.amount,
       platform,
     });
-
     setDaimoPayOrder(hydratedOrder);
 
     const depositAddressOption = await trpc.getDepositAddressOptionData.query({

@@ -1,10 +1,12 @@
 import { DepositAddressPaymentOptionMetadata } from "@daimo/common";
 import { useEffect, useState } from "react";
-import { trpc } from "../utils/trpc";
+import { TrpcClient } from "../utils/trpc";
 
 export function useDepositAddressOptions({
+  trpc,
   usdRequired,
 }: {
+  trpc: TrpcClient;
   usdRequired: number;
 }) {
   const [options, setOptions] = useState<DepositAddressPaymentOptionMetadata[]>(

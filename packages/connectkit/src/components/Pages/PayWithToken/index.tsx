@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ROUTES, useContext } from "../../DaimoPay";
+import { ROUTES, usePayContext } from "../../DaimoPay";
 
 import { ModalContent, ModalH1, PageContent } from "../../Common/Modal/styles";
 
@@ -20,7 +20,7 @@ enum PayState {
 }
 
 const PayWithToken: React.FC = () => {
-  const { triggerResize, paymentInfo, setRoute, log } = useContext();
+  const { triggerResize, paymentInfo, setRoute, log } = usePayContext();
   const { selectedTokenOption, payWithToken } = paymentInfo;
   const [payState, setPayState] = useState<PayState>(
     PayState.RequestingPayment,

@@ -20,7 +20,7 @@ import { isCoinbaseWalletConnector, isMobile } from "../../../utils";
 
 import ChainIcons from "../../../assets/chains";
 import useLocales from "../../../hooks/useLocales";
-import { useContext } from "../../DaimoPay";
+import { usePayContext } from "../../DaimoPay";
 
 const Spinner = (
   <svg
@@ -77,7 +77,7 @@ const ChainSelectList = ({
     }
   };
 
-  const { triggerResize } = useContext();
+  const { triggerResize } = usePayContext();
 
   return (
     <SwitchNetworksContainer

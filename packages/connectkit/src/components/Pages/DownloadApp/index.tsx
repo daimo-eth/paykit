@@ -1,4 +1,3 @@
-
 import {
   ModalBody,
   ModalContent,
@@ -9,10 +8,10 @@ import CustomQRCode from "../../Common/CustomQRCode";
 
 import useLocales from "../../../hooks/useLocales";
 import { useWallet } from "../../../wallets/useWallets";
-import { useContext } from "../../DaimoPay";
+import { usePayContext } from "../../DaimoPay";
 
 const DownloadApp = () => {
-  const context = useContext();
+  const context = usePayContext();
   const wallet = useWallet(context.connector.id);
 
   const locales = useLocales({

@@ -4,7 +4,7 @@ import {
   PlatformType,
 } from "@daimo/common";
 import { useEffect, useState } from "react";
-import { trpc } from "../utils/trpc";
+import { TrpcClient } from "../utils/trpc";
 
 const DEFAULT_EXTERNAL_PAYMENT_OPTIONS = [
   ExternalPaymentOptions.Coinbase,
@@ -14,10 +14,12 @@ const DEFAULT_EXTERNAL_PAYMENT_OPTIONS = [
 ];
 
 export function useExternalPaymentOptions({
+  trpc,
   filterIds,
   usdRequired,
   platform,
 }: {
+  trpc: TrpcClient;
   filterIds: string[] | undefined;
   usdRequired: number | undefined;
   platform: PlatformType | undefined;

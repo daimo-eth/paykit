@@ -1,4 +1,4 @@
-import { ROUTES, useContext } from "../components/DaimoPay";
+import { ROUTES, usePayContext } from "../components/DaimoPay";
 import {
   useConnectCallback,
   useConnectCallbackProps,
@@ -7,7 +7,7 @@ import {
 type UseModalProps = {} & useConnectCallbackProps;
 
 export const useModal = ({ onConnect, onDisconnect }: UseModalProps = {}) => {
-  const context = useContext();
+  const context = usePayContext();
 
   useConnectCallback({
     onConnect,

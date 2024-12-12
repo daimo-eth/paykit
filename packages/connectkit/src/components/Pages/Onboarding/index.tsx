@@ -22,10 +22,10 @@ import {
 
 import useLocales from "../../../hooks/useLocales";
 import Button from "../../Common/Button";
-import { useContext } from "../../DaimoPay";
+import { usePayContext } from "../../DaimoPay";
 
 const Introduction: React.FC = () => {
-  const context = useContext();
+  const context = usePayContext();
   const locales = useLocales({});
 
   const ctaUrl =

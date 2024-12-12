@@ -1,5 +1,5 @@
 import React from "react";
-import { useContext } from "../../DaimoPay";
+import { usePayContext } from "../../DaimoPay";
 
 import { ModalContent, ModalH1, PageContent } from "../../Common/Modal/styles";
 
@@ -15,7 +15,7 @@ import styled from "../../../styles/styled";
 import PoweredByFooter from "../../Common/PoweredByFooter";
 
 const Confirmation: React.FC = () => {
-  const { paymentInfo } = useContext();
+  const { paymentInfo } = usePayContext();
   const { daimoPayOrder } = paymentInfo;
 
   const { done, txURL } = (() => {

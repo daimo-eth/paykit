@@ -29,7 +29,7 @@ import useLocales from "../../../hooks/useLocales";
 import { detectBrowser, isWalletConnectConnector } from "../../../utils";
 import { useWallet } from "../../../wallets/useWallets";
 import BrowserIcon from "../../Common/BrowserIcon";
-import { useContext } from "../../DaimoPay";
+import { usePayContext } from "../../DaimoPay";
 import CircleSpinner from "../../Spinners/CircleSpinner";
 
 export const states = {
@@ -124,7 +124,7 @@ const ConnectWithInjector: React.FC<{
     },
   });
 
-  const { triggerResize, connector: c } = useContext();
+  const { triggerResize, connector: c } = usePayContext();
   const id = c.id;
   const wallet = useWallet(id);
 

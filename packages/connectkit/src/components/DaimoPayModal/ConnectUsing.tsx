@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
 import { useWallet } from "../../wallets/useWallets";
-import { useContext } from "../DaimoPay";
+import { usePayContext } from "../DaimoPay";
 
 import ConnectWithInjector from "./ConnectWithInjector";
 import ConnectWithQRCode from "./ConnectWithQRCode";
@@ -16,7 +16,7 @@ const states = {
 };
 
 const ConnectUsing = () => {
-  const context = useContext();
+  const context = usePayContext();
   const wallet = useWallet(context.connector.id);
 
   // If cannot be scanned, display injector flow, which if extension is not installed will show CTA to install it

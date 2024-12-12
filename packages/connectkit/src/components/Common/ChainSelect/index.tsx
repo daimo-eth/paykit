@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ROUTES, useContext } from "../../DaimoPay";
+import { ROUTES, usePayContext } from "../../DaimoPay";
 
 import { flattenChildren, isMobile } from "./../../../utils";
 
@@ -134,7 +134,7 @@ const ChevronDown = ({ ...props }) => (
 );
 
 const ChainSelector: React.FC = () => {
-  const context = useContext();
+  const context = usePayContext();
   const [isOpen, setIsOpen] = useState(false);
   const { chain } = useAccount();
   const { chains } = useSwitchChain();

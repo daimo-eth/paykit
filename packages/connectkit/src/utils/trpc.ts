@@ -1,14 +1,18 @@
-// TODO: re-enable for dev only in rollup.
-// import { AppRouter } from "@daimo/pay-api";
-import { createTRPCClient, httpBatchLink } from "@trpc/client";
+import type { AppRouter } from "@daimo/pay-api";
+import {
+  CreateTRPCClient,
+  createTRPCClient,
+  httpBatchLink,
+} from "@trpc/client";
 
-// TODO: env var in build
-export const apiUrl = "https://pay-api.daimo.xyz";
+export type TrpcClient = CreateTRPCClient<AppRouter>;
 
-export const trpc = createTRPCClient({
-  links: [
-    httpBatchLink({
-      url: apiUrl,
-    }),
-  ],
-}) as any;
+export function createTrpcClient(apiUrl: string): TrpcClient {
+  return createTRPCClient<AppRouter>({
+    links: [
+      httpBatchLink({
+        url: apiUrl,
+      }),
+    ],
+  }) as any;
+}

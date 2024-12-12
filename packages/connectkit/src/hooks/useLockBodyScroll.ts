@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useState } from "react";
-import { useContext } from "../components/DaimoPay";
+import { usePayContext } from "../components/DaimoPay";
 
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
@@ -7,7 +7,7 @@ const useIsomorphicLayoutEffect =
 export default function useLockBodyScroll(initialLocked: boolean) {
   const [locked, setLocked] = useState(initialLocked);
 
-  const context = useContext();
+  const context = usePayContext();
 
   useIsomorphicLayoutEffect(() => {
     if (!locked) return;

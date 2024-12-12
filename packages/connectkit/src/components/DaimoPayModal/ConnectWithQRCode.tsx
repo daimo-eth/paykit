@@ -1,12 +1,9 @@
 import React from "react";
-import { ROUTES, useContext } from "../DaimoPay";
+import { ROUTES, usePayContext } from "../DaimoPay";
 
 import { useWalletConnectModal } from "../../hooks/useWalletConnectModal";
 
-import {
-  detectBrowser,
-  isWalletConnectConnector
-} from "../../utils";
+import { detectBrowser, isWalletConnectConnector } from "../../utils";
 
 import { OrDivider } from "../Common/Modal";
 import { ModalContent, PageContent } from "../Common/Modal/styles";
@@ -24,7 +21,7 @@ import { useWeb3 } from "../contexts/web3";
 const ConnectWithQRCode: React.FC<{
   switchConnectMethod: (id?: string) => void;
 }> = ({ switchConnectMethod }) => {
-  const context = useContext();
+  const context = usePayContext();
 
   const id = context.connector.id;
 

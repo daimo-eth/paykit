@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
-import { trpc } from "../utils/trpc";
+import { TrpcClient } from "../utils/trpc";
 
 /** Wallet payment options. User picks one. */
 export type WalletPaymentOption = Awaited<
-  ReturnType<typeof trpc.getWalletPaymentOptions.query>
+  ReturnType<TrpcClient["getWalletPaymentOptions"]["query"]>
 >[0];
 
 export function useWalletPaymentOptions({
+  trpc,
   address,
   usdRequired,
   destChainId,
 }: {
+  trpc: TrpcClient;
   address: string | undefined;
   usdRequired: number | undefined;
   destChainId: number | undefined;

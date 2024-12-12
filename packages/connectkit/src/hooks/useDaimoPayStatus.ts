@@ -4,10 +4,10 @@ import {
   DaimoPayOrderStatusSource,
   writeDaimoPayOrderID,
 } from "@daimo/common";
-import { useContext } from "../components/DaimoPay";
+import { usePayContext } from "../components/DaimoPay";
 
 export function useDaimoPayStatus() {
-  const { paymentInfo } = useContext();
+  const { paymentInfo } = usePayContext();
 
   const status = (() => {
     if (!paymentInfo || !paymentInfo.daimoPayOrder) return undefined;

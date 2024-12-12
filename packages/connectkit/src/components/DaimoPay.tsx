@@ -3,6 +3,7 @@ import React, {
   createContext,
   createElement,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import {
@@ -35,6 +36,7 @@ import {
 } from "../hooks/useConnectCallback";
 import { useThemeFont } from "../hooks/useGoogleFont";
 import { PaymentInfo, usePaymentInfo } from "../hooks/usePaymentInfo";
+import { createTrpcClient, TrpcClient } from "../utils/trpc";
 import { DaimoPayModal } from "./DaimoPayModal";
 import { SolanaContextProvider, SolanaWalletName } from "./contexts/solana";
 import { Web3ContextProvider } from "./contexts/web3";
@@ -100,6 +102,8 @@ type ContextValue = {
   ) => Promise<void>;
   /** Payment status & callbacks. */
   paymentInfo: PaymentInfo;
+  /** TRPC API client */
+  trpc: TrpcClient;
 } & useConnectCallbackProps;
 
 export const Context = createContext<ContextValue | null>(null);
@@ -117,6 +121,8 @@ type DaimoPayProviderProps = {
    * (ex. successful txes take minutes to confirm instead of seconds)
    */
   solanaRpcUrl?: string;
+  /** Custom Pay API, useful for test and staging. */
+  payApiUrl?: string;
 } & useConnectCallbackProps;
 
 const DaimoPayProviderWithoutSolana = ({
@@ -128,6 +134,7 @@ const DaimoPayProviderWithoutSolana = ({
   onConnect,
   onDisconnect,
   debugMode = false,
+  payApiUrl = "https://pay-api.daimo.xyz",
 }: DaimoPayProviderProps) => {
   // DaimoPayProvider must be within a WagmiProvider
   if (!React.useContext(WagmiContext)) {
@@ -238,12 +245,16 @@ const DaimoPayProviderWithoutSolana = ({
 
   const log = debugMode ? console.log : () => {};
 
+  // Connect to the Daimo Pay TRPC API
+  const trpc = useMemo(() => createTrpcClient(payApiUrl), [payApiUrl]);
+
   // PaymentInfo is a second, inner context object containing a DaimoPayOrder
   // plus all associated status and callbacks. In order for useContext() and
   // downstream hooks like useDaimoPayStatus() to work correctly, we must set
   // set refresh context when payment status changes; done via setDaimoPayOrder.
   const [daimoPayOrder, setDaimoPayOrder] = useState<DaimoPayOrder>();
   const paymentInfo = usePaymentInfo({
+    trpc,
     daimoPayOrder,
     setDaimoPayOrder,
     setOpen,
@@ -333,6 +344,7 @@ const DaimoPayProviderWithoutSolana = ({
     // Below: Daimo Pay context
     loadAndShowPayment,
     paymentInfo,
+    trpc,
   };
 
   return createElement(
@@ -360,7 +372,7 @@ export const DaimoPayProvider = (props: DaimoPayProviderProps) => {
   );
 };
 
-export const useContext = () => {
+export const usePayContext = () => {
   const context = React.useContext(Context);
   if (!context) throw Error("DaimoPay Hook must be inside a Provider.");
   return context;

@@ -1,5 +1,5 @@
 import React from "react";
-import { ROUTES, useContext } from "../../DaimoPay";
+import { ROUTES, usePayContext } from "../../DaimoPay";
 
 import { ModalContent, ModalH1, PageContent } from "../../Common/Modal/styles";
 
@@ -8,7 +8,7 @@ import OptionsList from "../../Common/OptionsList";
 import { OrderHeader } from "../../Common/OrderHeader";
 
 const SelectDepositAddressChain: React.FC = () => {
-  const { setRoute, paymentInfo } = useContext();
+  const { setRoute, paymentInfo } = usePayContext();
   const { setSelectedDepositAddressOption, depositAddressOptions } =
     paymentInfo;
 

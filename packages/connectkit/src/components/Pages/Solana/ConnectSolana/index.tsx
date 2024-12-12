@@ -10,10 +10,10 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import Button from "../../../Common/Button";
 import OptionsList from "../../../Common/OptionsList";
 import { OrderHeader } from "../../../Common/OrderHeader";
-import { ROUTES, useContext } from "../../../DaimoPay";
+import { ROUTES, usePayContext } from "../../../DaimoPay";
 
 const ConnectSolana: React.FC = () => {
-  const { setSolanaConnector, setRoute } = useContext();
+  const { setSolanaConnector, setRoute } = usePayContext();
   const solanaWallets = useWallet();
 
   const options = solanaWallets.wallets.map((wallet) => ({

@@ -8,14 +8,21 @@ import {
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { VersionedTransaction } from "@solana/web3.js";
 import { hexToBytes } from "viem";
-import { trpc } from "../utils/trpc";
+import { TrpcClient } from "../utils/trpc";
 
-export function usePayWithSolanaToken(
-  orderId: bigint | undefined,
-  setDaimoPayOrder: (order: DaimoPayOrder) => void,
-  chosenFinalTokenAmount: BigIntStr | undefined,
-  platform: PlatformType | undefined,
-) {
+export function usePayWithSolanaToken({
+  trpc,
+  orderId,
+  setDaimoPayOrder,
+  chosenFinalTokenAmount,
+  platform,
+}: {
+  trpc: TrpcClient;
+  orderId: bigint | undefined;
+  setDaimoPayOrder: (order: DaimoPayOrder) => void;
+  chosenFinalTokenAmount: BigIntStr | undefined;
+  platform: PlatformType | undefined;
+}) {
   const { connection } = useConnection();
   const wallet = useWallet();
 

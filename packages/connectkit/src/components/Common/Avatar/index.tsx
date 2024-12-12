@@ -7,7 +7,7 @@ import { useEnsAddress, useEnsAvatar, useEnsName } from "wagmi";
 import { useEnsFallbackConfig } from "../../../hooks/useEnsFallbackConfig";
 import useIsMounted from "../../../hooks/useIsMounted";
 import { ResetContainer } from "../../../styles";
-import { useContext } from "../../DaimoPay";
+import { usePayContext } from "../../DaimoPay";
 
 type Hash = `0x${string}`;
 
@@ -26,7 +26,7 @@ const Avatar: React.FC<{
   radius?: number;
 }> = ({ address, name, size = 96, radius = 96 }) => {
   const isMounted = useIsMounted();
-  const context = useContext();
+  const context = usePayContext();
 
   const imageRef = useRef<any>(null);
   const [loaded, setLoaded] = useState(true);

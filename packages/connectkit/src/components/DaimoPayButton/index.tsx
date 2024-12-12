@@ -3,7 +3,7 @@ import { useAccount, useEnsName } from "wagmi";
 import useIsMounted from "../../hooks/useIsMounted";
 import { truncateEthAddress } from "./../../utils";
 
-import { useContext } from "../DaimoPay";
+import { usePayContext } from "../DaimoPay";
 import { TextContainer } from "./styles";
 
 import { AnimatePresence, Variants } from "framer-motion";
@@ -70,7 +70,7 @@ const DaimoPayButtonRenderer: React.FC<DaimoPayButtonRendererProps> = ({
   children,
 }) => {
   const isMounted = useIsMounted();
-  const context = useContext();
+  const context = usePayContext();
 
   const { address, chain } = useAccount();
   const isChainSupported = useChainIsSupported(chain?.id);
@@ -115,7 +115,7 @@ const DaimoPayButtonRenderer: React.FC<DaimoPayButtonRendererProps> = ({
 DaimoPayButtonRenderer.displayName = "DaimoPayButton.Custom";
 
 function DaimoPayButtonInner() {
-  const { paymentInfo } = useContext();
+  const { paymentInfo } = usePayContext();
   const label = paymentInfo?.daimoPayOrder?.metadata?.intent ?? "Pay";
 
   return (
@@ -161,7 +161,7 @@ export function DaimoPayButton({
 }: DaimoPayButtonProps) {
   const isMounted = useIsMounted();
 
-  const context = useContext();
+  const context = usePayContext();
 
   // Pre-load payment info in background.
   const { setPayId } = context.paymentInfo;

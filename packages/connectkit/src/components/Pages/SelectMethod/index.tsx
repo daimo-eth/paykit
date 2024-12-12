@@ -1,5 +1,5 @@
 import React from "react";
-import { ROUTES, useContext } from "../../DaimoPay";
+import { ROUTES, usePayContext } from "../../DaimoPay";
 
 import { PageContent } from "../../Common/Modal/styles";
 
@@ -36,7 +36,7 @@ function getBestUnconnectedWalletIcons(connector: Connector | undefined) {
 
 function getSolanaOption() {
   const { wallets } = useWallet();
-  const { setRoute } = useContext();
+  const { setRoute } = usePayContext();
 
   if (wallets.length === 0) return null;
 
@@ -54,7 +54,7 @@ function getDepositAddressOption(depositAddressOptions: {
   loading: boolean;
   options: DepositAddressPaymentOptionMetadata[];
 }) {
-  const { setRoute } = useContext();
+  const { setRoute } = usePayContext();
 
   console.log(
     `[SELECT_METHOD] depositAddressOptions: ${JSON.stringify(
@@ -85,7 +85,7 @@ const SelectMethod: React.FC = () => {
   const { address, isConnected, connector } = useAccount();
   const { disconnectAsync } = useDisconnect();
 
-  const { setRoute, paymentInfo, log } = useContext();
+  const { setRoute, paymentInfo, log } = usePayContext();
   const {
     setSelectedExternalOption,
     externalPaymentOptions,

@@ -1,5 +1,5 @@
 import React from "react";
-import { ROUTES, useContext } from "../../DaimoPay";
+import { ROUTES, usePayContext } from "../../DaimoPay";
 
 import WalletIcon from "../../../assets/wallet";
 import {
@@ -23,7 +23,7 @@ import ConnectorList from "../../Common/ConnectorList";
 import { OrderHeader } from "../../Common/OrderHeader";
 
 const Wallets: React.FC = () => {
-  const context = useContext();
+  const context = usePayContext();
   const locales = useLocales({});
 
   const isMobile = useIsMobile();

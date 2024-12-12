@@ -1,5 +1,5 @@
 import React from "react";
-import { ROUTES, useContext } from "../../DaimoPay";
+import { ROUTES, usePayContext } from "../../DaimoPay";
 
 import { ModalContent, ModalH1, PageContent } from "../../Common/Modal/styles";
 
@@ -45,7 +45,7 @@ const ChainContainer = styled(motion.div)`
 `;
 
 const SelectToken: React.FC = () => {
-  const { setRoute, paymentInfo } = useContext();
+  const { setRoute, paymentInfo } = usePayContext();
   const { setSelectedTokenOption, walletPaymentOptions } = paymentInfo;
 
   return (

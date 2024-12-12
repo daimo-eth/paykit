@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import useIsMobile from "../../../hooks/useIsMobile";
-import { useContext } from "../../DaimoPay";
+import { usePayContext } from "../../DaimoPay";
 import { MoreIndicator, ScrollAreaContainer, ScrollContainer } from "./styles";
 
 const ArrowDown = () => (
@@ -31,7 +31,7 @@ export const ScrollArea = ({
   backgroundColor?: string;
   mobileDirection?: "horizontal" | "vertical";
 }) => {
-  const { log } = useContext();
+  const { log } = usePayContext();
   const ref = useRef<HTMLDivElement>(null);
   const moreRef = useRef<HTMLDivElement>(null);
 

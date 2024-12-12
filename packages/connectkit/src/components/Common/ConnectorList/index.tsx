@@ -1,4 +1,4 @@
-import { ROUTES, useContext } from "../../DaimoPay";
+import { ROUTES, usePayContext } from "../../DaimoPay";
 
 import {
   ConnectorButton,
@@ -24,7 +24,7 @@ import {
 import { WalletProps, useWallets } from "../../../wallets/useWallets";
 
 const ConnectorList = () => {
-  const context = useContext();
+  const context = usePayContext();
   const isMobile = useIsMobile();
 
   const wallets = useWallets();
@@ -81,7 +81,7 @@ const ConnectorItem = ({
   } = useWeb3();
   const uri = getUri();
   const isMobile = useIsMobile();
-  const context = useContext();
+  const context = usePayContext();
 
   const { connect } = useConnect();
 

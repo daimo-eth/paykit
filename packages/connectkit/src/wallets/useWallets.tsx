@@ -1,6 +1,6 @@
 import { Connector } from "wagmi";
 
-import { useContext } from "../components/DaimoPay";
+import { usePayContext } from "../components/DaimoPay";
 import { useConnectors } from "../hooks/useConnectors";
 import { isCoinbaseWalletConnector, isInjectedConnector } from "../utils";
 import { WalletConfigProps, walletConfigs } from "./walletConfigs";
@@ -19,7 +19,7 @@ export const useWallet = (id: string): WalletProps | null => {
 };
 export const useWallets = (): WalletProps[] => {
   const connectors = useConnectors();
-  const context = useContext();
+  const context = usePayContext();
 
   const wallets = connectors.map((connector): WalletProps => {
     // use overrides

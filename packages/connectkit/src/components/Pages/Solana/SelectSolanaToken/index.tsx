@@ -1,5 +1,5 @@
 import React from "react";
-import { ROUTES, useContext } from "../../../DaimoPay";
+import { ROUTES, usePayContext } from "../../../DaimoPay";
 
 import {
   ModalContent,
@@ -13,7 +13,7 @@ import OptionsList from "../../../Common/OptionsList";
 import { OrderHeader } from "../../../Common/OrderHeader";
 
 const SelectSolanaToken: React.FC = () => {
-  const { paymentInfo, setRoute } = useContext();
+  const { paymentInfo, setRoute } = usePayContext();
   const { solanaPaymentOptions, setSelectedSolanaTokenOption } = paymentInfo;
 
   return (

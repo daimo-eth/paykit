@@ -22,14 +22,14 @@ import useLocales from "../../../hooks/useLocales";
 import Button from "../../Common/Button";
 import FitText from "../../Common/FitText";
 import { OrDivider } from "../../Common/Modal";
-import { useContext } from "../../DaimoPay";
+import { usePayContext } from "../../DaimoPay";
 import { Easing, SlideOne, SlideThree, SlideTwo } from "./graphics";
 
 const About: React.FC = () => {
   const locales = useLocales({
     //CONNECTORNAME: connector.name,
   });
-  const context = useContext();
+  const context = usePayContext();
 
   const ctaUrl =
     context.options?.ethereumOnboardingUrl ?? locales.aboutScreen_ctaUrl;

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useAccount } from "wagmi";
 import { CustomTheme, Languages, Mode, Theme } from "../../types";
 import Modal from "../Common/Modal";
-import { ROUTES, useContext } from "../DaimoPay";
+import { ROUTES, usePayContext } from "../DaimoPay";
 
 import About from "../Pages/About";
 import Connectors from "../Pages/Connectors";
@@ -40,7 +40,7 @@ export const DaimoPayModal: React.FC<{
   customTheme = customThemeDefault,
   lang = "en-US",
 }) => {
-  const context = useContext();
+  const context = usePayContext();
   const {
     setSelectedExternalOption,
     setSelectedTokenOption,
