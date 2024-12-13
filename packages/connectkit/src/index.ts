@@ -2,7 +2,12 @@ export { default as getDefaultConfig } from "./defaultConfig";
 export * as Types from "./types";
 export { wallets } from "./wallets";
 
-export { Context, DaimoPayProvider } from "./components/DaimoPay";
+// TODO: remove Context and usePayContext exports following SDK refactor.
+export {
+  Context,
+  DaimoPayProvider,
+  usePayContext,
+} from "./components/DaimoPay";
 export { DaimoPayButton } from "./components/DaimoPayButton";
 export { useModal } from "./hooks/useModal";
 

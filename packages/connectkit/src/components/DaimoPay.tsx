@@ -36,7 +36,7 @@ import {
 } from "../hooks/useConnectCallback";
 import { useThemeFont } from "../hooks/useGoogleFont";
 import { PaymentInfo, usePaymentInfo } from "../hooks/usePaymentInfo";
-import { createTrpcClient, TrpcClient } from "../utils/trpc";
+import { createTrpcClient } from "../utils/trpc";
 import { DaimoPayModal } from "./DaimoPayModal";
 import { SolanaContextProvider, SolanaWalletName } from "./contexts/solana";
 import { Web3ContextProvider } from "./contexts/web3";
@@ -102,10 +102,11 @@ type ContextValue = {
   ) => Promise<void>;
   /** Payment status & callbacks. */
   paymentInfo: PaymentInfo;
-  /** TRPC API client */
-  trpc: TrpcClient;
+  /** TRPC API client. Internal use only. */
+  trpc: any;
 } & useConnectCallbackProps;
 
+/** Meant for internal use. This will be non-exported in a future version of @daimo/pay */
 export const Context = createContext<ContextValue | null>(null);
 
 type DaimoPayProviderProps = {

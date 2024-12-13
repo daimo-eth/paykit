@@ -10,9 +10,9 @@
   "type": "module",
   "exports": {
     "import": "./build/index.es.js",
-    "types": "./build/packages/paykit/packages/connectkit/src/index.d.ts"
+    "types": "./build/index.d.ts"
   },
-  "types": "./build/packages/paykit/packages/connectkit/src/index.d.ts",
+  "types": "./build/index.d.ts",
   "engines": {
     "node": ">=12.4"
   },
@@ -23,7 +23,7 @@
   "scripts": {
     "start": "rollup --config rollup.config.dev.js -w",
     "dev": "rollup --config rollup.config.dev.js -w",
-    "build": "rollup --config rollup.config.prod.js",
+    "build": "rollup --config rollup.config.prod.js && rm -rf build/packages",
     "lint": "eslint --max-warnings=0"
   },
   "keywords": [
@@ -73,7 +73,8 @@
     "@types/react": "^18.2.47",
     "@types/react-dom": "^18.2.18",
     "@types/styled-components": "^5.1.25",
-    "rollup": "^2.67.1",
+    "rollup": "^3.29.5",
+    "rollup-plugin-dts": "^6.1.1",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-typescript2": "^0.34.0",
     "rollup-plugin-visualizer": "^5.5.4",

@@ -12,12 +12,16 @@ import { AnimatePresence, motion } from "framer-motion";
 import { css } from "styled-components";
 import { ExternalLinkIcon } from "../../../assets/icons";
 import styled from "../../../styles/styled";
+import type { TrpcClient } from "../../../utils/trpc";
 import Button from "../../Common/Button";
 import CircleSpinner from "../../Spinners/CircleSpinner";
 import SquircleSpinner from "../../Spinners/SquircleSpinner";
 
 const WaitingOther: React.FC = () => {
-  const { trpc, triggerResize, paymentInfo, setRoute } = usePayContext();
+  const context = usePayContext();
+  const { triggerResize, paymentInfo, setRoute } = context;
+  const trpc = context.trpc as TrpcClient;
+
   const {
     selectedExternalOption,
     payWithExternal,
