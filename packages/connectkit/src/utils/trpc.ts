@@ -14,5 +14,5 @@ export function createTrpcClient(apiUrl: string): TrpcClient {
         url: apiUrl,
       }),
     ],
-  }) as any;
+  });
 }
