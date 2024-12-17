@@ -18,4 +18,5 @@ export { default as ChainIcon } from "./components/Common/Chain";
 export { useChainIsSupported } from "./hooks/useChainIsSupported";
 export { useChains } from "./hooks/useChains";
 export { useDaimoPayStatus } from "./hooks/useDaimoPayStatus";
-export { default as useIsMounted } from "./hooks/useIsMounted"; // Useful for apps that use SSR
+
+export { default as useIsMounted } from "./hooks/useIsMounted";

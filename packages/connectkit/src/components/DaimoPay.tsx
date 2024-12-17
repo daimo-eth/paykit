@@ -106,7 +106,7 @@ type ContextValue = {
   trpc: any;
 } & useConnectCallbackProps;
 
-/** Meant for internal use. This will be non-exported in a future version of @daimo/pay */
+/** Meant for internal use. This will be non-exported in a future SDK version. */
 export const Context = createContext<ContextValue | null>(null);
 
 type DaimoPayProviderProps = {
@@ -365,6 +365,9 @@ const DaimoPayProviderWithoutSolana = ({
   );
 };
 
+/** Provides context for DaimoPayButton and hooks. Place in app root, layout, or
+ * similar.
+ */
 export const DaimoPayProvider = (props: DaimoPayProviderProps) => {
   return (
     <SolanaContextProvider solanaRpcUrl={props.solanaRpcUrl}>
@@ -373,6 +376,7 @@ export const DaimoPayProvider = (props: DaimoPayProviderProps) => {
   );
 };
 
+/** Meant for internal use. This will be non-exported in a future SDK version. */
 export const usePayContext = () => {
   const context = React.useContext(Context);
   if (!context) throw Error("DaimoPay Hook must be inside a Provider.");

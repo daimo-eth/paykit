@@ -50,6 +50,7 @@ export const REQUIRED_CHAINS: CreateConfigParameters["chains"] = [
   baseSepolia,
 ];
 
+/** A utility for use with wagmi's createConfig(). */
 const defaultConfig = ({
   appName = "Daimo Pay",
   appIcon,

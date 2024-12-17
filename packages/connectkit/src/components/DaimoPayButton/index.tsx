@@ -64,6 +64,7 @@ type DaimoPayButtonRendererProps = {
   }) => React.ReactNode;
 };
 
+/** Like DaimoPayButton, but with custom styling. */
 const DaimoPayButtonRenderer: React.FC<DaimoPayButtonRendererProps> = ({
   payId,
   closeOnSuccess,
@@ -151,6 +152,9 @@ type DaimoPayButtonProps = {
   onClick?: (open: () => void) => void;
 };
 
+/** A button that shows the Daimo Pay checkout. Replaces the traditional
+ * Connect Wallet » approve » execute sequence with a single action.
+ */
 export function DaimoPayButton({
   payId,
   theme,
