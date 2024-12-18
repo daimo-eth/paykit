@@ -3,10 +3,10 @@ import { CreateConnectorFn } from "wagmi";
 
 import { walletConfigs } from "./walletConfigs";
 
-type WalletIds = Extract<keyof typeof walletConfigs, string>;
+// export type WalletIds = Extract<keyof typeof walletConfigs, string>;
 
 export const wallets: {
-  [key: WalletIds]: CreateConnectorFn;
+  [key: string]: CreateConnectorFn;
 } = Object.keys(walletConfigs).reduce((acc, key) => {
   const config = walletConfigs[key];
   if (!config?.getWalletConnectDeeplink) return acc;

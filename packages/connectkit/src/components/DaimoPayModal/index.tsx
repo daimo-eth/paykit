@@ -154,7 +154,9 @@ export const DaimoPayModal: React.FC<{
     }*/
 
     return () => {
-      document.head.removeChild(title);
+      try {
+        document.head.removeChild(title);
+      } catch {}
       //if (appIcon) document.head.removeChild(icon);
     };
   }, [context.open]);

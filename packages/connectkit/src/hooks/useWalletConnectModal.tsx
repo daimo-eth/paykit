@@ -23,31 +23,34 @@ export function useWalletConnectModal() {
         isWalletConnectConnector(c.id),
       );
 
-      if (clientConnector) {
-        try {
-          const provider: any = await clientConnector.getProvider();
-          const projectId = provider.rpc.projectId;
-
-          const connector: CreateConnectorFn = walletConnect({
-            projectId,
-            showQrModal: true,
-          });
-
-          setIsOpen(true);
-          try {
-            await connectAsync({ connector: connector });
-          } catch (err) {
-            log("WalletConnect", err);
-          }
-          setIsOpen(false);
-
-          // remove modal styling
-          document.head.removeChild(w3mcss);
-        } catch (err) {
-          log("Could not get WalletConnect provider", err);
-        }
-      } else {
+      if (clientConnector == null) {
         log("No WalletConnect connector available");
+        return;
+      }
+
+      try {
+        const provider: any = await clientConnector.getProvider();
+        const projectId = provider.rpc.projectId;
+
+        const connector: CreateConnectorFn = walletConnect({
+          projectId,
+          showQrModal: true,
+        });
+
+        setIsOpen(true);
+        try {
+          await connectAsync({ connector: connector });
+        } catch (err) {
+          log("WalletConnect", err);
+        }
+        setIsOpen(false);
+
+        // remove modal styling
+        try {
+          document.head.removeChild(w3mcss);
+        } catch {}
+      } catch (err) {
+        log("Could not get WalletConnect provider", err);
       }
     },
   };
