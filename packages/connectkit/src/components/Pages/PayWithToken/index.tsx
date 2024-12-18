@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { ROUTES, usePayContext } from "../../DaimoPay";
 
-import { ModalContent, ModalH1, PageContent } from "../../Common/Modal/styles";
+import {
+  ModalBody,
+  ModalContent,
+  ModalH1,
+  PageContent,
+} from "../../Common/Modal/styles";
 
 import { AnimatePresence, motion } from "framer-motion";
 import { css } from "styled-components";
 import { useChainId, useSwitchChain } from "wagmi";
 import { chainToLogo } from "../../../assets/chains";
+import defaultTheme from "../../../constants/defaultTheme";
 import { WalletPaymentOption } from "../../../hooks/useWalletPaymentOptions";
 import styled from "../../../styles/styled";
 import Button from "../../Common/Button";
@@ -138,6 +144,9 @@ const PayWithToken: React.FC = () => {
       </LoadingContainer>
       <ModalContent style={{ paddingBottom: 0 }}>
         <ModalH1>{payState}</ModalH1>
+        {selectedTokenOption && (
+          <PaymentDetails selectedTokenOption={selectedTokenOption} />
+        )}
         {payState === PayState.RequestCancelled && (
           <Button
             onClick={() =>
@@ -149,6 +158,42 @@ const PayWithToken: React.FC = () => {
         )}
       </ModalContent>
     </PageContent>
+  );
+};
+
+interface PaymentDetailsProps {
+  selectedTokenOption: WalletPaymentOption;
+}
+
+const PaymentDetails: React.FC<PaymentDetailsProps> = ({
+  selectedTokenOption,
+}) => {
+  const totalUsd = selectedTokenOption.required.usd;
+  const feesUsd = selectedTokenOption.fees.usd;
+  const subtotalUsd = totalUsd - feesUsd;
+
+  return (
+    <FeesContainer>
+      <FeeRow>
+        <ModalBody>Subtotal</ModalBody>
+        <ModalBody>${subtotalUsd.toFixed(2)}</ModalBody>
+      </FeeRow>
+      <FeeRow>
+        <ModalBody>Fees</ModalBody>
+        {feesUsd === 0 ? (
+          <Badge>Free</Badge>
+        ) : (
+          <ModalBody>${feesUsd.toFixed(2)}</ModalBody>
+        )}
+      </FeeRow>
+      <Separator />
+      <FeeRow>
+        <ModalBody style={{ fontWeight: 600 }}>Total</ModalBody>
+        <ModalBody style={{ fontWeight: 600 }}>
+          ${totalUsd.toFixed(2)}
+        </ModalBody>
+      </FeeRow>
+    </FeesContainer>
   );
 };
 
@@ -214,6 +259,46 @@ const ChainLogoContainer = styled(motion.div)`
     width: 100%;
     height: 100%;
   }
+`;
+const FeesContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 4px;
+  margin: 16px 0;
+
+  @media only screen and (max-width: ${defaultTheme.mobileWidth}px) {
+    & ${ModalBody} {
+      margin: 0 !important;
+      max-width: 100% !important;
+      text-align: left !important;
+    }
+  }
+`;
+const FeeRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 50%;
+`;
+const Separator = styled.div`
+  height: 1px;
+  width: 50%;
+  background: var(--ck-body-divider);
+  margin: 4px 0;
+`;
+const Badge = styled.span`
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: var(--ck-primary-button-border-radius);
+  font-size: 14px;
+  font-weight: 400;
+  background: var(
+    --ck-secondary-button-background,
+    var(--ck-body-background-secondary)
+  );
+  color: var(--ck-body-color-muted);
 `;
 
 export default PayWithToken;
