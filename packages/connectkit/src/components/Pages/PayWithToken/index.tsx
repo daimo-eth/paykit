@@ -174,10 +174,12 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
 
   return (
     <FeesContainer>
-      <FeeRow>
-        <ModalBody>Subtotal</ModalBody>
-        <ModalBody>${subtotalUsd.toFixed(2)}</ModalBody>
-      </FeeRow>
+      {feesUsd > 0 && (
+        <FeeRow>
+          <ModalBody>Subtotal</ModalBody>
+          <ModalBody>${subtotalUsd.toFixed(2)}</ModalBody>
+        </FeeRow>
+      )}
       <FeeRow>
         <ModalBody>Fees</ModalBody>
         {feesUsd === 0 ? (
@@ -186,8 +188,7 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
           <ModalBody>${feesUsd.toFixed(2)}</ModalBody>
         )}
       </FeeRow>
-      <Separator />
-      <FeeRow>
+      <FeeRow style={{ marginTop: 8 }}>
         <ModalBody style={{ fontWeight: 600 }}>Total</ModalBody>
         <ModalBody style={{ fontWeight: 600 }}>
           ${totalUsd.toFixed(2)}
@@ -281,12 +282,6 @@ const FeeRow = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 50%;
-`;
-const Separator = styled.div`
-  height: 1px;
-  width: 50%;
-  background: var(--ck-body-divider);
-  margin: 4px 0;
 `;
 const Badge = styled.span`
   display: inline-block;
