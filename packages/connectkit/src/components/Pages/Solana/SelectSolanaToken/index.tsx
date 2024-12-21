@@ -13,8 +13,8 @@ import OptionsList from "../../../Common/OptionsList";
 import { OrderHeader } from "../../../Common/OrderHeader";
 
 const SelectSolanaToken: React.FC = () => {
-  const { paymentInfo, setRoute } = usePayContext();
-  const { solanaPaymentOptions, setSelectedSolanaTokenOption } = paymentInfo;
+  const { paymentState, setRoute } = usePayContext();
+  const { solanaPaymentOptions, setSelectedSolanaTokenOption } = paymentState;
 
   return (
     <PageContent>

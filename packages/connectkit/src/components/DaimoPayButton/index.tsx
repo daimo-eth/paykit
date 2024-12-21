@@ -1,17 +1,182 @@
 import React, { useEffect } from "react";
-import { useAccount, useEnsName } from "wagmi";
 import useIsMounted from "../../hooks/useIsMounted";
-import { truncateEthAddress } from "./../../utils";
 
 import { usePayContext } from "../DaimoPay";
 import { TextContainer } from "./styles";
 
 import { AnimatePresence, Variants } from "framer-motion";
-import { Chain } from "viem";
-import { useChainIsSupported } from "../../hooks/useChainIsSupported";
+import { Address, Hex } from "viem";
 import { ResetContainer } from "../../styles";
-import { CustomTheme, Mode, Theme } from "../../types";
+import { CustomTheme, Mode, PaymentOption, Theme } from "../../types";
 import ThemedButton, { ThemeContainer } from "../Common/ThemedButton";
+
+type PayButtonCommonProps =
+  | {
+      /**
+       * Your public app ID. Specify either (payId) or (appId + parameters).
+       */
+      appId: string;
+      /**
+       * Optional nonce. If set, generates a deterministic payID. See docs.
+       */
+      nonce?: bigint;
+      /**
+       * Destination chain ID.
+       */
+      toChain: number;
+      /**
+       * The destination token to send, completing payment. Must be an ERC-20
+       * token or the zero address, indicating the native token / ETH.
+       */
+      toToken: Address;
+      /**
+       * The amount of destination token to send (transfer or approve).
+       */
+      toAmount: bigint;
+      /**
+       * The destination address to transfer to, or contract to call.
+       */
+      toAddress: Address;
+      /**
+       * Optional calldata to call an arbitrary function on `toAddress`.
+       */
+      toCallData?: Hex;
+      /**
+       * The intent verb, such as "Pay", "Deposit", or "Purchase".
+       */
+      intent?: string;
+      /**
+       * Payment options. By default, all are enabled.
+       */
+      paymentOptions?: PaymentOption[];
+      /**
+       * Preferred chain IDs. Assets on these chains will appear first.
+       */
+      preferredChains?: number[];
+    }
+  | {
+      /** The payment ID, generated via the Daimo Pay API. Replaces params above. */
+      payId: string;
+    };
+
+type DaimoPayButtonProps = PayButtonCommonProps & {
+  /** Light mode, dark mode, or auto. */
+  mode?: Mode;
+  /** Named theme. See docs for options. */
+  theme?: Theme;
+  /** Custom theme. See docs for options. */
+  customTheme?: CustomTheme;
+  /** Automatically close the modal after a successful payment. */
+  closeOnSuccess?: boolean;
+  /** Get notified when the user clicks, opening the payment modal. */
+  onClick?: (open: () => void) => void;
+};
+
+type DaimoPayButtonCustomProps = PayButtonCommonProps & {
+  /** Automatically close the modal after a successful payment. */
+  closeOnSuccess?: boolean;
+  /** Custom renderer */
+  children: (renderProps: {
+    show: () => void;
+    hide: () => void;
+  }) => React.ReactNode;
+};
+
+/**
+ * A button that shows the Daimo Pay checkout. Replaces the traditional
+ * Connect Wallet » approve » execute sequence with a single action.
+ */
+export function DaimoPayButton(props: DaimoPayButtonProps) {
+  const { theme, mode, customTheme, onClick } = props;
+  const context = usePayContext();
+
+  return (
+    <DaimoPayButtonCustom {...props}>
+      {({ show }) => (
+        <ResetContainer
+          $useTheme={theme ?? context.theme}
+          $useMode={mode ?? context.mode}
+          $customTheme={customTheme ?? context.customTheme}
+        >
+          <ThemeContainer
+            onClick={() => {
+              if (onClick) {
+                onClick(show);
+              } else {
+                show();
+              }
+            }}
+          >
+            <ThemedButton
+              theme={theme ?? context.theme}
+              mode={mode ?? context.mode}
+              customTheme={customTheme ?? context.customTheme}
+            >
+              <DaimoPayButtonInner />
+            </ThemedButton>
+          </ThemeContainer>
+        </ResetContainer>
+      )}
+    </DaimoPayButtonCustom>
+  );
+}
+
+/** Like DaimoPayButton, but with custom styling. */
+function DaimoPayButtonCustom(props: DaimoPayButtonCustomProps) {
+  const isMounted = useIsMounted();
+  const context = usePayContext();
+
+  // Pre-load payment info in background.
+  const { paymentState } = context;
+  useEffect(
+    () => {
+      if ("payId" in props) {
+        paymentState.setPayId(props.payId);
+      } else if ("appId" in props) {
+        paymentState.setPayParams(props);
+      } else {
+        console.error(`[BUTTON] must specify either payId or appId`);
+      }
+    },
+    "payId" in props
+      ? [props.payId]
+      : [
+          // Use JSON to avoid reloading every render
+          // eg. given paymentOptions={array literal}
+          JSON.stringify([
+            props.appId,
+            props.nonce,
+            props.toChain,
+            props.toAddress,
+            props.toToken,
+            "" + props.toAmount,
+            props.toCallData,
+            props.paymentOptions,
+            props.preferredChains,
+          ]),
+        ],
+  );
+
+  const { children, closeOnSuccess } = props;
+  const modalOptions = { closeOnSuccess };
+  const show = () => context.showPayment(modalOptions);
+  const hide = () => context.setOpen(false);
+
+  if (!isMounted) return null;
+
+  return (
+    <>
+      {children({
+        show,
+        hide,
+      })}
+    </>
+  );
+}
+
+DaimoPayButtonCustom.displayName = "DaimoPayButton.Custom";
+
+DaimoPayButton.Custom = DaimoPayButtonCustom;
 
 const contentVariants: Variants = {
   initial: {
@@ -40,89 +205,13 @@ const contentVariants: Variants = {
   },
 };
 
-type Hash = `0x${string}`;
-
-type DaimoPayButtonRendererProps = {
-  /** The payment ID, generated via the Daimo Pay API. */
-  payId: string;
-  /** Automatically close the modal after a successful payment. */
-  closeOnSuccess?: boolean;
-  /** Custom renderer */
-  children?: (renderProps: {
-    show?: () => void;
-    hide?: () => void;
-    chain?: Chain & {
-      unsupported?: boolean;
-    };
-    unsupported: boolean;
-    isConnected: boolean;
-    isConnecting: boolean;
-    address?: Hash;
-    truncatedAddress?: string;
-    ensName?: string;
-    payId?: string;
-  }) => React.ReactNode;
-};
-
-/** Like DaimoPayButton, but with custom styling. */
-const DaimoPayButtonRenderer: React.FC<DaimoPayButtonRendererProps> = ({
-  payId,
-  closeOnSuccess,
-  children,
-}) => {
-  const isMounted = useIsMounted();
-  const context = usePayContext();
-
-  const { address, chain } = useAccount();
-  const isChainSupported = useChainIsSupported(chain?.id);
-
-  const { data: ensName } = useEnsName({
-    chainId: 1,
-    address: address,
-  });
-
-  // Pre-load payment info in background.
-  const { setPayId } = context.paymentInfo;
-  useEffect(() => {
-    setPayId(payId);
-  }, [payId]);
-
-  const hide = () => context.setOpen(false);
-
-  const modalOptions = { closeOnSuccess };
-  const show = () => context.loadAndShowPayment(payId, modalOptions);
-
-  if (!children) return null;
-  if (!isMounted) return null;
-
-  return (
-    <>
-      {children({
-        payId,
-        show,
-        hide,
-        chain: chain,
-        unsupported: !isChainSupported,
-        isConnected: !!address,
-        isConnecting: context.open,
-        address: address,
-        truncatedAddress: address ? truncateEthAddress(address) : undefined,
-        ensName: ensName?.toString(),
-      })}
-    </>
-  );
-};
-
-DaimoPayButtonRenderer.displayName = "DaimoPayButton.Custom";
-
 function DaimoPayButtonInner() {
-  const { paymentInfo } = usePayContext();
-  const label = paymentInfo?.daimoPayOrder?.metadata?.intent ?? "Pay";
+  const { paymentState } = usePayContext();
+  const label = paymentState?.daimoPayOrder?.metadata?.intent ?? "Pay";
 
   return (
     <AnimatePresence initial={false}>
       <TextContainer
-        key="connectWalletText"
         initial={"initial"}
         animate={"animate"}
         exit={"exit"}
@@ -136,73 +225,3 @@ function DaimoPayButtonInner() {
     </AnimatePresence>
   );
 }
-
-type DaimoPayButtonProps = {
-  /** The payment ID, generated via the Daimo Pay API. */
-  payId: string;
-  /** Light mode, dark mode, or auto. */
-  mode?: Mode;
-  /** Named theme. See docs for options. */
-  theme?: Theme;
-  /** Custom theme. See docs for options. */
-  customTheme?: CustomTheme;
-  /** Automatically close the modal after a successful payment. */
-  closeOnSuccess?: boolean;
-  /** Get notified when the user clicks, opening the payment modal. */
-  onClick?: (open: () => void) => void;
-};
-
-/** A button that shows the Daimo Pay checkout. Replaces the traditional
- * Connect Wallet » approve » execute sequence with a single action.
- */
-export function DaimoPayButton({
-  payId,
-  theme,
-  mode,
-  customTheme,
-  closeOnSuccess,
-  onClick,
-}: DaimoPayButtonProps) {
-  const isMounted = useIsMounted();
-
-  const context = usePayContext();
-
-  // Pre-load payment info in background.
-  const { setPayId } = context.paymentInfo;
-  useEffect(() => {
-    setPayId(payId);
-  }, [payId]);
-
-  const modalOptions = { closeOnSuccess };
-  const show = () => context.loadAndShowPayment(payId, modalOptions);
-
-  if (!isMounted) return null;
-
-  return (
-    <ResetContainer
-      $useTheme={theme ?? context.theme}
-      $useMode={mode ?? context.mode}
-      $customTheme={customTheme ?? context.customTheme}
-    >
-      <ThemeContainer
-        onClick={() => {
-          if (onClick) {
-            onClick(show);
-          } else {
-            show();
-          }
-        }}
-      >
-        <ThemedButton
-          theme={theme ?? context.theme}
-          mode={mode ?? context.mode}
-          customTheme={customTheme ?? context.customTheme}
-        >
-          <DaimoPayButtonInner />
-        </ThemedButton>
-      </ThemeContainer>
-    </ResetContainer>
-  );
-}
-
-DaimoPayButton.Custom = DaimoPayButtonRenderer;

@@ -26,8 +26,8 @@ enum PayState {
 }
 
 const PayWithToken: React.FC = () => {
-  const { triggerResize, paymentInfo, setRoute, log } = usePayContext();
-  const { selectedTokenOption, payWithToken } = paymentInfo;
+  const { triggerResize, paymentState, setRoute, log } = usePayContext();
+  const { selectedTokenOption, payWithToken } = paymentState;
   const [payState, setPayState] = useState<PayState>(
     PayState.RequestingPayment,
   );

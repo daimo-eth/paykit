@@ -21,11 +21,11 @@ import { OrDivider } from "../../Common/Modal";
 
 const WaitingDepositAddress: React.FC = () => {
   const context = usePayContext();
-  const { triggerResize, paymentInfo, setRoute } = context;
+  const { triggerResize, paymentState, setRoute } = context;
   const trpc = context.trpc as TrpcClient;
 
   const { daimoPayOrder, payWithDepositAddress, selectedDepositAddressOption } =
-    paymentInfo;
+    paymentState;
 
   useEffect(() => {
     const checkForSourcePayment = async () => {

@@ -1,6 +1,6 @@
 import {
+  assert,
   assertNotNull,
-  BigIntStr,
   DaimoPayOrder,
   PlatformType,
   SolanaPublicKey,
@@ -9,33 +9,40 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { VersionedTransaction } from "@solana/web3.js";
 import { hexToBytes } from "viem";
 import { TrpcClient } from "../utils/trpc";
+import { CreateOrHydrateFn } from "./hookTypes";
 
 export function usePayWithSolanaToken({
   trpc,
-  orderId,
+  daimoPayOrder,
   setDaimoPayOrder,
-  chosenFinalTokenAmount,
+  createOrHydrate,
   platform,
+  log,
 }: {
   trpc: TrpcClient;
-  orderId: bigint | undefined;
+  daimoPayOrder: DaimoPayOrder | undefined;
   setDaimoPayOrder: (order: DaimoPayOrder) => void;
-  chosenFinalTokenAmount: BigIntStr | undefined;
+  createOrHydrate: CreateOrHydrateFn;
   platform: PlatformType | undefined;
+  log: (message: string) => void;
 }) {
   const { connection } = useConnection();
   const wallet = useWallet();
 
   const payWithSolanaToken = async (inputToken: SolanaPublicKey) => {
-    if (!wallet.publicKey || !orderId || !chosenFinalTokenAmount || !platform) {
-      throw new Error("Invalid parameters");
-    }
+    assert(!!wallet.publicKey, "No wallet connected");
+    assert(!!platform && !!daimoPayOrder);
 
-    const { hydratedOrder } = await trpc.hydrateOrder.query({
-      id: orderId.toString(),
-      chosenFinalTokenAmount,
-      platform,
+    const orderId = daimoPayOrder.id;
+    const { hydratedOrder } = await createOrHydrate({
+      order: daimoPayOrder,
     });
+
+    log(
+      `[CHECKOUT] Hydrated order: ${JSON.stringify(
+        hydratedOrder,
+      )}, checking out with Solana ${inputToken}`,
+    );
 
     const txHash = await (async () => {
       try {
@@ -56,10 +63,12 @@ export function usePayWithSolanaToken({
       }
     })();
 
+    // TOOD: get the actual amount sent from the tx logs.
+    // We are currently using a fake amount = 0.
     trpc.processSolanaSourcePayment.mutate({
       orderId: orderId.toString(),
       startIntentTxHash: txHash,
-      amount: chosenFinalTokenAmount,
+      amount: "0", // TODO: replace.
       token: inputToken,
     });
 

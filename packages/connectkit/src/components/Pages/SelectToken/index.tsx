@@ -45,8 +45,8 @@ const ChainContainer = styled(motion.div)`
 `;
 
 const SelectToken: React.FC = () => {
-  const { setRoute, paymentInfo } = usePayContext();
-  const { setSelectedTokenOption, walletPaymentOptions } = paymentInfo;
+  const { setRoute, paymentState } = usePayContext();
+  const { setSelectedTokenOption, walletPaymentOptions } = paymentState;
 
   return (
     <PageContent>

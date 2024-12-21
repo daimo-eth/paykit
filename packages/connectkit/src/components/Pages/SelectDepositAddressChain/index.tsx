@@ -8,9 +8,9 @@ import OptionsList from "../../Common/OptionsList";
 import { OrderHeader } from "../../Common/OrderHeader";
 
 const SelectDepositAddressChain: React.FC = () => {
-  const { setRoute, paymentInfo } = usePayContext();
+  const { setRoute, paymentState } = usePayContext();
   const { setSelectedDepositAddressOption, depositAddressOptions } =
-    paymentInfo;
+    paymentState;
 
   return (
     <PageContent>

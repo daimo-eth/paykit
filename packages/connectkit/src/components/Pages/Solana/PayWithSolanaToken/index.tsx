@@ -23,8 +23,8 @@ enum PayState {
 }
 
 const PayWithSolanaToken: React.FC = () => {
-  const { triggerResize, paymentInfo, setRoute } = usePayContext();
-  const { selectedSolanaTokenOption, payWithSolanaToken } = paymentInfo;
+  const { triggerResize, paymentState, setRoute } = usePayContext();
+  const { selectedSolanaTokenOption, payWithSolanaToken } = paymentState;
   const [payState, setPayState] = useState<PayState>(
     PayState.RequestingPayment,
   );

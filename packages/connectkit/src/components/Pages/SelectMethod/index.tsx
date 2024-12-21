@@ -56,17 +56,12 @@ function getDepositAddressOption(depositAddressOptions: {
 }) {
   const { setRoute } = usePayContext();
 
-  console.log(
-    `[SELECT_METHOD] depositAddressOptions: ${JSON.stringify(
-      depositAddressOptions,
-    )}`,
-  );
-
   if (
     !depositAddressOptions.loading &&
     depositAddressOptions.options.length === 0
-  )
+  ) {
     return null;
+  }
 
   return {
     id: "depositAddress",
@@ -85,13 +80,13 @@ const SelectMethod: React.FC = () => {
   const { address, isConnected, connector } = useAccount();
   const { disconnectAsync } = useDisconnect();
 
-  const { setRoute, paymentInfo, log } = usePayContext();
+  const { setRoute, paymentState, log } = usePayContext();
   const {
     setSelectedExternalOption,
     externalPaymentOptions,
     depositAddressOptions,
     senderEnsName,
-  } = paymentInfo;
+  } = paymentState;
   const displayName =
     senderEnsName ?? (address ? getAddressContraction(address) : "wallet");
 

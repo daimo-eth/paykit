@@ -20,10 +20,10 @@ import { PaymentStatus } from "../types";
 export function useDaimoPayStatus():
   | { paymentId: string; status: PaymentStatus }
   | undefined {
-  const { paymentInfo } = usePayContext();
-  if (!paymentInfo || !paymentInfo.daimoPayOrder) return undefined;
+  const { paymentState } = usePayContext();
+  if (!paymentState || !paymentState.daimoPayOrder) return undefined;
 
-  const order = paymentInfo.daimoPayOrder;
+  const order = paymentState.daimoPayOrder;
   const paymentId = writeDaimoPayOrderID(order.id);
   if (order.mode === DaimoPayOrderMode.HYDRATED) {
     if (order.intentStatus !== DaimoPayIntentStatus.PENDING) {

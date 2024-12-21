@@ -35,9 +35,5 @@ export const useModal = ({ onConnect, onDisconnect }: UseModalProps = {}) => {
         close();
       }
     },
-    // Disconnected Routes
-    openAbout: () => gotoAndOpen(ROUTES.ABOUT),
-    openOnboarding: () => gotoAndOpen(ROUTES.ONBOARDING),
-    openSwitchNetworks: () => gotoAndOpen(ROUTES.SWITCHNETWORKS),
   };
 };

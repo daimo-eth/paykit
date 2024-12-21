@@ -46,7 +46,7 @@ export const DaimoPayModal: React.FC<{
     setSelectedTokenOption,
     setSelectedDepositAddressOption,
     setSelectedSolanaTokenOption,
-  } = context.paymentInfo;
+  } = context.paymentState;
   const { isConnected, chain } = useAccount();
   const chainIsSupported = useChainIsSupported(chain?.id);
 
@@ -61,8 +61,6 @@ export const DaimoPayModal: React.FC<{
     closeable &&
     context.route !== ROUTES.SELECT_METHOD &&
     context.route !== ROUTES.CONFIRMATION;
-
-  const showInfoButton = closeable;
 
   const onBack = () => {
     if (context.route === ROUTES.DOWNLOAD) {

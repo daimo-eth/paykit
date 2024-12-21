@@ -15,105 +15,14 @@ import styled from "../../../styles/styled";
 import { usePayContext } from "../../DaimoPay";
 import Button from "../Button";
 
-const CoinLogos = ({ $size = 24 }: { $size?: number }) => {
-  const logos = [
-    <Ethereum />,
-    <USDC />,
-    <Optimism />,
-    <Arbitrum />,
-    <Base />,
-    <Polygon />,
-    <Solana />,
-  ];
-
-  const logoBlock = (element: React.ReactElement, index: number) => (
-    <LogoContainer
-      key={index}
-      $marginLeft={index !== 0 ? -($size / 3) : 0}
-      $zIndex={logos.length - index}
-      $size={$size}
-      transition={{ duration: 0.5, ease: [0.175, 0.885, 0.32, 0.98] }}
-    >
-      {element}
-    </LogoContainer>
-  );
-
-  return (
-    <Logos>{logos.map((element, index) => logoBlock(element, index))}</Logos>
-  );
-};
-
-const InputUnderlineField = ({
-  value,
-  onChange,
-  onBlur,
-  onKeyDown,
-}: {
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
-  onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
-}) => {
-  // subtract width for decimal point if necessary
-  const width = value.length - 0.5 * (value.includes(".") ? 1 : 0) + "ch";
-
-  const selectAll = (e: React.FocusEvent<HTMLInputElement>) => {
-    // When entering edit mode, select the amount for quicker editing
-    setTimeout(() => e.target.select(), 100);
-  };
-
-  return (
-    <div style={{ width: "auto", position: "relative" }}>
-      <InputField
-        $width={width}
-        type="text"
-        pattern="\d*.\d{2}"
-        value={value}
-        onChange={onChange}
-        onBlur={onBlur}
-        onFocus={selectAll}
-        onKeyDown={onKeyDown}
-        autoFocus
-      />
-      <Underline />
-    </div>
-  );
-};
-
-const InputField = styled(motion.input)<{ $width?: string }>`
-  box-sizing: border-box;
-  background-color: transparent;
-  outline: none;
-  width: ${(props) => props.$width || "5ch"};
-  line-height: inherit;
-  font-size: inherit;
-  font-weight: inherit;
-  color: inherit;
-  border: none;
-  padding: 0;
-  &:focus {
-    box-sizing: border-box;
-    outline: none;
-    border: none;
-  }
-`;
-
-const Underline = styled(motion.div)`
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-color: var(--ck-body-color-muted);
-`;
-
+/** Shows payment amount. */
 export const OrderHeader = ({ minified = false }: { minified?: boolean }) => {
-  const { paymentInfo } = usePayContext();
+  const { paymentState } = usePayContext();
 
   const amount =
-    paymentInfo.daimoPayOrder?.destFinalCallTokenAmount.usd.toFixed(2);
+    paymentState.daimoPayOrder?.destFinalCallTokenAmount.usd.toFixed(2);
   const isEditable =
-    paymentInfo.daimoPayOrder?.mode === DaimoPayOrderMode.CHOOSE_AMOUNT;
+    paymentState.daimoPayOrder?.mode === DaimoPayOrderMode.CHOOSE_AMOUNT;
 
   const [editableAmount, setEditableAmount] = useState<string>(amount ?? "");
 
@@ -122,7 +31,7 @@ export const OrderHeader = ({ minified = false }: { minified?: boolean }) => {
 
   const handleSave = () => {
     if (!isEditing) return;
-    paymentInfo.setChosenUsd(Number(editableAmount));
+    paymentState.setChosenUsd(Number(editableAmount));
     setIsEditing(false);
   };
 
@@ -235,6 +144,98 @@ export const OrderHeader = ({ minified = false }: { minified?: boolean }) => {
     );
   }
 };
+
+function CoinLogos({ $size = 24 }: { $size?: number }) {
+  const logos = [
+    <Ethereum />,
+    <USDC />,
+    <Optimism />,
+    <Arbitrum />,
+    <Base />,
+    <Polygon />,
+    <Solana />,
+  ];
+
+  const logoBlock = (element: React.ReactElement, index: number) => (
+    <LogoContainer
+      key={index}
+      $marginLeft={index !== 0 ? -($size / 3) : 0}
+      $zIndex={logos.length - index}
+      $size={$size}
+      transition={{ duration: 0.5, ease: [0.175, 0.885, 0.32, 0.98] }}
+    >
+      {element}
+    </LogoContainer>
+  );
+
+  return (
+    <Logos>{logos.map((element, index) => logoBlock(element, index))}</Logos>
+  );
+}
+
+function InputUnderlineField({
+  value,
+  onChange,
+  onBlur,
+  onKeyDown,
+}: {
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
+  onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+}) {
+  // subtract width for decimal point if necessary
+  const width = value.length - 0.5 * (value.includes(".") ? 1 : 0) + "ch";
+
+  const selectAll = (e: React.FocusEvent<HTMLInputElement>) => {
+    // When entering edit mode, select the amount for quicker editing
+    setTimeout(() => e.target.select(), 100);
+  };
+
+  return (
+    <div style={{ width: "auto", position: "relative" }}>
+      <InputField
+        $width={width}
+        type="text"
+        pattern="\d*.\d{2}"
+        value={value}
+        onChange={onChange}
+        onBlur={onBlur}
+        onFocus={selectAll}
+        onKeyDown={onKeyDown}
+        autoFocus
+      />
+      <Underline />
+    </div>
+  );
+}
+
+const InputField = styled(motion.input)<{ $width?: string }>`
+  box-sizing: border-box;
+  background-color: transparent;
+  outline: none;
+  width: ${(props) => props.$width || "5ch"};
+  line-height: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  border: none;
+  padding: 0;
+  &:focus {
+    box-sizing: border-box;
+    outline: none;
+    border: none;
+  }
+`;
+
+const Underline = styled(motion.div)`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--ck-body-color-muted);
+`;
 
 const TitleAmount = styled(motion.h1)<{
   $error?: boolean;

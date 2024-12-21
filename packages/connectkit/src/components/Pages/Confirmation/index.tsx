@@ -15,8 +15,8 @@ import styled from "../../../styles/styled";
 import PoweredByFooter from "../../Common/PoweredByFooter";
 
 const Confirmation: React.FC = () => {
-  const { paymentInfo } = usePayContext();
-  const { daimoPayOrder } = paymentInfo;
+  const { paymentState } = usePayContext();
+  const { daimoPayOrder } = paymentState;
 
   const { done, txURL } = (() => {
     if (daimoPayOrder && daimoPayOrder.mode === DaimoPayOrderMode.HYDRATED) {
@@ -33,7 +33,7 @@ const Confirmation: React.FC = () => {
         assert(txHash != null, `Dest ${destStatus}, but missing txHash`);
         const txURL = getChainExplorerTxUrl(chainId, txHash);
 
-        paymentInfo.onSuccess({ txHash, txURL });
+        paymentState.onSuccess({ txHash, txURL });
         return {
           done: true,
           txURL,

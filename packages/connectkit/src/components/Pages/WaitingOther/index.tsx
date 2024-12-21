@@ -19,7 +19,7 @@ import SquircleSpinner from "../../Spinners/SquircleSpinner";
 
 const WaitingOther: React.FC = () => {
   const context = usePayContext();
-  const { triggerResize, paymentInfo, setRoute } = context;
+  const { triggerResize, paymentState, setRoute } = context;
   const trpc = context.trpc as TrpcClient;
 
   const {
@@ -27,7 +27,7 @@ const WaitingOther: React.FC = () => {
     payWithExternal,
     paymentWaitingMessage,
     daimoPayOrder,
-  } = paymentInfo;
+  } = paymentState;
 
   const [externalURL, setExternalURL] = useState<string | null>(null);
 

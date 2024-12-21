@@ -209,7 +209,7 @@ const Modal: React.FC<ModalProps> = ({
     selectedTokenOption,
     selectedSolanaTokenOption,
     selectedDepositAddressOption,
-  } = context.paymentInfo;
+  } = context.paymentState;
 
   const wallet = useWallet(context.connector?.id);
 
@@ -559,43 +559,38 @@ const Modal: React.FC<ModalProps> = ({
             </ModalHeading>
 
             <InnerContainer>
-              {Object.keys(pages).map((key) => {
-                const page = pages[key];
-                return (
-                  // TODO: We may need to use the follow check avoid unnecessary computations, but this causes a bug where the content flashes
-                  // (key === pageId || key === prevPage) && (
-                  <Page
-                    key={key}
-                    open={key === pageId}
-                    initial={!positionInside && state !== "entered"}
-                    enterAnim={
-                      key === pageId
-                        ? currentDepth > prevDepth
-                          ? "active-scale-up"
-                          : "active"
-                        : ""
-                    }
-                    exitAnim={
-                      key !== pageId
-                        ? currentDepth < prevDepth
-                          ? "exit-scale-down"
-                          : "exit"
-                        : ""
-                    }
+              {Object.keys(pages).map((key) => (
+                <Page
+                  key={key}
+                  open={key === pageId}
+                  initial={!positionInside && state !== "entered"}
+                  enterAnim={
+                    key === pageId
+                      ? currentDepth > prevDepth
+                        ? "active-scale-up"
+                        : "active"
+                      : ""
+                  }
+                  exitAnim={
+                    key !== pageId
+                      ? currentDepth < prevDepth
+                        ? "exit-scale-down"
+                        : "exit"
+                      : ""
+                  }
+                >
+                  <PageContents
+                    key={`inner-${key}`}
+                    ref={contentRef}
+                    style={{
+                      pointerEvents:
+                        key === pageId && rendered ? "auto" : "none",
+                    }}
                   >
-                    <PageContents
-                      key={`inner-${key}`}
-                      ref={contentRef}
-                      style={{
-                        pointerEvents:
-                          key === pageId && rendered ? "auto" : "none",
-                      }}
-                    >
-                      {page}
-                    </PageContents>
-                  </Page>
-                );
-              })}
+                    {pages[key]}
+                  </PageContents>
+                </Page>
+              ))}
             </InnerContainer>
           </BoxContainer>
         </Container>

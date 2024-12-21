@@ -1,22 +1,3 @@
-import { Buffer } from "buffer";
-import React, {
-  createContext,
-  createElement,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import {
-  CustomTheme,
-  DaimoPayContextOptions,
-  DaimoPayModalOptions,
-  Languages,
-  Mode,
-  Theme,
-} from "../types";
-
-import defaultTheme from "../styles/defaultTheme";
-
 import {
   DaimoPayIntentStatus,
   DaimoPayOrder,
@@ -25,8 +6,17 @@ import {
   debugJson,
   retryBackoff,
 } from "@daimo/common";
+import { Buffer } from "buffer";
+import React, {
+  createContext,
+  createElement,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { ThemeProvider } from "styled-components";
 import { useAccount, WagmiContext } from "wagmi";
+
 import { REQUIRED_CHAINS } from "../defaultConfig";
 import { useChainIsSupported } from "../hooks/useChainIsSupported";
 import { useChains } from "../hooks/useChains";
@@ -35,7 +25,16 @@ import {
   useConnectCallbackProps,
 } from "../hooks/useConnectCallback";
 import { useThemeFont } from "../hooks/useGoogleFont";
-import { PaymentInfo, usePaymentInfo } from "../hooks/usePaymentInfo";
+import { PaymentState, usePaymentState } from "../hooks/usePaymentState";
+import defaultTheme from "../styles/defaultTheme";
+import {
+  CustomTheme,
+  DaimoPayContextOptions,
+  DaimoPayModalOptions,
+  Languages,
+  Mode,
+  Theme,
+} from "../types";
 import { createTrpcClient } from "../utils/trpc";
 import { DaimoPayModal } from "./DaimoPayModal";
 import { SolanaContextProvider, SolanaWalletName } from "./contexts/solana";
@@ -54,6 +53,7 @@ export enum ROUTES {
   SOLANA_SELECT_TOKEN = "daimoPaySolanaSelectToken",
   SOLANA_PAY_WITH_TOKEN = "daimoPaySolanaPayWithToken",
 
+  // Unused routes. Kept to minimize connectkit merge conflicts.
   ONBOARDING = "onboarding",
   ABOUT = "about",
   CONNECTORS = "connectors",
@@ -63,11 +63,13 @@ export enum ROUTES {
   SWITCHNETWORKS = "switchNetworks",
 }
 
+/** Chosen Ethereum wallet, eg MM or Rainbow. Specifies wallet ID. */
 type Connector = {
   id: string;
 };
 type Error = string | React.ReactNode | null;
 
+/** Daimo Pay internal context. */
 type ContextValue = {
   theme: Theme;
   setTheme: React.Dispatch<React.SetStateAction<Theme>>;
@@ -83,25 +85,25 @@ type ContextValue = {
   setRoute: React.Dispatch<React.SetStateAction<ROUTES>>;
   connector: Connector;
   setConnector: React.Dispatch<React.SetStateAction<Connector>>;
-  solanaConnector: SolanaWalletName | undefined;
-  setSolanaConnector: React.Dispatch<
-    React.SetStateAction<SolanaWalletName | undefined>
-  >;
   errorMessage: Error;
   debugMode?: boolean;
   log: (...props: any) => void;
   displayError: (message: string | React.ReactNode | null, code?: any) => void;
   resize: number;
   triggerResize: () => void;
+
+  // All options below are new, specific to Daimo Pay.
+  /** Chosen Solana wallet, eg Phantom.*/
+  solanaConnector: SolanaWalletName | undefined;
+  setSolanaConnector: React.Dispatch<
+    React.SetStateAction<SolanaWalletName | undefined>
+  >;
   /** Global options, across all pay buttons and payments. */
   options?: DaimoPayContextOptions;
   /** Loads a payment, then shows the modal to complete payment. */
-  loadAndShowPayment: (
-    payId: string,
-    modalOptions: DaimoPayModalOptions,
-  ) => Promise<void>;
+  showPayment: (modalOptions: DaimoPayModalOptions) => Promise<void>;
   /** Payment status & callbacks. */
-  paymentInfo: PaymentInfo;
+  paymentState: PaymentState;
   /** TRPC API client. Internal use only. */
   trpc: any;
 } & useConnectCallbackProps;
@@ -254,7 +256,7 @@ const DaimoPayProviderWithoutSolana = ({
   // downstream hooks like useDaimoPayStatus() to work correctly, we must set
   // set refresh context when payment status changes; done via setDaimoPayOrder.
   const [daimoPayOrder, setDaimoPayOrder] = useState<DaimoPayOrder>();
-  const paymentInfo = usePaymentInfo({
+  const paymentState = usePaymentState({
     trpc,
     daimoPayOrder,
     setDaimoPayOrder,
@@ -280,21 +282,18 @@ const DaimoPayProviderWithoutSolana = ({
 
     log(`[PAY] polling in ${intervalMs}ms`);
     setTimeout(
-      () => retryBackoff("refreshOrder", () => paymentInfo.refreshOrder()),
+      () => retryBackoff("refreshOrder", () => paymentState.refreshOrder()),
       intervalMs,
     );
   }, [daimoPayOrder]);
 
-  const loadAndShowPayment = async (
-    payId: string,
-    modalOptions: DaimoPayModalOptions,
-  ) => {
-    log(`[PAY] showing order ${payId}, options ${debugJson(modalOptions)}`);
-    await paymentInfo.setPayId(payId);
+  const showPayment = async (modalOptions: DaimoPayModalOptions) => {
+    const { daimoPayOrder, payParams } = paymentState;
+    const id = daimoPayOrder?.id;
+    log(`[PAY] showing payment ${debugJson({ id, payParams, modalOptions })}`);
 
-    paymentInfo.setModalOptions(modalOptions);
+    paymentState.setModalOptions(modalOptions);
 
-    const daimoPayOrder = paymentInfo.daimoPayOrder;
     if (
       daimoPayOrder &&
       daimoPayOrder.mode === DaimoPayOrderMode.HYDRATED &&
@@ -343,8 +342,8 @@ const DaimoPayProviderWithoutSolana = ({
 
     // Above: generic ConnectKit context
     // Below: Daimo Pay context
-    loadAndShowPayment,
-    paymentInfo,
+    showPayment,
+    paymentState,
     trpc,
   };
 
@@ -365,8 +364,8 @@ const DaimoPayProviderWithoutSolana = ({
   );
 };
 
-/** Provides context for DaimoPayButton and hooks. Place in app root, layout, or
- * similar.
+/**
+ * Provides context for DaimoPayButton and hooks. Place in app root or layout.
  */
 export const DaimoPayProvider = (props: DaimoPayProviderProps) => {
   return (
@@ -376,7 +375,7 @@ export const DaimoPayProvider = (props: DaimoPayProviderProps) => {
   );
 };
 
-/** Meant for internal use. This will be non-exported in a future SDK version. */
+/** Daimo Pay internal context. */
 export const usePayContext = () => {
   const context = React.useContext(Context);
   if (!context) throw Error("DaimoPay Hook must be inside a Provider.");
