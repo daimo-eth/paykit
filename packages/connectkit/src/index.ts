@@ -10,14 +10,8 @@ export { DaimoPayButton } from "./components/DaimoPayButton";
 // Hooks to track payment status + UI status.
 export { useDaimoPayStatus } from "./hooks/useDaimoPayStatus";
 
-/** TODO: replace with useDaimoPay() */
-export { useModal } from "./hooks/useModal";
-
-// These first two just return configured wagmi chains = not necessarily
-// supported by Daimo Pay.
-// export { useChainIsSupported } from "./hooks/useChainIsSupported";
-// export { useChains } from "./hooks/useChains";
-// export { default as useIsMounted } from "./hooks/useIsMounted";
+// TODO: replace with useDaimoPay() more comprehensive status.
+export { useModal as useDaimoPayModal } from "./hooks/useModal";
 
 // For convenience, export components to show connected account.
 export { default as Avatar } from "./components/Common/Avatar";

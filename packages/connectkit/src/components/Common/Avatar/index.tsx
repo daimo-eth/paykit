@@ -19,6 +19,7 @@ export type CustomAvatarProps = {
   radius: number;
 };
 
+/** Icon for an Ethereum address. Supports ENS names and avatars. */
 const Avatar: React.FC<{
   address?: Hash | undefined;
   name?: string | undefined;

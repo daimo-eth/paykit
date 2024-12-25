@@ -51,6 +51,7 @@ const Spinner = (
   </svg>
 );
 
+/** Icon for an EVM chain, given chain ID. No ID shows a loading spinner. */
 const Chain: React.FC<{
   id?: number;
   unsupported?: boolean;

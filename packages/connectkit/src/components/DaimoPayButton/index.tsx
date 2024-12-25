@@ -4,22 +4,33 @@ import useIsMounted from "../../hooks/useIsMounted";
 import { usePayContext } from "../DaimoPay";
 import { TextContainer } from "./styles";
 
+import {
+  assertNotNull,
+  DaimoPayIntentStatus,
+  DaimoPayOrderMode,
+  DaimoPayOrderStatusSource,
+  PaymentBouncedEvent,
+  PaymentCompletedEvent,
+  PaymentStartedEvent,
+  writeDaimoPayOrderID,
+} from "@daimo/common";
 import { AnimatePresence, Variants } from "framer-motion";
 import { Address, Hex } from "viem";
+import { PayParams } from "../../hooks/usePaymentState";
 import { ResetContainer } from "../../styles";
 import { CustomTheme, Mode, PaymentOption, Theme } from "../../types";
 import ThemedButton, { ThemeContainer } from "../Common/ThemedButton";
 
-type PayButtonCommonProps =
+type PayButtonPaymentProps =
   | {
       /**
        * Your public app ID. Specify either (payId) or (appId + parameters).
        */
       appId: string;
       /**
-       * Optional nonce. If set, generates a deterministic payID. See docs.
+       * Optional deterministic payId. See docs.
        */
-      nonce?: bigint;
+      newPayId?: string;
       /**
        * Destination chain ID.
        */
@@ -53,11 +64,24 @@ type PayButtonCommonProps =
        * Preferred chain IDs. Assets on these chains will appear first.
        */
       preferredChains?: number[];
+      /**
+       * Preferred tokens. These appear first in the token list.
+       */
+      preferredTokens?: { chain: number; address: Address }[];
     }
   | {
       /** The payment ID, generated via the Daimo Pay API. Replaces params above. */
       payId: string;
     };
+
+type PayButtonCommonProps = PayButtonPaymentProps & {
+  /** Called when user sends payment and transaction is seen on chain */
+  onPaymentStarted?: (event: PaymentStartedEvent) => void;
+  /** Called when destination transfer or call completes successfully */
+  onPaymentCompleted?: (event: PaymentCompletedEvent) => void;
+  /** Called when destination call reverts and funds are refunded */
+  onPaymentBounced?: (event: PaymentBouncedEvent) => void;
+};
 
 type DaimoPayButtonProps = PayButtonCommonProps & {
   /** Light mode, dark mode, or auto. */
@@ -127,35 +151,73 @@ function DaimoPayButtonCustom(props: DaimoPayButtonCustomProps) {
   const context = usePayContext();
 
   // Pre-load payment info in background.
+  // Reload when any of the info changes.
+  let payParams: PayParams | null =
+    "appId" in props
+      ? {
+          appId: props.appId,
+          payId: props.newPayId,
+          toChain: props.toChain,
+          toAddress: props.toAddress,
+          toToken: props.toToken,
+          toAmount: props.toAmount,
+          toCallData: props.toCallData,
+          paymentOptions: props.paymentOptions,
+          preferredChains: props.preferredChains,
+          preferredTokens: props.preferredTokens,
+        }
+      : null;
+  let payId = "payId" in props ? props.payId : null;
+
   const { paymentState } = context;
-  useEffect(
-    () => {
-      if ("payId" in props) {
-        paymentState.setPayId(props.payId);
-      } else if ("appId" in props) {
-        paymentState.setPayParams(props);
-      } else {
-        console.error(`[BUTTON] must specify either payId or appId`);
-      }
-    },
-    "payId" in props
-      ? [props.payId]
-      : [
-          // Use JSON to avoid reloading every render
-          // eg. given paymentOptions={array literal}
-          JSON.stringify([
-            props.appId,
-            props.nonce,
-            props.toChain,
-            props.toAddress,
-            props.toToken,
-            "" + props.toAmount,
-            props.toCallData,
-            props.paymentOptions,
-            props.preferredChains,
-          ]),
-        ],
-  );
+  useEffect(() => {
+    if (payId != null) {
+      paymentState.setPayId(payId);
+    } else if (payParams != null) {
+      paymentState.setPayParams(payParams);
+    }
+  }, [payId, ...Object.values(payParams || {})]);
+
+  // Payment events: call these three event handlers.
+  const { onPaymentStarted, onPaymentCompleted, onPaymentBounced } = props;
+
+  const order = paymentState.daimoPayOrder;
+  const hydOrder = order?.mode === DaimoPayOrderMode.HYDRATED ? order : null;
+  const isStarted =
+    hydOrder?.sourceStatus !== DaimoPayOrderStatusSource.WAITING_PAYMENT;
+
+  useEffect(() => {
+    if (hydOrder == null || !isStarted) return;
+    onPaymentStarted?.({
+      paymentId: writeDaimoPayOrderID(hydOrder.id),
+      type: "payment_started",
+      chainId: assertNotNull(hydOrder.sourceTokenAmount).token.chainId,
+      txHash: assertNotNull(hydOrder.sourceInitiateTxHash),
+    });
+  }, [isStarted]);
+
+  useEffect(() => {
+    if (hydOrder == null) return;
+    if (hydOrder.intentStatus === DaimoPayIntentStatus.PENDING) return;
+
+    const commonFields = {
+      paymentId: writeDaimoPayOrderID(hydOrder.id),
+      chainId: assertNotNull(hydOrder.destFinalCallTokenAmount).token.chainId,
+      txHash: assertNotNull(
+        hydOrder.destFastFinishTxHash ?? hydOrder.destClaimTxHash,
+      ),
+    };
+    if (hydOrder.intentStatus === DaimoPayIntentStatus.SUCCESSFUL) {
+      onPaymentCompleted?.({ type: "payment_completed", ...commonFields });
+    } else if (hydOrder.intentStatus === DaimoPayIntentStatus.REFUNDED) {
+      onPaymentBounced?.({ type: "payment_bounced", ...commonFields });
+    }
+  }, [hydOrder?.intentStatus]);
+
+  // Validation
+  if ((payId == null) == (payParams == null)) {
+    throw new Error("Must specify either payId or appId, not both");
+  }
 
   const { children, closeOnSuccess } = props;
   const modalOptions = { closeOnSuccess };

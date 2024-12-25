@@ -6,6 +6,7 @@ import {
 
 type UseModalProps = {} & useConnectCallbackProps;
 
+/** Opens and closes the payment modal. */
 export const useModal = ({ onConnect, onDisconnect }: UseModalProps = {}) => {
   const context = usePayContext();
 

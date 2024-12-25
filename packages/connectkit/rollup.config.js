@@ -2,14 +2,8 @@ import json from "@rollup/plugin-json";
 import dts from "rollup-plugin-dts";
 import peerDepsExternal from "rollup-plugin-peer-deps-external";
 import typescript from "rollup-plugin-typescript2";
-// import createTransformer from "typescript-plugin-styled-components";
 
-import packageJson from "./package.json" with { type: "json" };
-
-// const styledComponentsTransformer = createTransformer({
-//   displayName: true,
-// });
-
+/** @type {import('rollup').RollupOptions[]} */
 export default [
   // Build bundle: index.js
   {
@@ -17,9 +11,10 @@ export default [
     external: ["react", "react-dom", "framer-motion", "wagmi"],
     output: [
       {
-        file: packageJson.exports.import,
+        dir: "build",
         format: "esm",
-        sourcemap: false,
+        sourcemap: true,
+        preserveModules: true,
       },
     ],
     plugins: [
@@ -28,11 +23,6 @@ export default [
       typescript({
         useTsconfigDeclarationDir: true,
         exclude: "node_modules/**",
-        // transformers: [
-        //   () => ({
-        //     before: [styledComponentsTransformer],
-        //   }),
-        // ],
       }),
     ],
   },
@@ -42,9 +32,7 @@ export default [
     output: { file: "build/index.d.ts", format: "esm" },
     plugins: [
       dts({
-        exclude: ["**/pay-api/**"],
         compilerOptions: {
-          importsNotUsedAsValues: "remove",
           preserveValueImports: false,
         },
       }),

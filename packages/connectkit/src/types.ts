@@ -63,6 +63,33 @@ export type PaymentStatus =
   | "payment_completed"
   | "payment_bounced";
 
+// TODO: move types here from daimo-common/daimoPay.ts:
+// type PayEventBase = {
+//   /** The type of payment event. */
+//   type: PaymentStatus;
+//   /** The unique payment ID. */
+//   paymentId: string;
+//   /** The chain ID where the payment transaction was sent. */
+//   chainId?: number;
+//   /** The transaction hash, if available. */
+//   txHash?: string;
+// };
+
+// export type PayEventStarted = PayEventBase & {
+//   type: "payment_started";
+// };
+
+// export type PayEventCompleted = PayEventBase & {
+//   type: "payment_completed";
+// };
+
+// export type PayEventBounced = PayEventBase & {
+//   type: "payment_bounced";
+// };
+
+// /** Payment event. This matches the payload for webhooks. See doc. */
+// export type PayEvent = PayEventStarted | PayEventCompleted | PayEventBounced;
+
 // TODO: for now, these match ExternalPaymentOptions. In future, we can add
 // higher level categories like "Solana", "BitcoinEtc", "Card".
 /** Additional payment options. Onchain payments are always enabled. */

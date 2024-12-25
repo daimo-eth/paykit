@@ -20,7 +20,7 @@ import { Address, Hex, parseUnits } from "viem";
 import { useAccount, useEnsName } from "wagmi";
 
 import { DaimoPayModalOptions, PaymentOption } from "../types";
-import { generateNonce } from "../utils/exports";
+import { generatePayId } from "../utils/exports";
 import { detectPlatform } from "../utils/platform";
 import { TrpcClient } from "../utils/trpc";
 import { useDepositAddressOptions } from "./useDepositAddressOptions";
@@ -45,8 +45,8 @@ export type SourcePayment = Parameters<
 export interface PayParams {
   /** App ID, for authentication. */
   appId: string;
-  /** Optional nonce. If set, generates a deterministic payID. See docs. */
-  nonce?: bigint;
+  /** Optional deterministic payId. See docs. */
+  payId?: string;
   /** Destination chain ID. */
   toChain: number;
   /** The destination token to send. */
@@ -63,6 +63,8 @@ export interface PayParams {
   paymentOptions?: PaymentOption[];
   /** Preferred chain IDs. */
   preferredChains?: number[];
+  /** Preferred tokens. These appear first in the token list. */
+  preferredTokens?: { chain: number; address: Address }[];
 }
 
 /** Creates (or loads) a payment and manages the corresponding modal. */
@@ -303,7 +305,6 @@ export function usePaymentState({
 
     // TODO: remove amount from destFinalCall, it is redundant with
     // destFinalCallTokenAmount. Here, we only modify one and not the other.
-
     setDaimoPayOrder({
       ...daimoPayOrder,
       destFinalCallTokenAmount: {
@@ -342,22 +343,24 @@ export function usePaymentState({
     assert(payParams != null);
     setPayParamsState(payParams);
 
-    const genID = payParams.nonce ?? generateNonce();
+    const newPayId = payParams.payId ?? generatePayId();
+    const newId = readDaimoPayOrderID(newPayId).toString();
 
     const payment = await trpc.previewOrder.query({
-      id: genID.toString(),
+      id: newId,
       toChain: payParams.toChain,
       toToken: payParams.toToken,
       toAmount: payParams.toAmount.toString(),
       toAddress: payParams.toAddress,
       toCallData: payParams.toCallData,
-      toNonce: genID.toString(),
+      toNonce: newId,
       metadata: {
         intent: payParams.intent ?? "Pay",
         items: [],
         payer: {
           paymentOptions: payParams.paymentOptions,
           preferredChains: payParams.preferredChains,
+          preferredTokens: payParams.preferredTokens,
         },
       },
     });

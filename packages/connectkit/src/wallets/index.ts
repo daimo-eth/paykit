@@ -3,8 +3,7 @@ import { CreateConnectorFn } from "wagmi";
 
 import { walletConfigs } from "./walletConfigs";
 
-// export type WalletIds = Extract<keyof typeof walletConfigs, string>;
-
+/** Ethereum wallets, by name. */
 export const wallets: {
   [key: string]: CreateConnectorFn;
 } = Object.keys(walletConfigs).reduce((acc, key) => {
