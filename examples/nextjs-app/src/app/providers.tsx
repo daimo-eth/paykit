@@ -15,7 +15,9 @@ export function Providers(props: { children: ReactNode }) {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <DaimoPayProvider payApiUrl={apiUrl}>{props.children}</DaimoPayProvider>
+        <DaimoPayProvider payApiUrl={apiUrl} debugMode>
+          {props.children}
+        </DaimoPayProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );

@@ -64,6 +64,7 @@ export function DemoContract() {
         </TextLink>
         .
       </Text>
+      <div />
       <Columns>
         <div className="flex-1">
           <DaimoPayButton
@@ -84,7 +85,7 @@ export function DemoContract() {
           />
         </div>
         <div className="flex-1">
-          <Text>Count {Number(count)}</Text>
+          <Text>Count {count != null && Number(count)}</Text>
         </div>
       </Columns>
       <Columns>

@@ -11,11 +11,15 @@ export function useWalletPaymentOptions({
   address,
   usdRequired,
   destChainId,
+  preferredChains,
+  preferredTokens,
 }: {
   trpc: TrpcClient;
   address: string | undefined;
   usdRequired: number | undefined;
   destChainId: number | undefined;
+  preferredChains: number[] | undefined;
+  preferredTokens: { chain: number; address: string }[] | undefined;
 }) {
   const [options, setOptions] = useState<WalletPaymentOption[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -31,6 +35,8 @@ export function useWalletPaymentOptions({
           payerAddress: address,
           usdRequired,
           destChainId,
+          preferredChains,
+          preferredTokens,
         });
         setOptions(newOptions);
       } catch (error) {
