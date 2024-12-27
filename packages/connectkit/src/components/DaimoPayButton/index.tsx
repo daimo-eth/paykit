@@ -28,10 +28,6 @@ type PayButtonPaymentProps =
        */
       appId: string;
       /**
-       * Optional deterministic payId. See docs.
-       */
-      newPayId?: string;
-      /**
        * Destination chain ID.
        */
       toChain: number;
@@ -44,6 +40,10 @@ type PayButtonPaymentProps =
        * The amount of destination token to send (transfer or approve).
        */
       toAmount: bigint;
+      /**
+       * Let the user edit the amount to send.
+       */
+      amountEditable?: boolean;
       /**
        * The destination address to transfer to, or contract to call.
        */
@@ -156,12 +156,12 @@ function DaimoPayButtonCustom(props: DaimoPayButtonCustomProps) {
     "appId" in props
       ? {
           appId: props.appId,
-          payId: props.newPayId,
           toChain: props.toChain,
           toAddress: props.toAddress,
           toToken: props.toToken,
           toAmount: props.toAmount,
           toCallData: props.toCallData,
+          isAmountEditable: props.amountEditable ?? false,
           paymentOptions: props.paymentOptions,
           preferredChains: props.preferredChains,
           preferredTokens: props.preferredTokens,

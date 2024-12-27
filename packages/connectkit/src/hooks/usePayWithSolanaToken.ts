@@ -68,7 +68,6 @@ export function usePayWithSolanaToken({
     trpc.processSolanaSourcePayment.mutate({
       orderId: orderId.toString(),
       startIntentTxHash: txHash,
-      amount: "0", // TODO: replace.
       token: inputToken,
     });
 

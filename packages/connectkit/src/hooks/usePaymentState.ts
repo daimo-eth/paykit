@@ -45,8 +45,6 @@ export type SourcePayment = Parameters<
 export interface PayParams {
   /** App ID, for authentication. */
   appId: string;
-  /** Optional deterministic payId. See docs. */
-  payId?: string;
   /** Destination chain ID. */
   toChain: number;
   /** The destination token to send. */
@@ -57,6 +55,8 @@ export interface PayParams {
   toAddress: Address;
   /** Calldata for final call, or empty data for transfer. */
   toCallData?: Hex;
+  /** Let the user edit the amount to send. */
+  isAmountEditable: boolean;
   /** The intent verb, such as Pay, Deposit, or Purchase. Default: Pay */
   intent?: string;
   /** Payment options. By default, all are enabled. */
@@ -199,7 +199,6 @@ export function usePaymentState({
         ...payParams,
         id: order.id.toString(),
         toAmount: order.destFinalCallTokenAmount.amount,
-        toNonce: order.id.toString(),
         metadata: order.metadata,
       },
       platform,
@@ -343,7 +342,7 @@ export function usePaymentState({
     assert(payParams != null);
     setPayParamsState(payParams);
 
-    const newPayId = payParams.payId ?? generatePayId();
+    const newPayId = generatePayId();
     const newId = readDaimoPayOrderID(newPayId).toString();
 
     const payment = await trpc.previewOrder.query({
@@ -353,7 +352,7 @@ export function usePaymentState({
       toAmount: payParams.toAmount.toString(),
       toAddress: payParams.toAddress,
       toCallData: payParams.toCallData,
-      toNonce: newId,
+      isAmountEditable: payParams.isAmountEditable,
       metadata: {
         intent: payParams.intent ?? "Pay",
         items: [],
