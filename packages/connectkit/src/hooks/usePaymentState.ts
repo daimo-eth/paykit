@@ -16,7 +16,7 @@ import {
 import { ethereum } from "@daimo/contract";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useCallback, useEffect, useState } from "react";
-import { Address, Hex, parseUnits } from "viem";
+import { Address, formatUnits, Hex, parseUnits } from "viem";
 import { useAccount, useEnsName } from "wagmi";
 
 import { DaimoPayModalOptions, PaymentOption } from "../types";
@@ -50,7 +50,7 @@ export interface PayParams {
   /** The destination token to send. */
   toToken: Address;
   /** The amount of the token to send. */
-  toAmount: bigint;
+  toUnits: string;
   /** The final address to transfer to or contract to call. */
   toAddress: Address;
   /** Calldata for final call, or empty data for transfer. */
@@ -193,12 +193,17 @@ export function usePaymentState({
     }
 
     log(`[CHECKOUT] creating+hydrating new order ${order.id}`);
+    // Update units, if amountEditable the user may have changed the amount.
+    const toUnits = formatUnits(
+      BigInt(order.destFinalCallTokenAmount.amount),
+      order.destFinalCallTokenAmount.token.decimals,
+    );
     return await trpc.createOrder.mutate({
       appId: payParams.appId,
       paymentInput: {
         ...payParams,
         id: order.id.toString(),
-        toAmount: order.destFinalCallTokenAmount.amount,
+        toUnits: toUnits,
         metadata: order.metadata,
       },
       platform,
@@ -349,7 +354,7 @@ export function usePaymentState({
       id: newId,
       toChain: payParams.toChain,
       toToken: payParams.toToken,
-      toAmount: payParams.toAmount.toString(),
+      toUnits: payParams.toUnits,
       toAddress: payParams.toAddress,
       toCallData: payParams.toCallData,
       isAmountEditable: payParams.isAmountEditable,

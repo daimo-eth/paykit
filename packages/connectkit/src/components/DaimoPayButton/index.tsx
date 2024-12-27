@@ -39,7 +39,7 @@ type PayButtonPaymentProps =
       /**
        * The amount of destination token to send (transfer or approve).
        */
-      toAmount: bigint;
+      toUnits: string;
       /**
        * Let the user edit the amount to send.
        */
@@ -92,8 +92,8 @@ type DaimoPayButtonProps = PayButtonCommonProps & {
   customTheme?: CustomTheme;
   /** Automatically close the modal after a successful payment. */
   closeOnSuccess?: boolean;
-  /** Get notified when the user clicks, opening the payment modal. */
-  onClick?: (open: () => void) => void;
+  /** Disable interaction. */
+  disabled?: boolean;
 };
 
 type DaimoPayButtonCustomProps = PayButtonCommonProps & {
@@ -111,7 +111,7 @@ type DaimoPayButtonCustomProps = PayButtonCommonProps & {
  * Connect Wallet » approve » execute sequence with a single action.
  */
 export function DaimoPayButton(props: DaimoPayButtonProps) {
-  const { theme, mode, customTheme, onClick } = props;
+  const { theme, mode, customTheme } = props;
   const context = usePayContext();
 
   return (
@@ -122,21 +122,13 @@ export function DaimoPayButton(props: DaimoPayButtonProps) {
           $useMode={mode ?? context.mode}
           $customTheme={customTheme ?? context.customTheme}
         >
-          <ThemeContainer
-            onClick={() => {
-              if (onClick) {
-                onClick(show);
-              } else {
-                show();
-              }
-            }}
-          >
+          <ThemeContainer onClick={!props.disabled && show}>
             <ThemedButton
               theme={theme ?? context.theme}
               mode={mode ?? context.mode}
               customTheme={customTheme ?? context.customTheme}
             >
-              <DaimoPayButtonInner />
+              <DaimoPayButtonInner disabled={props.disabled} />
             </ThemedButton>
           </ThemeContainer>
         </ResetContainer>
@@ -159,9 +151,10 @@ function DaimoPayButtonCustom(props: DaimoPayButtonCustomProps) {
           toChain: props.toChain,
           toAddress: props.toAddress,
           toToken: props.toToken,
-          toAmount: props.toAmount,
+          toUnits: props.toUnits,
           toCallData: props.toCallData,
           isAmountEditable: props.amountEditable ?? false,
+          intent: props.intent,
           paymentOptions: props.paymentOptions,
           preferredChains: props.preferredChains,
           preferredTokens: props.preferredTokens,
@@ -226,14 +219,7 @@ function DaimoPayButtonCustom(props: DaimoPayButtonCustomProps) {
 
   if (!isMounted) return null;
 
-  return (
-    <>
-      {children({
-        show,
-        hide,
-      })}
-    </>
-  );
+  return <>{children({ show, hide })}</>;
 }
 
 DaimoPayButtonCustom.displayName = "DaimoPayButton.Custom";
@@ -267,7 +253,7 @@ const contentVariants: Variants = {
   },
 };
 
-function DaimoPayButtonInner() {
+function DaimoPayButtonInner({ disabled }: { disabled?: boolean }) {
   const { paymentState } = usePayContext();
   const label = paymentState?.daimoPayOrder?.metadata?.intent ?? "Pay";
 
