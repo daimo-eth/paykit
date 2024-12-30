@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import useIsMounted from "../../hooks/useIsMounted";
 
 import { usePayContext } from "../DaimoPay";
 import { TextContainer } from "./styles";
@@ -139,7 +138,6 @@ export function DaimoPayButton(props: DaimoPayButtonProps) {
 
 /** Like DaimoPayButton, but with custom styling. */
 function DaimoPayButtonCustom(props: DaimoPayButtonCustomProps) {
-  const isMounted = useIsMounted();
   const context = usePayContext();
 
   // Pre-load payment info in background.
@@ -217,9 +215,7 @@ function DaimoPayButtonCustom(props: DaimoPayButtonCustomProps) {
   const show = () => context.showPayment(modalOptions);
   const hide = () => context.setOpen(false);
 
-  if (!isMounted) return null;
-
-  return <>{children({ show, hide })}</>;
+  return children({ show, hide });
 }
 
 DaimoPayButtonCustom.displayName = "DaimoPayButton.Custom";

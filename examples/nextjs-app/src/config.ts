@@ -4,7 +4,7 @@ import { arbitrum, mainnet, optimism, polygon } from "wagmi/chains";
 
 export const config = createConfig(
   getDefaultConfig({
-    appName: "ConnectKit Next.js demo",
+    appName: "@daimo/pay demo",
     chains: [mainnet, polygon, optimism, arbitrum],
     walletConnectProjectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID!,
     transports: {
