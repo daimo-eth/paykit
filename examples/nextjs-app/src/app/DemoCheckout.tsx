@@ -59,7 +59,7 @@ export function DemoCheckout() {
       </Columns>
       <Text>
         <TextLink
-          href="https://github.com/daimo-eth/paykit/blob/main/examples/nextjs-app/app/DemoCheckout.tsx"
+          href="https://github.com/daimo-eth/paykit/blob/main/examples/nextjs-app/src/app/DemoCheckout.tsx"
           target="_blank"
         >
           View on Github ↗

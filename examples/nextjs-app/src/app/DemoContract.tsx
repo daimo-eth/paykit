@@ -92,7 +92,7 @@ export function DemoContract() {
         <div className="flex-1">
           <Text>
             <TextLink
-              href="https://github.com/daimo-eth/paykit/blob/main/examples/nextjs-app/app/DemoContract.tsx"
+              href="https://github.com/daimo-eth/paykit/blob/main/examples/nextjs-app/src/app/DemoContract.tsx"
               target="_blank"
             >
               View on Github ↗

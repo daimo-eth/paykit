@@ -28,7 +28,7 @@ export function DemoDeposit() {
       />
       <Text>
         <TextLink
-          href="https://github.com/daimo-eth/paykit/blob/main/examples/nextjs-app/app/DemoDeposit.tsx"
+          href="https://github.com/daimo-eth/paykit/blob/main/examples/nextjs-app/src/app/DemoDeposit.tsx"
           target="_blank"
         >
           View on Github ↗

@@ -25,7 +25,7 @@ export function DemoBasic() {
       />
       <Text>
         <TextLink
-          href="https://github.com/daimo-eth/paykit/blob/main/examples/nextjs-app/app/DemoBasic.tsx"
+          href="https://github.com/daimo-eth/paykit/blob/main/examples/nextjs-app/src/app/DemoBasic.tsx"
           target="_blank"
         >
           View on Github ↗
