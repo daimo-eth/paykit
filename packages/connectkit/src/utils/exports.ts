@@ -1,7 +1,9 @@
 // Exported utilities, useful for @daimo/pay users.
-
 import { writeDaimoPayOrderID } from "@daimo/common";
 import { bytesToBigInt } from "viem";
+import packageJson from "../../package.json";
+
+export const daimoPayVersion = packageJson.version;
 
 /** Generates a globally-unique payId. */
 export function generatePayId(): string {
