@@ -80,6 +80,8 @@ type PayButtonCommonProps = PayButtonPaymentProps & {
   onPaymentCompleted?: (event: PaymentCompletedEvent) => void;
   /** Called when destination call reverts and funds are refunded */
   onPaymentBounced?: (event: PaymentBouncedEvent) => void;
+  /** Automatically close the modal after a successful payment. */
+  closeOnSuccess?: boolean;
 };
 
 type DaimoPayButtonProps = PayButtonCommonProps & {
@@ -89,15 +91,11 @@ type DaimoPayButtonProps = PayButtonCommonProps & {
   theme?: Theme;
   /** Custom theme. See docs for options. */
   customTheme?: CustomTheme;
-  /** Automatically close the modal after a successful payment. */
-  closeOnSuccess?: boolean;
   /** Disable interaction. */
   disabled?: boolean;
 };
 
 type DaimoPayButtonCustomProps = PayButtonCommonProps & {
-  /** Automatically close the modal after a successful payment. */
-  closeOnSuccess?: boolean;
   /** Custom renderer */
   children: (renderProps: {
     show: () => void;
