@@ -475,7 +475,7 @@ export const Tron = ({ testnet, ...props }: { testnet?: boolean }) => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <g clip-path="url(#clip0_450_171)">
+    <g clipPath="url(#clip0_450_171)">
       <path
         d="M43.3388 27.3219C40.4005 39.1077 28.4634 46.2804 16.6762 43.3413C4.89383 40.4029 -2.27886 28.4652 0.660896 16.68C3.59789 4.89286 15.535 -2.28052 27.3187 0.65786C39.1052 3.59623 46.2772 15.5354 43.3388 27.3219Z"
         fill="#FF060A"
@@ -508,8 +508,8 @@ export const Zcash = ({ testnet, ...props }: { testnet?: boolean }) => (
       fill="white"
     />
     <path
-      fill-rule="evenodd"
-      clip-rule="evenodd"
+      fillRule="evenodd"
+      clipRule="evenodd"
       d="M0 22C0 9.86741 9.86741 0 22 0C34.1326 0 44 9.86741 44 22C44 34.1326 34.1326 44 22 44C9.86741 44 0 34.1326 0 22ZM29.8475 11.7904V15.1384L20.5358 27.7681H29.8475V32.2088H23.8447V35.8885H20.1553V32.2088H14.1525V28.8607L23.4544 16.2311H14.1525V11.7904H20.1553V8.10089H23.8447V11.7904H29.8475Z"
       fill="#F4B728"
     />
