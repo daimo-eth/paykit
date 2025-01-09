@@ -4,6 +4,7 @@ import {
   arbitrum,
   base,
   baseSepolia,
+  blast,
   bsc,
   Chain,
   linea,
@@ -11,6 +12,7 @@ import {
   optimism,
   polygon,
   sepolia,
+  worldchain,
 } from "wagmi/chains";
 import { CoinbaseWalletParameters } from "wagmi/connectors";
 
@@ -48,6 +50,8 @@ export const REQUIRED_CHAINS: CreateConfigParameters["chains"] = [
   bsc,
   sepolia,
   baseSepolia,
+  worldchain,
+  blast,
 ];
 
 /** Daimo Pay recommended config, for use with wagmi's createConfig(). */
