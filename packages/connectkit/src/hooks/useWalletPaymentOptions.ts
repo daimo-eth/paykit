@@ -1,3 +1,4 @@
+import { getDAv2Chains } from "@daimo/contract";
 import { useEffect, useState } from "react";
 import { TrpcClient } from "../utils/trpc";
 
@@ -6,6 +7,10 @@ export type WalletPaymentOption = Awaited<
   ReturnType<TrpcClient["getWalletPaymentOptions"]["query"]>
 >[0];
 
+const supportedChainIds = new Set(
+  [...getDAv2Chains(false), ...getDAv2Chains(true)].map((c) => c.chainId),
+);
+
 export function useWalletPaymentOptions({
   trpc,
   address,
@@ -13,6 +18,7 @@ export function useWalletPaymentOptions({
   destChainId,
   preferredChains,
   preferredTokens,
+  log,
 }: {
   trpc: TrpcClient;
   address: string | undefined;
@@ -20,6 +26,7 @@ export function useWalletPaymentOptions({
   destChainId: number | undefined;
   preferredChains: number[] | undefined;
   preferredTokens: { chain: number; address: string }[] | undefined;
+  log: (msg: string) => void;
 }) {
   const [options, setOptions] = useState<WalletPaymentOption[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -38,7 +45,18 @@ export function useWalletPaymentOptions({
           preferredChains,
           preferredTokens,
         });
-        setOptions(newOptions);
+
+        // Filter out options we don't support yet.
+        const isSupported = (o: WalletPaymentOption) =>
+          supportedChainIds.has(o.balance.token.chainId);
+        const filteredOptions = newOptions.filter(isSupported);
+        if (filteredOptions.length < newOptions.length) {
+          log(
+            `[WALLET]: skipping ${newOptions.length - filteredOptions.length} unsupported-chain balances on ${address}`,
+          );
+        }
+
+        setOptions(filteredOptions);
       } catch (error) {
         console.error(error);
       } finally {

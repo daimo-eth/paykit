@@ -160,6 +160,7 @@ export function usePaymentState({
     destChainId: daimoPayOrder?.destFinalCallTokenAmount.token.chainId,
     preferredChains: daimoPayOrder?.metadata.payer?.preferredChains,
     preferredTokens: daimoPayOrder?.metadata.payer?.preferredTokens,
+    log,
   });
   const solanaPaymentOptions = useSolanaPaymentOptions({
     trpc,
