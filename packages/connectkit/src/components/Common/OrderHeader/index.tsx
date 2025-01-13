@@ -19,15 +19,15 @@ import Button from "../Button";
 export const OrderHeader = ({ minified = false }: { minified?: boolean }) => {
   const { paymentState } = usePayContext();
 
-  const amount =
-    paymentState.daimoPayOrder?.destFinalCallTokenAmount.usd.toFixed(2);
+  const amountUsd = paymentState.daimoPayOrder?.destFinalCallTokenAmount.usd;
   const isEditable =
     paymentState.daimoPayOrder?.mode === DaimoPayOrderMode.CHOOSE_AMOUNT;
 
-  const [editableAmount, setEditableAmount] = useState<string>(amount ?? "");
+  const [editableAmount, setEditableAmount] = useState<string>(
+    amountUsd == null ? "" : amountUsd.toFixed(2),
+  );
 
-  // Start out in edit mode immediately if amount = 0.
-  const [isEditing, setIsEditing] = useState<boolean>(amount === "0.00");
+  const [isEditing, setIsEditing] = useState<boolean>(false);
 
   const handleSave = () => {
     if (!isEditing) return;
@@ -41,20 +41,20 @@ export const OrderHeader = ({ minified = false }: { minified?: boolean }) => {
     }
   };
 
-  const sanitizeAndSetAmount = (amount: string) => {
-    if (!amount.match(/^[0-9]*(\.[0-9]{0,2})?$/)) {
+  const sanitizeAndSetAmount = (enteredUsd: string) => {
+    if (!enteredUsd.match(/^[0-9]*(\.[0-9]{0,2})?$/)) {
       return;
     }
 
     const [digitsBeforeDecimal, digitsAfterDecimal] = (() => {
-      if (amount.includes(".")) return amount.split(".");
-      else return [amount, ""];
+      if (enteredUsd.includes(".")) return enteredUsd.split(".");
+      else return [enteredUsd, ""];
     })();
 
     if (digitsBeforeDecimal.length > 5 || digitsAfterDecimal.length > 2) {
       return;
     }
-    setEditableAmount(amount);
+    setEditableAmount(enteredUsd);
   };
 
   const titleAmountContent = (() => {
@@ -84,9 +84,15 @@ export const OrderHeader = ({ minified = false }: { minified?: boolean }) => {
             style={{ width: buttonStyles.width, height: buttonStyles.height }}
           ></div>
         )}
-        {!isEditing ? (
-          <span>${amount}</span>
-        ) : (
+        {!isEditing && amountUsd != null && (
+          <span>
+            {new Intl.NumberFormat("en-US", {
+              style: "currency",
+              currency: "USD",
+            }).format(amountUsd)}
+          </span>
+        )}
+        {isEditing && (
           <div style={{ display: "flex" }}>
             $
             <InputUnderlineField
