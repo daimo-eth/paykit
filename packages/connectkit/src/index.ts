@@ -22,3 +22,9 @@ export { wallets } from "./wallets";
 
 // Export utilities.
 export * from "./utils/exports";
+
+// TODO: expose this more selectively.
+export {
+  Context as DaimoPayContext,
+  usePayContext,
+} from "./components/DaimoPay";
