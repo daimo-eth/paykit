@@ -297,7 +297,10 @@ const DaimoPayProviderWithoutSolana = ({
     if (
       daimoPayOrder &&
       daimoPayOrder.mode === DaimoPayOrderMode.HYDRATED &&
-      (daimoPayOrder.destFastFinishTxHash || daimoPayOrder.destClaimTxHash)
+      (daimoPayOrder.sourceStatus !==
+        DaimoPayOrderStatusSource.WAITING_PAYMENT ||
+        daimoPayOrder.destFastFinishTxHash ||
+        daimoPayOrder.destClaimTxHash)
     ) {
       setRoute(ROUTES.CONFIRMATION);
     } else {
