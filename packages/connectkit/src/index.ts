@@ -1,5 +1,7 @@
 export type * as Types from "./types";
 
+export { version } from "../package.json";
+
 // Configure Daimo Pay
 export { DaimoPayProvider } from "./components/DaimoPay";
 export { default as getDefaultConfig } from "./defaultConfig";

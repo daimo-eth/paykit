@@ -30,6 +30,7 @@ export default [
   {
     input: "./build/packages/paykit/packages/connectkit/src/index.d.ts",
     output: { file: "build/index.d.ts", format: "esm" },
+    external: ["../package.json"],
     plugins: [
       dts({
         compilerOptions: {

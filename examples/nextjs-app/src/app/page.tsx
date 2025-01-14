@@ -1,5 +1,6 @@
 "use client";
 
+import { version } from "@daimo/pay";
 import { useState } from "react";
 import { Button } from "../shared/tailwind-catalyst/button";
 import { Heading } from "../shared/tailwind-catalyst/heading";
@@ -36,6 +37,8 @@ export default function DemoButtonPage() {
         {demo === "checkout" && <DemoCheckout />}
         {demo === "deposit" && <DemoDeposit />}
       </div>
+
+      <div className="mt-8 text-sm text-gray-500 ">@daimo/pay {version}</div>
     </main>
   );
 }
