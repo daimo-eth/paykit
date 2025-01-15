@@ -19,6 +19,7 @@ interface Option {
   subtitle?: string;
   icons: (React.ReactNode | string)[];
   onClick: () => void;
+  disabled?: boolean;
 }
 
 const OptionsList = ({
@@ -139,7 +140,11 @@ const OptionItem = ({ option }: { option: Option }) => {
   })();
 
   return (
-    <OptionButton type="button" onClick={option.onClick}>
+    <OptionButton
+      type="button"
+      onClick={option.onClick}
+      disabled={option.disabled}
+    >
       {iconContent}
       <OptionLabel>
         <OptionTitle>{option.title}</OptionTitle>
