@@ -1,7 +1,12 @@
 import React from "react";
 import { usePayContext } from "../../DaimoPay";
 
-import { ModalContent, ModalH1, PageContent } from "../../Common/Modal/styles";
+import {
+  ModalBody,
+  ModalContent,
+  ModalH1,
+  PageContent,
+} from "../../Common/Modal/styles";
 
 import {
   assert,
@@ -15,7 +20,7 @@ import styled from "../../../styles/styled";
 import PoweredByFooter from "../../Common/PoweredByFooter";
 
 const Confirmation: React.FC = () => {
-  const { paymentState } = usePayContext();
+  const { paymentState, confirmationMessage } = usePayContext();
   const { daimoPayOrder } = paymentState;
 
   const { done, txURL } = (() => {
@@ -72,11 +77,16 @@ const Confirmation: React.FC = () => {
         {!done ? (
           <ModalH1>Confirming...</ModalH1>
         ) : (
-          <ModalH1>
-            <Link href={txURL} target="_blank" rel="noopener noreferrer">
-              Payment completed
-            </Link>
-          </ModalH1>
+          <>
+            <ModalH1>
+              <Link href={txURL} target="_blank" rel="noopener noreferrer">
+                Payment completed
+              </Link>
+            </ModalH1>
+            {confirmationMessage && (
+              <ModalBody>{confirmationMessage}</ModalBody>
+            )}
+          </>
         )}
 
         <PoweredByFooter />

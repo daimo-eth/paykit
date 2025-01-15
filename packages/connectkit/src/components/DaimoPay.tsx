@@ -106,6 +106,11 @@ type ContextValue = {
   paymentState: PaymentState;
   /** TRPC API client. Internal use only. */
   trpc: any;
+  /** Custom message to display on confirmation page. */
+  confirmationMessage?: string;
+  setConfirmationMessage: React.Dispatch<
+    React.SetStateAction<string | undefined>
+  >;
 } & useConnectCallbackProps;
 
 /** Meant for internal use. This will be non-exported in a future SDK version. */
@@ -224,6 +229,9 @@ const DaimoPayProviderWithoutSolana = ({
   >();
   const [route, setRoute] = useState<ROUTES>(ROUTES.SELECT_METHOD);
   const [errorMessage, setErrorMessage] = useState<Error>("");
+  const [confirmationMessage, setConfirmationMessage] = useState<
+    string | undefined
+  >(undefined);
 
   const [resize, onResize] = useState<number>(0);
 
@@ -331,6 +339,8 @@ const DaimoPayProviderWithoutSolana = ({
     // Other configuration
     options: opts,
     errorMessage,
+    confirmationMessage,
+    setConfirmationMessage,
     debugMode,
     log,
     displayError: (message: string | React.ReactNode | null, code?: any) => {

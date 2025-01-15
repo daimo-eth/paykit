@@ -82,6 +82,10 @@ type PayButtonCommonProps = PayButtonPaymentProps & {
   onPaymentBounced?: (event: PaymentBouncedEvent) => void;
   /** Automatically close the modal after a successful payment. */
   closeOnSuccess?: boolean;
+  /** Open the modal by default. */
+  defaultOpen?: boolean;
+  /** Custom message to display on confirmation page. */
+  confirmationMessage?: string;
 };
 
 type DaimoPayButtonProps = PayButtonCommonProps & {
@@ -167,6 +171,13 @@ function DaimoPayButtonCustom(props: DaimoPayButtonCustomProps) {
     }
   }, [payId, ...Object.values(payParams || {})]);
 
+  const { setConfirmationMessage } = context;
+  useEffect(() => {
+    if (props.confirmationMessage) {
+      setConfirmationMessage(props.confirmationMessage);
+    }
+  }, [props.confirmationMessage, setConfirmationMessage]);
+
   // Payment events: call these three event handlers.
   const { onPaymentStarted, onPaymentCompleted, onPaymentBounced } = props;
 
@@ -174,6 +185,15 @@ function DaimoPayButtonCustom(props: DaimoPayButtonCustomProps) {
   const hydOrder = order?.mode === DaimoPayOrderMode.HYDRATED ? order : null;
   const isStarted =
     hydOrder?.sourceStatus !== DaimoPayOrderStatusSource.WAITING_PAYMENT;
+
+  // Functions to show and hide the modal
+  const { children, closeOnSuccess } = props;
+  const modalOptions = { closeOnSuccess };
+  const show = () => {
+    if (paymentState.daimoPayOrder == null) return;
+    context.showPayment(modalOptions);
+  };
+  const hide = () => context.setOpen(false);
 
   useEffect(() => {
     if (hydOrder == null || !isStarted) return;
@@ -203,15 +223,16 @@ function DaimoPayButtonCustom(props: DaimoPayButtonCustomProps) {
     }
   }, [hydOrder?.intentStatus]);
 
+  useEffect(() => {
+    if (props.defaultOpen) {
+      show();
+    }
+  }, [order != null]);
+
   // Validation
   if ((payId == null) == (payParams == null)) {
     throw new Error("Must specify either payId or appId, not both");
   }
-
-  const { children, closeOnSuccess } = props;
-  const modalOptions = { closeOnSuccess };
-  const show = () => context.showPayment(modalOptions);
-  const hide = () => context.setOpen(false);
 
   return children({ show, hide });
 }
