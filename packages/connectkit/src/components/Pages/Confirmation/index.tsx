@@ -17,6 +17,7 @@ import { getChainExplorerTxUrl } from "@daimo/contract";
 import { motion } from "framer-motion";
 import { LoadingCircleIcon, TickIcon } from "../../../assets/icons";
 import styled from "../../../styles/styled";
+import { getSupportUrl } from "../../../utils/supportUrl";
 import PoweredByFooter from "../../Common/PoweredByFooter";
 
 const Confirmation: React.FC = () => {
@@ -89,7 +90,12 @@ const Confirmation: React.FC = () => {
           </>
         )}
 
-        <PoweredByFooter />
+        <PoweredByFooter
+          supportUrl={getSupportUrl(
+            daimoPayOrder,
+            done ? "Confirmed" : "Confirming",
+          )}
+        />
       </ModalContent>
     </PageContent>
   );
