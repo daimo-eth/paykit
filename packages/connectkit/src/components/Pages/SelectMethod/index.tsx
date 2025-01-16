@@ -135,6 +135,8 @@ const SelectMethod: React.FC = () => {
         setSelectedExternalOption(option);
         setRoute(ROUTES.WAITING_OTHER);
       },
+      disabled: option.disabled,
+      subtitle: option.message,
     })),
     ...(depositAddressOption ? [depositAddressOption] : []),
   ];
