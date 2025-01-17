@@ -346,7 +346,6 @@ export function usePaymentState({
 
   /** Called whenever params change. */
   const setPayParams = async (payParams: PayParams | undefined) => {
-    console.log(`[CHECKOUT] setting payParams: ${debugJson(payParams)}`);
     assert(payParams != null);
     setPayParamsState(payParams);
 

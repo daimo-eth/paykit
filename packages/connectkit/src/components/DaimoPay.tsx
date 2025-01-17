@@ -296,9 +296,9 @@ const DaimoPayProviderWithoutSolana = ({
   }, [daimoPayOrder]);
 
   const showPayment = async (modalOptions: DaimoPayModalOptions) => {
-    const { daimoPayOrder, payParams } = paymentState;
+    const { daimoPayOrder } = paymentState;
     const id = daimoPayOrder?.id;
-    log(`[PAY] showing payment ${debugJson({ id, payParams, modalOptions })}`);
+    log(`[PAY] showing payment ${debugJson({ id, modalOptions })}`);
 
     paymentState.setModalOptions(modalOptions);
 
