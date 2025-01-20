@@ -66,6 +66,7 @@ const TextButton = styled(motion.button)`
   border-radius: 6px;
   background: none;
   color: var(--ck-body-color-muted);
+  text-decoration-color: var(--ck-body-color-muted);
   font-size: 15px;
   line-height: 18px;
   font-weight: 500;
@@ -75,6 +76,7 @@ const TextButton = styled(motion.button)`
     transform 100ms ease;
   &:hover {
     color: var(--ck-body-color-muted-hover);
+    text-decoration-color: var(--ck-body-color-muted-hover);
   }
   &:active {
     transform: scale(0.96);
@@ -90,7 +92,8 @@ const TextButton = styled(motion.button)`
   }
 `;
 
-const Underline = styled.span`
+const Underline = styled(motion.span)`
+  text-underline-offset: 2px;
   text-decoration: underline;
 `;
 
