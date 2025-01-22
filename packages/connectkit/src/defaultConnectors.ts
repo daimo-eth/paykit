@@ -16,18 +16,20 @@ type DefaultConnectorsProps = {
   };
   walletConnectProjectId: string;
   coinbaseWalletPreference?: CoinbaseWalletParameters<"4">["preference"];
+  additionalConnectors?: CreateConnectorFn[];
 };
 
 const defaultConnectors = ({
   app,
   walletConnectProjectId,
   coinbaseWalletPreference,
+  additionalConnectors,
 }: DefaultConnectorsProps): CreateConnectorFn[] => {
   const hasAllAppData = app.name && app.icon && app.description && app.url;
   const shouldUseSafeConnector =
     !(typeof window === "undefined") && window?.parent !== window;
 
-  const connectors: CreateConnectorFn[] = [];
+  const connectors: CreateConnectorFn[] = additionalConnectors ?? [];
 
   // If we're in an iframe, include the SafeConnector
   if (shouldUseSafeConnector) {

@@ -1,5 +1,5 @@
 import { type CreateConfigParameters } from "@wagmi/core";
-import { http } from "wagmi";
+import { CreateConnectorFn, http } from "wagmi";
 import {
   arbitrum,
   base,
@@ -38,6 +38,9 @@ type DefaultConfigProps = {
 
   // Coinbase Wallet preference
   coinbaseWalletPreference?: CoinbaseWalletParameters<"4">["preference"];
+
+  // Additional connectors to use
+  additionalConnectors?: CreateConnectorFn[];
 } & Partial<CreateConfigParameters>;
 
 export const REQUIRED_CHAINS: CreateConfigParameters["chains"] = [
@@ -62,6 +65,7 @@ const defaultConfig = ({
   appUrl,
   walletConnectProjectId,
   coinbaseWalletPreference,
+  additionalConnectors,
   chains = REQUIRED_CHAINS,
   client,
   ...props
@@ -98,6 +102,7 @@ const defaultConfig = ({
       walletConnectProjectId:
         walletConnectProjectId ?? "ea6c5b36001c18b96e06128f14c06f40",
       coinbaseWalletPreference,
+      additionalConnectors,
     });
 
   const config: CreateConfigParameters<any, any> = {
