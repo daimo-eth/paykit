@@ -48,6 +48,7 @@ export const useWallets = (): WalletProps[] => {
       isInstalled:
         connector.type === "mock" ||
         (connector.type === "injected" && connector.id !== "metaMask") ||
+        connector.type === "farcasterFrame" ||
         isCoinbaseWalletConnector(connector.id), // always run coinbase wallet SDK
     };
 
@@ -104,6 +105,14 @@ export const useWallets = (): WalletProps[] => {
             self.find(
               (w) => w.id === "io.metamask" || w.id === "io.metamask.mobile",
             )
+          ),
+      )
+      // remove wallet with id 'com.warpcast.mobile' if wallet with id 'farcaster' exists
+      .filter(
+        (wallet, index, self) =>
+          !(
+            wallet.id === "com.warpcast.mobile" &&
+            self.find((w) => w.id === "farcaster")
           ),
       )
       // order by isInstalled injected connectors first
