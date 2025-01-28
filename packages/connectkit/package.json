@@ -9,7 +9,7 @@
   "main": "./src/index.ts",
   "type": "module",
   "exports": {
-    "import": "./build/src/index.js",
+    "import": "./build/index.js",
     "types": "./build/index.d.ts"
   },
   "types": "./build/index.d.ts",
@@ -42,6 +42,8 @@
   "dependencies": {
     "@daimo/common": "1.1.0",
     "@daimo/contract": "1.1.0",
+    "@rollup/plugin-commonjs": "^28.0.2",
+    "@rollup/plugin-node-resolve": "^16.0.0",
     "@solana/wallet-adapter-base": "^0.9.23",
     "@solana/wallet-adapter-react": "^0.15.35",
     "@solana/web3.js": "^1.95.4",
@@ -72,11 +74,10 @@
     "@types/react": "^18.2.47",
     "@types/react-dom": "^18.2.18",
     "@types/styled-components": "^5.1.25",
-    "rollup": "^3.29.5",
+    "rollup": "^4.32.1",
     "rollup-plugin-dts": "^6.1.1",
     "rollup-plugin-peer-deps-external": "^2.2.4",
-    "rollup-plugin-typescript2": "^0.34.0",
-    "rollup-plugin-visualizer": "^5.5.4",
+    "rollup-plugin-typescript2": "^0.36.0",
     "typescript-plugin-styled-components": "^3.0.0"
   }
 }
