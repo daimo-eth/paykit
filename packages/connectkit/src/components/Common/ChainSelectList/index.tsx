@@ -153,7 +153,7 @@ const ChainSelectList = ({
                 </span>
                 {variant !== "secondary" && (
                   <ChainButtonStatus>
-                    <AnimatePresence initial={false} exitBeforeEnter>
+                    <AnimatePresence initial={false} mode="wait">
                       {ch.id === chain?.id && (
                         <motion.span
                           key={"connectedText"}
