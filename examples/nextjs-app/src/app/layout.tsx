@@ -3,7 +3,7 @@ import { type ReactNode } from "react";
 
 import { StyledComponentsRegistry } from "../styles/StyledComponentsRegistry";
 import "../styles/tailwind.css";
-import NavButtons from "./NavButtons";
+import NavButtons from "./nav-buttons";
 
 export const metadata: Metadata = {
   title: "Daimo Pay Demo",
@@ -15,7 +15,7 @@ export default function RootLayout(props: { children: ReactNode }) {
     <html lang="en">
       <body>
         <StyledComponentsRegistry>
-          <main className="w-full max-w-lg m-auto px-4 py-8">
+          <main className="bg-white h-screen w-full max-w-lg m-auto px-4 py-8">
             <NavButtons />
             <div className="mt-8">{props.children}</div>
           </main>

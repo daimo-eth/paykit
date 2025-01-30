@@ -20,11 +20,12 @@ export default function NavButtons() {
       <Heading>DaimoPayButton Examples</Heading>
       <div className="mt-1 text-sm text-gray-500 ">@daimo/pay v{version}</div>
 
-      <div className="flex gap-4 mt-10">
+      <div className="flex flex-wrap gap-4 mt-10">
         <Btn route="/basic">Basic</Btn>
         <Btn route="/contract">Contract</Btn>
         <Btn route="/checkout">Checkout</Btn>
         <Btn route="/deposit">Deposit</Btn>
+        <Btn route="/farcaster-frame">Farcaster</Btn>
       </div>
     </>
   );
