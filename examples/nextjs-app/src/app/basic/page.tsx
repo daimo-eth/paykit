@@ -3,10 +3,10 @@
 import { baseUSDC } from "@daimo/contract";
 import { DaimoPayButton } from "@daimo/pay";
 import { getAddress } from "viem";
-import { Text, TextLink } from "../shared/tailwind-catalyst/text";
-import { APP_ID, Container, printEvent } from "./shared";
+import { Text, TextLink } from "../../shared/tailwind-catalyst/text";
+import { APP_ID, Container, DAIMO_ADDRESS, printEvent } from "../shared";
 
-export function DemoBasic() {
+export default function DemoBasic() {
   return (
     <Container>
       <Text>
@@ -16,8 +16,8 @@ export function DemoBasic() {
       <div />
       <DaimoPayButton
         appId={APP_ID}
-        toChain={8453}
-        toAddress="0xFBfa6A0D1F44b60d7CCA4b95d5a2CfB15246DB0D"
+        toChain={baseUSDC.chainId}
+        toAddress={DAIMO_ADDRESS}
         toUnits="0.12" /* $0.12 USDC */
         toToken={getAddress(baseUSDC.token)}
         onPaymentStarted={printEvent}
@@ -25,7 +25,7 @@ export function DemoBasic() {
       />
       <Text>
         <TextLink
-          href="https://github.com/daimo-eth/paykit/blob/main/examples/nextjs-app/src/app/DemoBasic.tsx"
+          href="https://github.com/daimo-eth/paykit/blob/main/examples/nextjs-app/src/app/basic"
           target="_blank"
         >
           View on Github ↗

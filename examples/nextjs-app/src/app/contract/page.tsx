@@ -6,10 +6,10 @@ import { DaimoPayButton } from "@daimo/pay";
 import { useState } from "react";
 import { encodeFunctionData, parseAbi, zeroAddress } from "viem";
 import { useReadContract } from "wagmi";
-import { Text, TextLink } from "../shared/tailwind-catalyst/text";
-import { APP_ID, Columns, Container, printEvent } from "./shared";
+import { Text, TextLink } from "../../shared/tailwind-catalyst/text";
+import { APP_ID, Columns, Container, printEvent } from "../shared";
 
-export function DemoContract() {
+export default function DemoContract() {
   const counterAddr = "0x7f3c168DD11379748EeF71Bea70371eBA3327Ca5";
   const counterAbi = parseAbi([
     "function increment(string) external payable",
@@ -45,14 +45,13 @@ export function DemoContract() {
   return (
     <Container>
       <Text>
-        Daimo Pay supports arbitrary contract calls. This lets you offer
-        one-click checkout for digital goods. It also enables optimal
-        onboarding.
+        Daimo Pay enables arbitrary contract calls from any coin on any chain,
+        allowing seamless payments for digital goods and user onboarding.
       </Text>
       <Text>
-        For example, imagine a new user who wants to use a prediction market.
-        You can let them place a prediction immediately as part of their
-        onboarding, paying from any coin on any chain.
+        Example: A user is onboarding to a prediction market. Daimo Pay enables
+        the user to place a prediction market bet instantly during onboarding,
+        using any tokens they already own.
       </Text>
       <Text>
         Demo: pay 0.0001 ETH to increment{" "}
@@ -92,7 +91,7 @@ export function DemoContract() {
         <div className="flex-1">
           <Text>
             <TextLink
-              href="https://github.com/daimo-eth/paykit/blob/main/examples/nextjs-app/src/app/DemoContract.tsx"
+              href="https://github.com/daimo-eth/paykit/blob/main/examples/nextjs-app/src/app/contract"
               target="_blank"
             >
               View on Github ↗
