@@ -10,9 +10,9 @@ export default function NavButtons() {
   const pathname = usePathname();
 
   const Btn = ({ route, children }: { route: string; children: string }) => (
-    <Button outline={pathname !== route}>
-      <Link href={route}>{children}</Link>
-    </Button>
+    <Link href={route}>
+      <Button outline={pathname !== route}>{children}</Button>
+    </Link>
   );
 
   return (
