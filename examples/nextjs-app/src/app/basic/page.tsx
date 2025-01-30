@@ -10,8 +10,8 @@ export default function DemoBasic() {
   return (
     <Container>
       <Text>
-        This shows a basic payment from any coin on any chain. The recipient
-        receives USDC on Base.
+        This demo shows how you can accept a basic payment from any coin on any
+        chain. The recipient receives USDC on Base.
       </Text>
       <div />
       <DaimoPayButton
