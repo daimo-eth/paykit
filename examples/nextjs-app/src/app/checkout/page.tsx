@@ -5,10 +5,16 @@ import { baseUSDC } from "@daimo/contract";
 import { DaimoPayButton } from "@daimo/pay";
 import { useCallback, useState } from "react";
 import { getAddress } from "viem";
-import { Code, Text, TextLink } from "../shared/tailwind-catalyst/text";
-import { APP_ID, Columns, Container, printEvent } from "./shared";
+import { Code, Text, TextLink } from "../../shared/tailwind-catalyst/text";
+import {
+  APP_ID,
+  Columns,
+  Container,
+  DAIMO_ADDRESS,
+  printEvent,
+} from "../shared";
 
-export function DemoCheckout() {
+export default function DemoCheckout() {
   const [payId, setPayId] = useState<string>();
 
   const start = useCallback((e: PaymentStartedEvent) => {
@@ -17,6 +23,8 @@ export function DemoCheckout() {
     setPayId(payId);
     // Save payId to your backend here. This ensures that you'll be able to
     // correlate all incoming payments even if the user loses network, etc.
+    //
+    // For example:
     // await saveCartCheckout(payId, ...);
   }, []);
 
@@ -39,16 +47,16 @@ export function DemoCheckout() {
         <div className="flex-1">
           <DaimoPayButton
             appId={APP_ID}
-            toChain={8453}
-            toAddress="0xFBfa6A0D1F44b60d7CCA4b95d5a2CfB15246DB0D"
+            toChain={baseUSDC.chainId}
+            toAddress={DAIMO_ADDRESS}
             toUnits="0.42" /* $0.42 USDC */
             toToken={getAddress(baseUSDC.token)}
             intent="Purchase"
-            preferredChains={[
-              8453,
-            ]} /* Rank specific chain + coin first in UI. */
+            /* Rank tokens on Base to the top of the payment options. */
+            preferredChains={[baseUSDC.chainId]}
+            /* Rank USDC on Base above all other tokens. */
             preferredTokens={[
-              { chain: 8453, address: getAddress(baseUSDC.token) },
+              { chain: baseUSDC.chainId, address: getAddress(baseUSDC.token) },
             ]}
             onPaymentStarted={start}
           />
@@ -59,7 +67,7 @@ export function DemoCheckout() {
       </Columns>
       <Text>
         <TextLink
-          href="https://github.com/daimo-eth/paykit/blob/main/examples/nextjs-app/src/app/DemoCheckout.tsx"
+          href="https://github.com/daimo-eth/paykit/blob/main/examples/nextjs-app/src/app/checkout"
           target="_blank"
         >
           View on Github ↗
