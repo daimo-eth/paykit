@@ -1,4 +1,5 @@
 import {
+  DaimoPayOrderMode,
   ExternalPaymentOptionMetadata,
   ExternalPaymentOptions,
   PlatformType,
@@ -16,26 +17,32 @@ const DEFAULT_EXTERNAL_PAYMENT_OPTIONS = [
 export function useExternalPaymentOptions({
   trpc,
   filterIds,
-  usdRequired,
   platform,
+  usdRequired,
+  mode,
 }: {
   trpc: TrpcClient;
   filterIds: string[] | undefined;
-  usdRequired: number | undefined;
   platform: PlatformType | undefined;
+  usdRequired: number | undefined;
+  mode: DaimoPayOrderMode | undefined;
 }) {
   const [options, setOptions] = useState<ExternalPaymentOptionMetadata[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const refreshExternalPaymentOptions = async (usd: number) => {
+    const refreshExternalPaymentOptions = async (
+      usd: number,
+      mode: DaimoPayOrderMode,
+    ) => {
       if (!platform) return;
 
       setLoading(true);
       try {
         const newOptions = await trpc.getExternalPaymentOptions.query({
-          usdRequired: usd,
           platform,
+          mode,
+          usdRequired: usd,
         });
 
         // Filter out options not in options JSON
@@ -53,10 +60,10 @@ export function useExternalPaymentOptions({
       }
     };
 
-    if (usdRequired != null) {
-      refreshExternalPaymentOptions(usdRequired);
+    if (usdRequired != null && mode != null) {
+      refreshExternalPaymentOptions(usdRequired, mode);
     }
-  }, [usdRequired, filterIds, platform]);
+  }, [usdRequired, filterIds, platform, mode]);
 
   return {
     options,

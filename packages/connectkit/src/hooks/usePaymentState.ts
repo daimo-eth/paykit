@@ -3,7 +3,6 @@ import {
   assertNotNull,
   DaimoPayOrder,
   DaimoPayTokenAmount,
-  debugJson,
   DepositAddressPaymentOptionData,
   DepositAddressPaymentOptionMetadata,
   DepositAddressPaymentOptions,
@@ -12,6 +11,8 @@ import {
   PlatformType,
   readDaimoPayOrderID,
   SolanaPublicKey,
+  WalletBalance,
+  WalletPaymentOption,
 } from "@daimo/common";
 import { ethereum } from "@daimo/contract";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -31,10 +32,8 @@ import {
   SolanaPaymentOption,
   useSolanaPaymentOptions,
 } from "./useSolanaPaymentOptions";
-import {
-  useWalletPaymentOptions,
-  WalletPaymentOption,
-} from "./useWalletPaymentOptions";
+import { useWalletBalances } from "./useWalletBalances";
+import { useWalletPaymentOptions } from "./useWalletPaymentOptions";
 
 /** Wallet payment details, sent to processSourcePayment after submitting tx. */
 export type SourcePayment = Parameters<
@@ -72,6 +71,7 @@ export interface PaymentState {
   setPayId: (id: string | undefined) => void;
   setPayParams: (payParams: PayParams | undefined) => void;
   payParams: PayParams | undefined;
+  generatePreviewOrder: (payParams: PayParams) => void;
 
   daimoPayOrder: DaimoPayOrder | undefined;
   modalOptions: DaimoPayModalOptions;
@@ -79,10 +79,12 @@ export interface PaymentState {
   paymentWaitingMessage: string | undefined;
   externalPaymentOptions: ReturnType<typeof useExternalPaymentOptions>;
   walletPaymentOptions: ReturnType<typeof useWalletPaymentOptions>;
+  walletBalances: ReturnType<typeof useWalletBalances>;
   solanaPaymentOptions: ReturnType<typeof useSolanaPaymentOptions>;
   depositAddressOptions: ReturnType<typeof useDepositAddressOptions>;
   selectedExternalOption: ExternalPaymentOptionMetadata | undefined;
   selectedTokenOption: WalletPaymentOption | undefined;
+  selectedTokenBalance: WalletBalance | undefined;
   selectedSolanaTokenOption: SolanaPaymentOption | undefined;
   selectedDepositAddressOption: DepositAddressPaymentOptionMetadata | undefined;
   setSelectedDepositAddressOption: (
@@ -92,6 +94,7 @@ export interface PaymentState {
     option: ExternalPaymentOptionMetadata | undefined,
   ) => void;
   setSelectedTokenOption: (option: WalletPaymentOption | undefined) => void;
+  setSelectedTokenBalance: (option: WalletBalance | undefined) => void;
   setSelectedSolanaTokenOption: (
     option: SolanaPaymentOption | undefined,
   ) => void;
@@ -150,8 +153,9 @@ export function usePaymentState({
   const externalPaymentOptions = useExternalPaymentOptions({
     trpc,
     filterIds: daimoPayOrder?.metadata.payer?.paymentOptions,
-    usdRequired: daimoPayOrder?.destFinalCallTokenAmount.usd,
     platform,
+    usdRequired: daimoPayOrder?.destFinalCallTokenAmount.usd,
+    mode: daimoPayOrder?.mode,
   });
   const walletPaymentOptions = useWalletPaymentOptions({
     trpc,
@@ -160,6 +164,16 @@ export function usePaymentState({
     destChainId: daimoPayOrder?.destFinalCallTokenAmount.token.chainId,
     preferredChains: daimoPayOrder?.metadata.payer?.preferredChains,
     preferredTokens: daimoPayOrder?.metadata.payer?.preferredTokens,
+    isDeposit: payParams?.isAmountEditable ?? false,
+    log,
+  });
+  const walletBalances = useWalletBalances({
+    trpc,
+    address: senderAddr,
+    destChainId: daimoPayOrder?.destFinalCallTokenAmount.token.chainId,
+    preferredChains: daimoPayOrder?.metadata.payer?.preferredChains,
+    preferredTokens: daimoPayOrder?.metadata.payer?.preferredTokens,
+    isDeposit: payParams?.isAmountEditable ?? false,
     log,
   });
   const solanaPaymentOptions = useSolanaPaymentOptions({
@@ -169,7 +183,8 @@ export function usePaymentState({
   });
   const depositAddressOptions = useDepositAddressOptions({
     trpc,
-    usdRequired: daimoPayOrder?.destFinalCallTokenAmount.usd ?? 0,
+    usdRequired: daimoPayOrder?.destFinalCallTokenAmount.usd,
+    mode: daimoPayOrder?.mode,
   });
 
   /** Create a new order or hydrate an existing one. */
@@ -239,6 +254,8 @@ export function usePaymentState({
 
   const [selectedTokenOption, setSelectedTokenOption] =
     useState<WalletPaymentOption>();
+  const [selectedTokenBalance, setSelectedTokenBalance] =
+    useState<WalletBalance>();
 
   const [selectedSolanaTokenOption, setSelectedSolanaTokenOption] =
     useState<SolanaPaymentOption>();
@@ -348,15 +365,20 @@ export function usePaymentState({
   const setPayParams = async (payParams: PayParams | undefined) => {
     assert(payParams != null);
     setPayParamsState(payParams);
+    generatePreviewOrder(payParams);
+  };
 
+  const generatePreviewOrder = async (payParams: PayParams) => {
     const newPayId = generatePayId();
     const newId = readDaimoPayOrderID(newPayId).toString();
+    // Set dummy value for deposit flow, since user can edit the amount.
+    const toUnits = payParams.isAmountEditable ? "0" : payParams.toUnits;
 
-    const payment = await trpc.previewOrder.query({
+    const orderPreview = await trpc.previewOrder.query({
       id: newId,
       toChain: payParams.toChain,
       toToken: payParams.toToken,
-      toUnits: payParams.toUnits,
+      toUnits,
       toAddress: payParams.toAddress,
       toCallData: payParams.toCallData,
       isAmountEditable: payParams.isAmountEditable,
@@ -371,7 +393,7 @@ export function usePaymentState({
       },
     });
 
-    setDaimoPayOrder(payment);
+    setDaimoPayOrder(orderPreview);
   };
 
   const onSuccess = ({ txHash, txURL }: { txHash: string; txURL?: string }) => {
@@ -385,21 +407,25 @@ export function usePaymentState({
     setPayId,
     payParams,
     setPayParams,
+    generatePreviewOrder,
     daimoPayOrder,
     modalOptions,
     setModalOptions,
     paymentWaitingMessage,
     selectedExternalOption,
     selectedTokenOption,
+    selectedTokenBalance,
     selectedSolanaTokenOption,
     externalPaymentOptions,
     walletPaymentOptions,
+    walletBalances,
     solanaPaymentOptions,
     depositAddressOptions,
     selectedDepositAddressOption,
     setSelectedDepositAddressOption,
     setSelectedExternalOption,
     setSelectedTokenOption,
+    setSelectedTokenBalance,
     setSelectedSolanaTokenOption,
     setChosenUsd,
     payWithToken,

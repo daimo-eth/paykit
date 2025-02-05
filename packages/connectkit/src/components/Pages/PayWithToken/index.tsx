@@ -8,12 +8,12 @@ import {
   PageContent,
 } from "../../Common/Modal/styles";
 
+import { WalletPaymentOption } from "@daimo/common";
 import { AnimatePresence, motion } from "framer-motion";
 import { css } from "styled-components";
 import { useChainId, useSwitchChain } from "wagmi";
 import { chainToLogo } from "../../../assets/chains";
 import defaultTheme from "../../../constants/defaultTheme";
-import { WalletPaymentOption } from "../../../hooks/useWalletPaymentOptions";
 import styled from "../../../styles/styled";
 import Button from "../../Common/Button";
 import CircleSpinner from "../../Spinners/CircleSpinner";

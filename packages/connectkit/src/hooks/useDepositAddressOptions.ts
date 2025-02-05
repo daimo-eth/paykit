@@ -1,13 +1,18 @@
-import { DepositAddressPaymentOptionMetadata } from "@daimo/common";
+import {
+  DaimoPayOrderMode,
+  DepositAddressPaymentOptionMetadata,
+} from "@daimo/common";
 import { useEffect, useState } from "react";
 import { TrpcClient } from "../utils/trpc";
 
 export function useDepositAddressOptions({
   trpc,
   usdRequired,
+  mode,
 }: {
   trpc: TrpcClient;
-  usdRequired: number;
+  usdRequired: number | undefined;
+  mode: DaimoPayOrderMode | undefined;
 }) {
   const [options, setOptions] = useState<DepositAddressPaymentOptionMetadata[]>(
     [],
@@ -15,11 +20,15 @@ export function useDepositAddressOptions({
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const refreshDepositAddressOptions = async () => {
+    const refreshDepositAddressOptions = async (
+      usd: number,
+      mode: DaimoPayOrderMode,
+    ) => {
       setLoading(true);
       try {
         const options = await trpc.getDepositAddressOptions.query({
-          usdRequired,
+          usdRequired: usd,
+          mode,
         });
         setOptions(options);
       } catch (e) {
@@ -29,8 +38,10 @@ export function useDepositAddressOptions({
       }
     };
 
-    refreshDepositAddressOptions();
-  }, [usdRequired]);
+    if (usdRequired != null && mode != null) {
+      refreshDepositAddressOptions(usdRequired, mode);
+    }
+  }, [usdRequired, mode]);
 
   return { options, loading };
 }

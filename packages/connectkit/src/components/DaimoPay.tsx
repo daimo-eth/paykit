@@ -43,6 +43,9 @@ import { Web3ContextProvider } from "./contexts/web3";
 export enum ROUTES {
   SELECT_METHOD = "daimoPaySelectMethod",
   SELECT_TOKEN = "daimoPaySelectToken",
+  SELECT_AMOUNT = "daimoPaySelectAmount",
+  SELECT_EXTERNAL_AMOUNT = "daimoPaySelectExternalAmount",
+  SELECT_DEPOSIT_ADDRESS_AMOUNT = "daimoPaySelectDepositAddressAmount",
   WAITING_OTHER = "daimoPayWaitingOther",
   SELECT_DEPOSIT_ADDRESS_CHAIN = "daimoPaySelectDepositAddressChain",
   WAITING_DEPOSIT_ADDRESS = "daimoPayWaitingDepositAddress",

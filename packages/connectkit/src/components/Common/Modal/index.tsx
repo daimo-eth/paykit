@@ -368,15 +368,19 @@ const Modal: React.FC<ModalProps> = ({
       case ROUTES.WAITING_DEPOSIT_ADDRESS:
         if (!selectedDepositAddressOption) return undefined;
         return `Pay with ${selectedDepositAddressOption.id}`;
+      case ROUTES.SELECT_AMOUNT:
+      case ROUTES.SELECT_EXTERNAL_AMOUNT:
+      case ROUTES.SELECT_DEPOSIT_ADDRESS_AMOUNT:
+        return "Select Amount";
       case ROUTES.PAY_WITH_TOKEN:
-        if (!selectedTokenOption) return undefined;
+        if (selectedTokenOption == null) return undefined;
 
         const chainName = getChainName(
-          selectedTokenOption.required.token.chainId ?? 0,
+          selectedTokenOption.balance.token.chainId,
         );
         const capitalizedChainName =
           chainName.charAt(0).toUpperCase() + chainName.slice(1);
-        return `Pay with ${capitalizedChainName} ${selectedTokenOption.required.token.symbol}`;
+        return `Pay with ${capitalizedChainName} ${selectedTokenOption.balance.token.symbol}`;
       case ROUTES.CONFIRMATION:
         return "Payment Successful";
     }

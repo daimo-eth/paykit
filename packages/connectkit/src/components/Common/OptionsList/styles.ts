@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 export const OptionButton = styled(motion.button)`
   display: block;
   text-decoration: none;
-  cursor: pointer;
+  cursor: ${(props) => (props.disabled ? "default" : "pointer")};
   user-select: none;
   position: relative;
   display: flex;

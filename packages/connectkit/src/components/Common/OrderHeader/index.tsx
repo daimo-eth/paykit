@@ -1,6 +1,4 @@
-import { DaimoPayOrderMode } from "@daimo/common";
 import { motion } from "framer-motion";
-import { useState } from "react";
 import {
   Arbitrum,
   Base,
@@ -12,119 +10,30 @@ import {
 import { USDC } from "../../../assets/coins";
 import defaultTheme from "../../../constants/defaultTheme";
 import styled from "../../../styles/styled";
-import { usePayContext } from "../../DaimoPay";
-import Button from "../Button";
+import { ROUTES, usePayContext } from "../../DaimoPay";
+import { ModalH1 } from "../Modal/styles";
 
 /** Shows payment amount. */
 export const OrderHeader = ({ minified = false }: { minified?: boolean }) => {
-  const { paymentState } = usePayContext();
+  const { paymentState, route } = usePayContext();
 
   const amountUsd = paymentState.daimoPayOrder?.destFinalCallTokenAmount.usd;
-  const isEditable =
-    paymentState.daimoPayOrder?.mode === DaimoPayOrderMode.CHOOSE_AMOUNT;
-
-  const [editableAmount, setEditableAmount] = useState<string>(
-    amountUsd == null ? "" : amountUsd.toFixed(2),
-  );
-
-  const [isEditing, setIsEditing] = useState<boolean>(false);
-
-  const handleSave = () => {
-    if (!isEditing) return;
-    paymentState.setChosenUsd(Number(editableAmount));
-    setIsEditing(false);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && isEditing) {
-      handleSave();
-    }
-  };
-
-  const sanitizeAndSetAmount = (enteredUsd: string) => {
-    if (!enteredUsd.match(/^[0-9]*(\.[0-9]{0,2})?$/)) {
-      return;
-    }
-
-    const [digitsBeforeDecimal, digitsAfterDecimal] = (() => {
-      if (enteredUsd.includes(".")) return enteredUsd.split(".");
-      else return [enteredUsd, ""];
-    })();
-
-    if (digitsBeforeDecimal.length > 5 || digitsAfterDecimal.length > 2) {
-      return;
-    }
-    setEditableAmount(enteredUsd);
-  };
+  const isDeposit = paymentState.payParams?.isAmountEditable;
 
   const titleAmountContent = (() => {
-    const buttonStyles = (() => {
-      if (minified)
-        return {
-          height: "24px",
-          width: "42px",
-          lineHeight: "12px",
-          borderRadius: "6px",
-          fontSize: "14px",
-        };
-      else
-        return {
-          height: "30px",
-          width: "54px",
-          lineHeight: "16px",
-          borderRadius: "8px",
-          fontSize: "20px",
-        };
-    })();
+    if (isDeposit && route === ROUTES.SELECT_TOKEN) {
+      return <ModalH1>Your balances</ModalH1>;
+    }
 
     return (
       <>
-        {isEditable && !minified && (
-          <div
-            style={{ width: buttonStyles.width, height: buttonStyles.height }}
-          ></div>
-        )}
-        {!isEditing && amountUsd != null && (
+        {amountUsd != null && (
           <span>
             {new Intl.NumberFormat("en-US", {
               style: "currency",
               currency: "USD",
             }).format(amountUsd)}
           </span>
-        )}
-        {isEditing && (
-          <div style={{ display: "flex" }}>
-            $
-            <InputUnderlineField
-              value={editableAmount}
-              onChange={(e) => sanitizeAndSetAmount(e.target.value)}
-              onBlur={(e) => {
-                if (!e.relatedTarget) {
-                  setIsEditing(false);
-                }
-              }}
-              onKeyDown={handleKeyDown}
-            />
-          </div>
-        )}
-        {isEditable && (
-          <Button
-            variant="primary"
-            onClick={() => {
-              if (isEditing) handleSave();
-              else setIsEditing(true);
-            }}
-            style={{
-              width: buttonStyles.width,
-              height: buttonStyles.height,
-              lineHeight: buttonStyles.lineHeight,
-              borderRadius: buttonStyles.borderRadius,
-              fontSize: buttonStyles.fontSize,
-              margin: 0,
-            }}
-          >
-            {isEditing ? "Save" : "Edit"}
-          </Button>
         )}
       </>
     );
@@ -140,7 +49,7 @@ export const OrderHeader = ({ minified = false }: { minified?: boolean }) => {
   } else {
     return (
       <>
-        <TitleAmount>{titleAmountContent}</TitleAmount>
+        {!isDeposit && <TitleAmount>{titleAmountContent}</TitleAmount>}
 
         <AnyChainAnyCoinContainer>
           <CoinLogos />
@@ -179,75 +88,11 @@ function CoinLogos({ $size = 24 }: { $size?: number }) {
   );
 }
 
-function InputUnderlineField({
-  value,
-  onChange,
-  onBlur,
-  onKeyDown,
-}: {
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
-  onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
-}) {
-  // subtract width for decimal point if necessary
-  const width = value.length - 0.5 * (value.includes(".") ? 1 : 0) + "ch";
-
-  const selectAll = (e: React.FocusEvent<HTMLInputElement>) => {
-    // When entering edit mode, select the amount for quicker editing
-    setTimeout(() => e.target.select(), 100);
-  };
-
-  return (
-    <div style={{ width: "auto", position: "relative" }}>
-      <InputField
-        $width={width}
-        type="text"
-        pattern="\d*.\d{2}"
-        value={value}
-        onChange={onChange}
-        onBlur={onBlur}
-        onFocus={selectAll}
-        onKeyDown={onKeyDown}
-        autoFocus
-      />
-      <Underline />
-    </div>
-  );
-}
-
-const InputField = styled(motion.input)<{ $width?: string }>`
-  box-sizing: border-box;
-  background-color: transparent;
-  outline: none;
-  width: ${(props) => props.$width || "5ch"};
-  line-height: inherit;
-  font-size: inherit;
-  font-weight: inherit;
-  color: inherit;
-  border: none;
-  padding: 0;
-  &:focus {
-    box-sizing: border-box;
-    outline: none;
-    border: none;
-  }
-`;
-
-const Underline = styled(motion.div)`
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-color: var(--ck-body-color-muted);
-`;
-
 const TitleAmount = styled(motion.h1)<{
   $error?: boolean;
   $valid?: boolean;
 }>`
-  margin: 0;
+  margin-bottom: 24px;
   padding: 0;
   line-height: 66px;
   font-size: 64px;
@@ -299,7 +144,7 @@ const AnyChainAnyCoinContainer = styled(motion.div)`
   justify-content: center;
   text-align: center;
   gap: 8px;
-  margin: 24px 0;
+  margin-bottom: 24px;
 `;
 
 const LogoContainer = styled(motion.div)<{

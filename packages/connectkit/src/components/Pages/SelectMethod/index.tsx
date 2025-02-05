@@ -4,6 +4,7 @@ import { ROUTES, usePayContext } from "../../DaimoPay";
 import { PageContent } from "../../Common/Modal/styles";
 
 import {
+  DaimoPayOrderMode,
   DepositAddressPaymentOptionMetadata,
   getAddressContraction,
 } from "@daimo/common";
@@ -54,23 +55,26 @@ function getDepositAddressOption(depositAddressOptions: {
   loading: boolean;
   options: DepositAddressPaymentOptionMetadata[];
 }) {
-  const { setRoute } = usePayContext();
+  const { setRoute, paymentState } = usePayContext();
+  const isDeposit =
+    paymentState.daimoPayOrder?.mode === DaimoPayOrderMode.CHOOSE_AMOUNT;
 
-  if (
+  // TODO: API should serve the subtitle and disabled
+  const disabled =
+    !isDeposit &&
     !depositAddressOptions.loading &&
-    depositAddressOptions.options.length === 0
-  ) {
-    return null;
-  }
+    depositAddressOptions.options.length === 0;
+  const subtitle = disabled ? "Minimum $20.00" : "Bitcoin, Tron, Zcash...";
 
   return {
     id: "depositAddress",
     title: "Pay on another chain",
-    subtitle: "Bitcoin, Tron, Zcash...",
+    subtitle,
     icons: [<Bitcoin />, <Tron />, <Zcash />],
     onClick: () => {
       setRoute(ROUTES.SELECT_DEPOSIT_ADDRESS_CHAIN);
     },
+    disabled,
   };
 }
 
@@ -89,6 +93,9 @@ const SelectMethod: React.FC = () => {
   } = paymentState;
   const displayName =
     senderEnsName ?? (address ? getAddressContraction(address) : "wallet");
+
+  const isDeposit =
+    paymentState.daimoPayOrder?.mode === DaimoPayOrderMode.CHOOSE_AMOUNT;
 
   const connectedWalletOption = isConnected
     ? {
@@ -133,7 +140,11 @@ const SelectMethod: React.FC = () => {
       icons: [option.logoURI],
       onClick: () => {
         setSelectedExternalOption(option);
-        setRoute(ROUTES.WAITING_OTHER);
+        if (isDeposit) {
+          setRoute(ROUTES.SELECT_EXTERNAL_AMOUNT);
+        } else {
+          setRoute(ROUTES.WAITING_OTHER);
+        }
       },
       disabled: option.disabled,
       subtitle: option.message,

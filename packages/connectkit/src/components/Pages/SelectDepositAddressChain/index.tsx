@@ -11,6 +11,7 @@ const SelectDepositAddressChain: React.FC = () => {
   const { setRoute, paymentState } = usePayContext();
   const { setSelectedDepositAddressOption, depositAddressOptions } =
     paymentState;
+  const isDeposit = paymentState.payParams?.isAmountEditable;
 
   return (
     <PageContent>
@@ -45,7 +46,11 @@ const SelectDepositAddressChain: React.FC = () => {
               icons: [option.logoURI],
               onClick: () => {
                 setSelectedDepositAddressOption(option);
-                setRoute(ROUTES.WAITING_DEPOSIT_ADDRESS);
+                if (isDeposit) {
+                  setRoute(ROUTES.SELECT_DEPOSIT_ADDRESS_AMOUNT);
+                } else {
+                  setRoute(ROUTES.WAITING_DEPOSIT_ADDRESS);
+                }
               },
             };
           }) ?? []
