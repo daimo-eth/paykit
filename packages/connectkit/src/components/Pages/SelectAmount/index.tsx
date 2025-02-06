@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ROUTES, usePayContext } from "../../DaimoPay";
 
 import {
@@ -7,7 +7,7 @@ import {
   PageContent,
 } from "../../Common/Modal/styles";
 
-import { assert, assertNotNull } from "@daimo/common";
+import { assertNotNull } from "@daimo/common";
 import { AnimatePresence, motion } from "framer-motion";
 import { css } from "styled-components";
 import { formatUnits, parseUnits } from "viem";
@@ -20,83 +20,118 @@ import {
   USD_DECIMALS,
   usdToFormattedTokenAmount,
 } from "../../../utils/format";
+import { isValidNumber } from "../../../utils/validateInput";
+import AmountInput from "../../Common/AmountInput";
 import Button from "../../Common/Button";
-import SwitchIcon from "../../Common/Switch";
+import SwitchButton from "../../Common/SwitchButton";
 import CircleSpinner from "../../Spinners/CircleSpinner";
+
+const MAX_USD_VALUE = 20000;
 
 const SelectAmount: React.FC = () => {
   const { paymentState, setRoute, triggerResize } = usePayContext();
   const { selectedTokenBalance, setSelectedTokenOption } = paymentState;
-  assert(selectedTokenBalance != null, "Selected token balance is null");
 
-  const token = selectedTokenBalance.balance.token;
   const minimumMessage =
-    selectedTokenBalance.minimumRequired.usd > 0
+    selectedTokenBalance?.minimumRequired.usd != null &&
+    selectedTokenBalance?.minimumRequired.usd > 0
       ? `Minimum 
   ${formatUsd(selectedTokenBalance?.minimumRequired.usd, "up")}`
       : null;
 
-  const [editableAmount, setEditableAmount] = useState("");
-  const [secondaryAmount, setSecondaryAmount] = useState(
-    usdToFormattedTokenAmount(0, token),
+  const [editableValue, setEditableValue] = useState("");
+  const [secondaryValue, setSecondaryValue] = useState(
+    selectedTokenBalance == null
+      ? "0"
+      : usdToFormattedTokenAmount(0, selectedTokenBalance.balance.token),
   );
   const [isEditingUsd, setIsEditingUsd] = useState(true);
   const [message, setMessage] = useState<string | null>(minimumMessage);
   const [continueDisabled, setContinueDisabled] = useState(true);
 
-  // Focus the AmountInput when the page loads and when the user switches currencies
-  const inputRef = useRef<HTMLInputElement>(null);
-  useEffect(() => {
-    inputRef.current?.focus();
-  }, [isEditingUsd]);
-
   useEffect(() => {
     triggerResize();
   }, [message]);
 
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    // Test that the value is digits, followed by an optional decimal, followed
-    // by more digits
-    if (!(value === "" || /^\d+\.?\d*$/.test(value))) return;
+  if (selectedTokenBalance == null) {
+    return <PageContent></PageContent>;
+  }
 
-    const sanitizedValue = /\d/.test(value) ? value : "0";
+  const balanceToken = selectedTokenBalance.balance.token;
+  const isUsdStablecoin = balanceToken.fiatSymbol === "$";
 
-    // Check if the value has too many decimal places
-    const maxDecimals = isEditingUsd ? USD_DECIMALS : token.displayDecimals;
-    const [, digitsAfterDecimal] = (() => {
-      if (value.includes(".")) return value.split(".");
-      else return [value, ""];
-    })();
-    if (digitsAfterDecimal.length > maxDecimals) {
-      return;
-    }
+  /**
+   * Update the editable value and secondary value, taking into account whether
+   * the user is currently editing the USD value or the token value.
+   */
+  const updateValues = (
+    newEditableValue: string,
+    isUsdValue: boolean,
+    newSecondaryValue?: string,
+  ) => {
+    const sanitizedEditableValue = /\d/.test(newEditableValue)
+      ? newEditableValue
+      : "0";
 
-    // TODO: this check needs to be more nuanced. e.g. user has balance greater than 20k
-    // Check if the value is too large
-    const MAX_USD_VALUE = 20000;
-    const usdValue = isEditingUsd
-      ? sanitizedValue
-      : tokenAmountToFormattedUsd(
-          parseUnits(sanitizedValue, token.decimals),
-          token,
+    let usdValue: string;
+    let tokenValue: string;
+
+    if (isUsdValue) {
+      usdValue = roundDecimals(
+        Number(sanitizedEditableValue),
+        USD_DECIMALS,
+        "down",
+      );
+      if (newSecondaryValue != null) {
+        const sanitizedSecondaryValue = /\d/.test(newSecondaryValue)
+          ? newSecondaryValue
+          : "0";
+        tokenValue = roundDecimals(
+          Number(sanitizedSecondaryValue),
+          balanceToken.displayDecimals,
+          "down",
         );
-    const tokenValue = isEditingUsd
-      ? usdToFormattedTokenAmount(Number(sanitizedValue), token)
-      : sanitizedValue;
-    if (Number(usdValue) > MAX_USD_VALUE) {
-      return;
+      } else {
+        tokenValue = usdToFormattedTokenAmount(
+          Number(sanitizedEditableValue),
+          balanceToken,
+          "down",
+        );
+      }
+    } else {
+      tokenValue = roundDecimals(
+        Number(sanitizedEditableValue),
+        balanceToken.displayDecimals,
+        "down",
+      );
+      if (newSecondaryValue != null) {
+        const sanitizedSecondaryValue = /\d/.test(newSecondaryValue)
+          ? newSecondaryValue
+          : "0";
+        usdValue = roundDecimals(
+          Number(sanitizedSecondaryValue),
+          USD_DECIMALS,
+          "down",
+        );
+      } else {
+        usdValue = tokenAmountToFormattedUsd(
+          parseUnits(sanitizedEditableValue, balanceToken.decimals),
+          balanceToken,
+          "down",
+        );
+      }
     }
 
     // Update the state
-    setEditableAmount(value);
-    setSecondaryAmount(isEditingUsd ? tokenValue : usdValue);
+    setEditableValue(newEditableValue);
+    setSecondaryValue(isUsdValue ? tokenValue : usdValue);
+    setIsEditingUsd(isUsdValue);
 
     setContinueDisabled(
-      value === "" ||
-        Number(usdValue) <= 0 ||
+      Number(usdValue) <= 0 ||
         Number(usdValue) < selectedTokenBalance.minimumRequired.usd ||
-        Number(usdValue) > selectedTokenBalance.balance.usd,
+        Number(usdValue) > selectedTokenBalance.balance.usd ||
+        Number(usdValue) > MAX_USD_VALUE,
     );
 
     if (Number(usdValue) > selectedTokenBalance.balance.usd) {
@@ -104,65 +139,60 @@ const SelectAmount: React.FC = () => {
         `Amount exceeds your balance: 
   ${formatUsd(selectedTokenBalance?.balance.usd, "down")}`,
       );
+    } else if (Number(usdValue) > MAX_USD_VALUE) {
+      setMessage(`Maximum ${formatUsd(MAX_USD_VALUE)}`);
     } else {
       setMessage(minimumMessage);
     }
   };
 
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const maxDecimals = isEditingUsd
+      ? USD_DECIMALS
+      : balanceToken.displayDecimals;
+    if (value !== "" && !isValidNumber(value, maxDecimals)) return;
+    updateValues(value, isEditingUsd);
+  };
+
   const handleMax = () => {
-    let usdValue: string;
-
-    // Round down so the amount won't exceed the balance
-    if (isEditingUsd) {
-      usdValue = roundDecimals(
-        selectedTokenBalance.balance.usd,
-        USD_DECIMALS,
-        "down",
-      );
-      setEditableAmount(usdValue);
-      setSecondaryAmount(
-        usdToFormattedTokenAmount(
-          selectedTokenBalance.balance.usd,
-          token,
-          "down",
+    const usdValue = roundDecimals(
+      Number(selectedTokenBalance.balance.usd),
+      USD_DECIMALS,
+      "down",
+    );
+    const tokenValue = roundDecimals(
+      Number(
+        formatUnits(
+          BigInt(selectedTokenBalance.balance.amount),
+          balanceToken.decimals,
         ),
-      );
-      setContinueDisabled(false);
-    } else {
-      const amount = BigInt(selectedTokenBalance.balance.amount);
-      const amountUnits = formatUnits(amount, token.decimals);
-      usdValue = tokenAmountToFormattedUsd(amount, token, "down");
-      setEditableAmount(
-        roundDecimals(Number(amountUnits), token.displayDecimals, "down"),
-      );
-      setSecondaryAmount(usdValue);
-    }
-
-    setContinueDisabled(
-      Number(usdValue) <= 0 ||
-        Number(usdValue) < selectedTokenBalance.minimumRequired.usd ||
-        Number(usdValue) > selectedTokenBalance.balance.usd,
+      ),
+      balanceToken.displayDecimals,
+      "down",
+    );
+    updateValues(
+      isEditingUsd ? usdValue : tokenValue,
+      isEditingUsd,
+      isEditingUsd ? tokenValue : usdValue,
     );
   };
 
   const handleSwitchCurrency = () => {
-    const temp = editableAmount;
-    setEditableAmount(secondaryAmount);
-    setSecondaryAmount(temp);
-    setIsEditingUsd(!isEditingUsd);
+    updateValues(secondaryValue, !isEditingUsd, editableValue);
   };
 
   const handleContinue = () => {
     const usd = isEditingUsd
-      ? editableAmount
+      ? editableValue
       : tokenAmountToFormattedUsd(
-          parseUnits(editableAmount, token.decimals),
-          token,
+          parseUnits(editableValue, balanceToken.decimals),
+          balanceToken,
         );
     const amountUnits = isEditingUsd
-      ? usdToFormattedTokenAmount(Number(editableAmount), token)
-      : editableAmount;
-    const amount = parseUnits(amountUnits, token.decimals);
+      ? usdToFormattedTokenAmount(Number(editableValue), balanceToken)
+      : editableValue;
+    const amount = parseUnits(amountUnits, balanceToken.decimals);
     setSelectedTokenOption({
       required: {
         token: assertNotNull(
@@ -206,28 +236,25 @@ const SelectAmount: React.FC = () => {
         <PrimaryAmountContainer>
           {/* Invisible div to balance spacing */}
           <MaxButton style={{ visibility: "hidden" }}>Max</MaxButton>
-          <AmountInputContainer>
-            <ModalBody>{isEditingUsd ? "$" : ""}</ModalBody>
-            <AmountInput
-              ref={inputRef}
-              type="text"
-              value={editableAmount}
-              onChange={handleAmountChange}
-            />
-            <ModalBody>{isEditingUsd ? "" : token.symbol}</ModalBody>
-          </AmountInputContainer>
+          <AmountInput
+            value={editableValue}
+            onChange={handleAmountChange}
+            currency={isEditingUsd ? "$" : balanceToken.symbol}
+          />
           <MaxButton onClick={handleMax}>Max</MaxButton>
         </PrimaryAmountContainer>
 
-        <SwitchContainer>
-          <SwitchIcon onClick={handleSwitchCurrency}>
-            <SecondaryAmount>
-              {isEditingUsd
-                ? `${secondaryAmount} ${token.symbol}`
-                : `$${secondaryAmount}`}
-            </SecondaryAmount>
-          </SwitchIcon>
-        </SwitchContainer>
+        {!isUsdStablecoin && (
+          <SwitchContainer>
+            <SwitchButton onClick={handleSwitchCurrency}>
+              <SecondaryAmount>
+                {isEditingUsd
+                  ? `${secondaryValue} ${balanceToken.symbol}`
+                  : `$${secondaryValue}`}
+              </SecondaryAmount>
+            </SwitchButton>
+          </SwitchContainer>
+        )}
 
         {message && <ModalBody>{message}</ModalBody>}
 
@@ -308,34 +335,6 @@ const PrimaryAmountContainer = styled.div`
   align-items: center;
   justify-content: center;
   gap: 6px;
-`;
-
-const AmountInputContainer = styled.div`
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 4px;
-`;
-
-const AmountInput = styled.input`
-  margin: 0;
-  padding: 0;
-  background: none;
-  border: none;
-  outline: none;
-  font-size: 30px;
-  font-weight: var(--ck-modal-h1-font-weight, 600);
-  color: var(--ck-body-color);
-  width: ${(props) => {
-    const length = props.value?.length || 1;
-    // Reduce width when decimal or commas are present since they're smaller than normal chars
-    const numPunctuations = (props.value?.match(/[.,]/g) || []).length;
-    const adjustedLength = length - numPunctuations * 0.7;
-    return `${Math.min(adjustedLength, 10)}ch`;
-  }};
-  min-width: 1ch;
-  max-width: 10ch;
-  transition: width 0.1s ease-out;
 `;
 
 const SecondaryAmount = styled.div`

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { SwitchIcon as Icon } from "../../../assets/icons";
 import styled from "../../../styles/styled";
 
-const Container = styled.div`
+const Container = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -22,7 +22,7 @@ const IconWrapper = styled.div<{ $isFlipped: boolean }>`
   }
 `;
 
-const SwitchIcon: React.FC<{
+const SwitchButton: React.FC<{
   onClick: () => void;
   children?: React.ReactNode;
 }> = ({ onClick, children }) => {
@@ -48,4 +48,4 @@ const SwitchIcon: React.FC<{
   );
 };
 
-export default SwitchIcon;
+export default SwitchButton;

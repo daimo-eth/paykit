@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ROUTES, usePayContext } from "../../DaimoPay";
 
 import {
@@ -11,65 +11,56 @@ import { AnimatePresence, motion } from "framer-motion";
 import { css } from "styled-components";
 import styled from "../../../styles/styled";
 import { formatUsd, USD_DECIMALS } from "../../../utils/format";
+import { isValidNumber } from "../../../utils/validateInput";
+import AmountInput from "../../Common/AmountInput";
 import Button from "../../Common/Button";
 import CircleSpinner from "../../Spinners/CircleSpinner";
 import SquircleSpinner from "../../Spinners/SquircleSpinner";
 
+const MAX_USD_VALUE = 20000;
+
 const SelectExternalAmount: React.FC = () => {
-  const { paymentState, setRoute } = usePayContext();
+  const { paymentState, setRoute, triggerResize } = usePayContext();
   const { selectedExternalOption } = paymentState;
 
-  const [amountUsd, setAmountUsd] = useState<string>("");
+  const minimumMessage = `Minimum ${formatUsd(selectedExternalOption?.minimumUsd ?? 0, "up")}`;
+
+  const [usdInput, setUsdInput] = useState<string>("");
+  const [message, setMessage] = useState<string | null>(minimumMessage);
   const [continueDisabled, setContinueDisabled] = useState(true);
 
-  const message = selectedExternalOption?.minimumUsd
-    ? `Minimum 
-  ${formatUsd(selectedExternalOption?.minimumUsd, "up")}`
-    : null;
-
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  // Focus the AmountInput when the page loads so the user can start typing immediately
   useEffect(() => {
-    inputRef.current?.focus();
-    inputRef.current?.select();
-  }, []);
+    triggerResize();
+  }, [message]);
+
+  if (selectedExternalOption == null) {
+    return <PageContent></PageContent>;
+  }
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    // Test that the value is digits, followed by an optional decimal, followed
-    // by more digits
-    if (!(value === "" || /^\d+\.?\d*$/.test(value))) return;
+    if (value !== "" && !isValidNumber(value, USD_DECIMALS)) return;
 
-    const [digitsBeforeDecimal, digitsAfterDecimal] = (() => {
-      if (value.includes(".")) return value.split(".");
-      else return [value, ""];
-    })();
+    setUsdInput(value);
 
-    if (
-      digitsBeforeDecimal.length > 5 ||
-      digitsAfterDecimal.length > USD_DECIMALS
-    ) {
-      return;
+    if (Number(value) > MAX_USD_VALUE) {
+      setMessage(`Maximum ${formatUsd(MAX_USD_VALUE, "up")}`);
+    } else {
+      setMessage(minimumMessage);
     }
-
-    setAmountUsd(value);
 
     setContinueDisabled(
       value === "" ||
         Number(value) <= 0 ||
-        Number(value) < (selectedExternalOption?.minimumUsd ?? 0),
+        Number(value) < (selectedExternalOption.minimumUsd ?? 0) ||
+        Number(value) > MAX_USD_VALUE,
     );
   };
 
   const handleContinue = () => {
-    paymentState.setChosenUsd(Number(amountUsd));
+    paymentState.setChosenUsd(Number(usdInput));
     setRoute(ROUTES.WAITING_OTHER);
   };
-
-  if (!selectedExternalOption) {
-    return <PageContent></PageContent>;
-  }
 
   const optionSpinner = (() => {
     if (selectedExternalOption.logoShape === "circle") {
@@ -100,20 +91,8 @@ const SelectExternalAmount: React.FC = () => {
         </AnimationContainer>
       </LoadingContainer>
       <ModalContent>
-        <PrimaryAmountContainer>
-          <AmountInputContainer>
-            <ModalBody>$</ModalBody>
-            <AmountInput
-              ref={inputRef}
-              type="text"
-              value={amountUsd}
-              onChange={handleAmountChange}
-            />
-          </AmountInputContainer>
-        </PrimaryAmountContainer>
-
+        <AmountInput value={usdInput} onChange={handleAmountChange} />
         {message && <ModalBody>{message}</ModalBody>}
-
         <Button onClick={handleContinue} disabled={continueDisabled}>
           Continue
         </Button>
@@ -150,41 +129,6 @@ const AnimationContainer = styled(motion.div)<{
         box-shadow: inset 0 0 0 3.5px var(--ck-body-color-danger);
       `}
   }
-`;
-
-const PrimaryAmountContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-`;
-
-const AmountInputContainer = styled.div`
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 4px;
-`;
-
-const AmountInput = styled.input`
-  margin: 0;
-  padding: 0;
-  background: none;
-  border: none;
-  outline: none;
-  font-size: 30px;
-  font-weight: var(--ck-modal-h1-font-weight, 600);
-  color: var(--ck-body-color);
-  width: ${(props) => {
-    const length = props.value?.length || 1;
-    // Reduce width when decimal or commas are present since they're smaller than normal chars
-    const numPunctuations = (props.value?.match(/[.,]/g) || []).length;
-    const adjustedLength = length - numPunctuations * 0.6;
-    return `${Math.min(adjustedLength, 10)}ch`;
-  }};
-  min-width: 1ch;
-  max-width: 10ch;
-  transition: width 0.1s ease-out;
 `;
 
 export default SelectExternalAmount;
