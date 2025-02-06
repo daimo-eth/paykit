@@ -74,6 +74,7 @@ export interface PaymentState {
   generatePreviewOrder: (payParams: PayParams) => void;
 
   daimoPayOrder: DaimoPayOrder | undefined;
+  isDepositFlow: boolean;
   modalOptions: DaimoPayModalOptions;
   setModalOptions: (modalOptions: DaimoPayModalOptions) => void;
   paymentWaitingMessage: string | undefined;
@@ -87,9 +88,7 @@ export interface PaymentState {
   selectedTokenBalance: WalletBalance | undefined;
   selectedSolanaTokenOption: SolanaPaymentOption | undefined;
   selectedDepositAddressOption: DepositAddressPaymentOptionMetadata | undefined;
-  setSelectedDepositAddressOption: (
-    option: DepositAddressPaymentOptionMetadata | undefined,
-  ) => void;
+  setPaymentWaitingMessage: (message: string | undefined) => void;
   setSelectedExternalOption: (
     option: ExternalPaymentOptionMetadata | undefined,
   ) => void;
@@ -98,7 +97,10 @@ export interface PaymentState {
   setSelectedSolanaTokenOption: (
     option: SolanaPaymentOption | undefined,
   ) => void;
-  setChosenUsd: (amount: number) => void;
+  setSelectedDepositAddressOption: (
+    option: DepositAddressPaymentOptionMetadata | undefined,
+  ) => void;
+  setChosenUsd: (usd: number) => void;
   payWithToken: (tokenAmount: DaimoPayTokenAmount) => Promise<void>;
   payWithExternal: (option: ExternalPaymentOptions) => Promise<string>;
   payWithDepositAddress: (
@@ -145,6 +147,7 @@ export function usePaymentState({
   // Daimo Pay order state.
   const [payParams, setPayParamsState] = useState<PayParams>();
   const [paymentWaitingMessage, setPaymentWaitingMessage] = useState<string>();
+  const [isDepositFlow, setIsDepositFlow] = useState<boolean>(false);
 
   // Payment UI config.
   const [modalOptions, setModalOptions] = useState<DaimoPayModalOptions>({});
@@ -164,7 +167,7 @@ export function usePaymentState({
     destChainId: daimoPayOrder?.destFinalCallTokenAmount.token.chainId,
     preferredChains: daimoPayOrder?.metadata.payer?.preferredChains,
     preferredTokens: daimoPayOrder?.metadata.payer?.preferredTokens,
-    isDeposit: payParams?.isAmountEditable ?? false,
+    isDepositFlow,
     log,
   });
   const walletBalances = useWalletBalances({
@@ -173,7 +176,7 @@ export function usePaymentState({
     destChainId: daimoPayOrder?.destFinalCallTokenAmount.token.chainId,
     preferredChains: daimoPayOrder?.metadata.payer?.preferredChains,
     preferredTokens: daimoPayOrder?.metadata.payer?.preferredTokens,
-    isDeposit: payParams?.isAmountEditable ?? false,
+    isDepositFlow,
     log,
   });
   const solanaPaymentOptions = useSolanaPaymentOptions({
@@ -314,16 +317,19 @@ export function usePaymentState({
       id,
     });
 
-    setDaimoPayOrder(order);
+    // Don't overwrite the order if a new order was generated.
+    if (daimoPayOrder == null || order.id === daimoPayOrder.id) {
+      setDaimoPayOrder(order);
+    }
   }, [daimoPayOrder?.id]);
 
   /** User picked a different deposit amount. */
-  const setChosenUsd = (usdAmount: number) => {
-    log(`[CHECKOUT] Setting chosen USD amount to ${usdAmount}`);
+  const setChosenUsd = (usd: number) => {
+    log(`[CHECKOUT] Setting chosen USD amount to ${usd}`);
     assert(!!daimoPayOrder);
     const token = daimoPayOrder.destFinalCallTokenAmount.token;
     const tokenAmount = parseUnits(
-      (usdAmount / token.usd).toString(),
+      (usd / token.usd).toString(),
       token.decimals,
     );
 
@@ -334,7 +340,7 @@ export function usePaymentState({
       destFinalCallTokenAmount: {
         token,
         amount: tokenAmount.toString() as `${bigint}`,
-        usd: usdAmount,
+        usd: usd,
       },
     });
   };
@@ -365,6 +371,8 @@ export function usePaymentState({
   const setPayParams = async (payParams: PayParams | undefined) => {
     assert(payParams != null);
     setPayParamsState(payParams);
+    setIsDepositFlow(payParams.isAmountEditable);
+
     generatePreviewOrder(payParams);
   };
 
@@ -409,6 +417,7 @@ export function usePaymentState({
     setPayParams,
     generatePreviewOrder,
     daimoPayOrder,
+    isDepositFlow,
     modalOptions,
     setModalOptions,
     paymentWaitingMessage,
@@ -422,11 +431,12 @@ export function usePaymentState({
     solanaPaymentOptions,
     depositAddressOptions,
     selectedDepositAddressOption,
-    setSelectedDepositAddressOption,
+    setPaymentWaitingMessage,
     setSelectedExternalOption,
     setSelectedTokenOption,
     setSelectedTokenBalance,
     setSelectedSolanaTokenOption,
+    setSelectedDepositAddressOption,
     setChosenUsd,
     payWithToken,
     payWithExternal,

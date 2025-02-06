@@ -292,10 +292,12 @@ const DaimoPayProviderWithoutSolana = ({
     }
 
     log(`[PAY] polling in ${intervalMs}ms`);
-    setTimeout(
+    const timeout = setTimeout(
       () => retryBackoff("refreshOrder", () => paymentState.refreshOrder()),
       intervalMs,
     );
+
+    return () => clearTimeout(timeout);
   }, [daimoPayOrder]);
 
   const showPayment = async (modalOptions: DaimoPayModalOptions) => {

@@ -60,6 +60,7 @@ const WaitingOther: React.FC = () => {
   }, [selectedExternalOption]);
 
   const waitingMessageLength = paymentWaitingMessage?.length;
+
   useEffect(() => {
     triggerResize();
   }, [waitingMessageLength, externalURL]);

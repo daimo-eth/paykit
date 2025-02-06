@@ -12,6 +12,7 @@ import Onboarding from "../Pages/Onboarding";
 import SwitchNetworks from "../Pages/SwitchNetworks";
 import ConnectUsing from "./ConnectUsing";
 
+import assert from "assert";
 import { getAppName } from "../../defaultConfig";
 import { useChainIsSupported } from "../../hooks/useChainIsSupported";
 import { DaimoPayThemeProvider } from "../DaimoPayThemeProvider/DaimoPayThemeProvider";
@@ -46,12 +47,15 @@ export const DaimoPayModal: React.FC<{
   const context = usePayContext();
   const paymentState = context.paymentState;
   const {
+    payParams,
+    generatePreviewOrder,
+    isDepositFlow,
+    setPaymentWaitingMessage,
     setSelectedExternalOption,
     setSelectedTokenOption,
-    setSelectedDepositAddressOption,
     setSelectedSolanaTokenOption,
+    setSelectedDepositAddressOption,
   } = paymentState;
-  const isDeposit = paymentState.payParams?.isAmountEditable;
 
   const { isConnected, chain } = useAccount();
   const chainIsSupported = useChainIsSupported(chain?.id);
@@ -85,19 +89,35 @@ export const DaimoPayModal: React.FC<{
       setSelectedDepositAddressOption(undefined);
       context.setRoute(ROUTES.SELECT_DEPOSIT_ADDRESS_CHAIN);
     } else if (context.route === ROUTES.WAITING_OTHER) {
-      // if (isDeposit) {
-      //   context.setRoute(ROUTES.SELECT_EXTERNAL_AMOUNT);
-      // }
-      setSelectedExternalOption(undefined);
-      context.setRoute(ROUTES.SELECT_METHOD);
+      setPaymentWaitingMessage(undefined);
+      if (isDepositFlow) {
+        assert(payParams != null, "payParams cannot be null in deposit flow");
+        generatePreviewOrder(payParams);
+        context.setRoute(ROUTES.SELECT_EXTERNAL_AMOUNT);
+      } else {
+        setSelectedExternalOption(undefined);
+        context.setRoute(ROUTES.SELECT_METHOD);
+      }
     } else if (context.route === ROUTES.PAY_WITH_TOKEN) {
-      setSelectedTokenOption(undefined);
-      context.setRoute(ROUTES.SELECT_TOKEN);
+      if (isDepositFlow) {
+        assert(payParams != null, "payParams cannot be null in deposit flow");
+        generatePreviewOrder(payParams);
+        context.setRoute(ROUTES.SELECT_AMOUNT);
+      } else {
+        setSelectedTokenOption(undefined);
+        context.setRoute(ROUTES.SELECT_TOKEN);
+      }
     } else if (context.route === ROUTES.ONBOARDING) {
       context.setRoute(ROUTES.CONNECTORS);
     } else if (context.route === ROUTES.WAITING_DEPOSIT_ADDRESS) {
-      setSelectedDepositAddressOption(undefined);
-      context.setRoute(ROUTES.SELECT_DEPOSIT_ADDRESS_CHAIN);
+      if (isDepositFlow) {
+        assert(payParams != null, "payParams cannot be null in deposit flow");
+        generatePreviewOrder(payParams);
+        context.setRoute(ROUTES.SELECT_DEPOSIT_ADDRESS_AMOUNT);
+      } else {
+        setSelectedDepositAddressOption(undefined);
+        context.setRoute(ROUTES.SELECT_DEPOSIT_ADDRESS_CHAIN);
+      }
     } else if (context.route === ROUTES.SOLANA_PAY_WITH_TOKEN) {
       setSelectedSolanaTokenOption(undefined);
       context.setRoute(ROUTES.SOLANA_SELECT_TOKEN);

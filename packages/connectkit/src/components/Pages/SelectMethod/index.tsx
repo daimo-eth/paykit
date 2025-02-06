@@ -56,12 +56,10 @@ function getDepositAddressOption(depositAddressOptions: {
   options: DepositAddressPaymentOptionMetadata[];
 }) {
   const { setRoute, paymentState } = usePayContext();
-  const isDeposit =
-    paymentState.daimoPayOrder?.mode === DaimoPayOrderMode.CHOOSE_AMOUNT;
 
   // TODO: API should serve the subtitle and disabled
   const disabled =
-    !isDeposit &&
+    !paymentState.isDepositFlow &&
     !depositAddressOptions.loading &&
     depositAddressOptions.options.length === 0;
   const subtitle = disabled ? "Minimum $20.00" : "Bitcoin, Tron, Zcash...";
@@ -93,9 +91,6 @@ const SelectMethod: React.FC = () => {
   } = paymentState;
   const displayName =
     senderEnsName ?? (address ? getAddressContraction(address) : "wallet");
-
-  const isDeposit =
-    paymentState.daimoPayOrder?.mode === DaimoPayOrderMode.CHOOSE_AMOUNT;
 
   const connectedWalletOption = isConnected
     ? {
@@ -140,7 +135,7 @@ const SelectMethod: React.FC = () => {
       icons: [option.logoURI],
       onClick: () => {
         setSelectedExternalOption(option);
-        if (isDeposit) {
+        if (paymentState.isDepositFlow) {
           setRoute(ROUTES.SELECT_EXTERNAL_AMOUNT);
         } else {
           setRoute(ROUTES.WAITING_OTHER);

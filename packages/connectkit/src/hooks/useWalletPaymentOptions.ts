@@ -11,7 +11,7 @@ export function useWalletPaymentOptions({
   destChainId,
   preferredChains,
   preferredTokens,
-  isDeposit,
+  isDepositFlow,
   log,
 }: {
   trpc: TrpcClient;
@@ -20,7 +20,7 @@ export function useWalletPaymentOptions({
   destChainId: number | undefined;
   preferredChains: number[] | undefined;
   preferredTokens: { chain: number; address: string }[] | undefined;
-  isDeposit: boolean;
+  isDepositFlow: boolean;
   log: (msg: string) => void;
 }) {
   const [options, setOptions] = useState<WalletPaymentOption[] | null>(null);
@@ -60,7 +60,7 @@ export function useWalletPaymentOptions({
     };
 
     // No need to get options for deposit. Balances are fetched separately.
-    if (isDeposit) return;
+    if (isDepositFlow) return;
     if (address && usdRequired != null && destChainId) {
       refreshWalletPaymentOptions();
     }

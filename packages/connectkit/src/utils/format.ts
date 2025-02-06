@@ -56,7 +56,7 @@ export function formatUsd(
  * @param round - The rounding strategy to use ("up", "down", or "nearest")
  * @returns The token amount
  */
-export function usdToTokenAmount(
+export function usdToFormattedTokenAmount(
   usd: number,
   token: DaimoPayToken,
   round: "up" | "down" | "nearest" = "nearest",
@@ -72,7 +72,7 @@ export function usdToTokenAmount(
  * @param round - The rounding strategy to use ("up", "down", or "nearest")
  * @returns The formatted USD amount
  */
-export function tokenAmountToUsd(
+export function tokenAmountToFormattedUsd(
   amount: bigint,
   token: DaimoPayToken,
   round: "up" | "down" | "nearest" = "nearest",

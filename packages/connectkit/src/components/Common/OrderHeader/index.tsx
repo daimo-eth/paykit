@@ -10,6 +10,7 @@ import {
 import { USDC } from "../../../assets/coins";
 import defaultTheme from "../../../constants/defaultTheme";
 import styled from "../../../styles/styled";
+import { formatUsd } from "../../../utils/format";
 import { ROUTES, usePayContext } from "../../DaimoPay";
 import { ModalH1 } from "../Modal/styles";
 
@@ -17,26 +18,14 @@ import { ModalH1 } from "../Modal/styles";
 export const OrderHeader = ({ minified = false }: { minified?: boolean }) => {
   const { paymentState, route } = usePayContext();
 
-  const amountUsd = paymentState.daimoPayOrder?.destFinalCallTokenAmount.usd;
-  const isDeposit = paymentState.payParams?.isAmountEditable;
+  const orderUsd = paymentState.daimoPayOrder?.destFinalCallTokenAmount.usd;
 
   const titleAmountContent = (() => {
-    if (isDeposit && route === ROUTES.SELECT_TOKEN) {
+    if (paymentState.isDepositFlow && route === ROUTES.SELECT_TOKEN) {
       return <ModalH1>Your balances</ModalH1>;
     }
 
-    return (
-      <>
-        {amountUsd != null && (
-          <span>
-            {new Intl.NumberFormat("en-US", {
-              style: "currency",
-              currency: "USD",
-            }).format(amountUsd)}
-          </span>
-        )}
-      </>
-    );
+    return <>{orderUsd != null && <span>{formatUsd(orderUsd)}</span>}</>;
   })();
 
   if (minified) {
@@ -49,7 +38,9 @@ export const OrderHeader = ({ minified = false }: { minified?: boolean }) => {
   } else {
     return (
       <>
-        {!isDeposit && <TitleAmount>{titleAmountContent}</TitleAmount>}
+        {!paymentState.isDepositFlow && (
+          <TitleAmount>{titleAmountContent}</TitleAmount>
+        )}
 
         <AnyChainAnyCoinContainer>
           <CoinLogos />

@@ -16,9 +16,9 @@ import styled from "../../../styles/styled";
 import {
   formatUsd,
   roundDecimals,
-  tokenAmountToUsd,
+  tokenAmountToFormattedUsd,
   USD_DECIMALS,
-  usdToTokenAmount,
+  usdToFormattedTokenAmount,
 } from "../../../utils/format";
 import Button from "../../Common/Button";
 import SwitchIcon from "../../Common/Switch";
@@ -38,7 +38,7 @@ const SelectAmount: React.FC = () => {
 
   const [editableAmount, setEditableAmount] = useState("");
   const [secondaryAmount, setSecondaryAmount] = useState(
-    usdToTokenAmount(0, token),
+    usdToFormattedTokenAmount(0, token),
   );
   const [isEditingUsd, setIsEditingUsd] = useState(true);
   const [message, setMessage] = useState<string | null>(minimumMessage);
@@ -77,9 +77,12 @@ const SelectAmount: React.FC = () => {
     const MAX_USD_VALUE = 20000;
     const usdValue = isEditingUsd
       ? sanitizedValue
-      : tokenAmountToUsd(parseUnits(sanitizedValue, token.decimals), token);
+      : tokenAmountToFormattedUsd(
+          parseUnits(sanitizedValue, token.decimals),
+          token,
+        );
     const tokenValue = isEditingUsd
-      ? usdToTokenAmount(Number(sanitizedValue), token)
+      ? usdToFormattedTokenAmount(Number(sanitizedValue), token)
       : sanitizedValue;
     if (Number(usdValue) > MAX_USD_VALUE) {
       return;
@@ -91,9 +94,9 @@ const SelectAmount: React.FC = () => {
 
     setContinueDisabled(
       value === "" ||
-        Number(value) <= 0 ||
-        Number(value) < selectedTokenBalance.minimumRequired.usd ||
-        Number(value) > selectedTokenBalance.balance.usd,
+        Number(usdValue) <= 0 ||
+        Number(usdValue) < selectedTokenBalance.minimumRequired.usd ||
+        Number(usdValue) > selectedTokenBalance.balance.usd,
     );
 
     if (Number(usdValue) > selectedTokenBalance.balance.usd) {
@@ -107,22 +110,39 @@ const SelectAmount: React.FC = () => {
   };
 
   const handleMax = () => {
+    let usdValue: string;
+
     // Round down so the amount won't exceed the balance
     if (isEditingUsd) {
-      setEditableAmount(
-        roundDecimals(selectedTokenBalance.balance.usd, USD_DECIMALS, "down"),
+      usdValue = roundDecimals(
+        selectedTokenBalance.balance.usd,
+        USD_DECIMALS,
+        "down",
       );
+      setEditableAmount(usdValue);
       setSecondaryAmount(
-        usdToTokenAmount(selectedTokenBalance.balance.usd, token),
+        usdToFormattedTokenAmount(
+          selectedTokenBalance.balance.usd,
+          token,
+          "down",
+        ),
       );
+      setContinueDisabled(false);
     } else {
       const amount = BigInt(selectedTokenBalance.balance.amount);
       const amountUnits = formatUnits(amount, token.decimals);
+      usdValue = tokenAmountToFormattedUsd(amount, token, "down");
       setEditableAmount(
         roundDecimals(Number(amountUnits), token.displayDecimals, "down"),
       );
-      setSecondaryAmount(tokenAmountToUsd(amount, token));
+      setSecondaryAmount(usdValue);
     }
+
+    setContinueDisabled(
+      Number(usdValue) <= 0 ||
+        Number(usdValue) < selectedTokenBalance.minimumRequired.usd ||
+        Number(usdValue) > selectedTokenBalance.balance.usd,
+    );
   };
 
   const handleSwitchCurrency = () => {
@@ -135,9 +155,12 @@ const SelectAmount: React.FC = () => {
   const handleContinue = () => {
     const usd = isEditingUsd
       ? editableAmount
-      : tokenAmountToUsd(parseUnits(editableAmount, token.decimals), token);
+      : tokenAmountToFormattedUsd(
+          parseUnits(editableAmount, token.decimals),
+          token,
+        );
     const amountUnits = isEditingUsd
-      ? usdToTokenAmount(Number(editableAmount), token)
+      ? usdToFormattedTokenAmount(Number(editableAmount), token)
       : editableAmount;
     const amount = parseUnits(amountUnits, token.decimals);
     setSelectedTokenOption({
@@ -151,7 +174,7 @@ const SelectAmount: React.FC = () => {
       },
       ...selectedTokenBalance!,
     });
-    paymentState.setChosenUsd(Number(editableAmount));
+    paymentState.setChosenUsd(Number(usd));
     setRoute(ROUTES.PAY_WITH_TOKEN);
   };
 

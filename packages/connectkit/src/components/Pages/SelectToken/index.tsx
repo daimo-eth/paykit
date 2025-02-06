@@ -48,17 +48,17 @@ const ChainContainer = styled(motion.div)`
 const SelectToken: React.FC = () => {
   const { setRoute, paymentState } = usePayContext();
   const {
+    isDepositFlow,
     setSelectedTokenOption,
     setSelectedTokenBalance,
     walletPaymentOptions,
     walletBalances,
   } = paymentState;
-  const isDeposit = paymentState.payParams?.isAmountEditable;
 
-  const isLoading = isDeposit
+  const isLoading = isDepositFlow
     ? walletBalances.isLoading
     : walletPaymentOptions.isLoading;
-  const optionsList = isDeposit
+  const optionsList = isDepositFlow
     ? (walletBalances.balances?.map((balance) => {
         const capitalizedChainName = capitalize(
           getChainName(balance.balance.token.chainId),
@@ -102,7 +102,7 @@ const SelectToken: React.FC = () => {
           ],
           onClick: () => {
             setSelectedTokenOption(option);
-            setRoute(ROUTES.SELECT_AMOUNT);
+            setRoute(ROUTES.PAY_WITH_TOKEN);
           },
         };
       }) ?? []);
