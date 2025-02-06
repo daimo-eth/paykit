@@ -78,7 +78,9 @@ const SelectDepositAddressAmount: React.FC = () => {
         </AnimationContainer>
       </LoadingContainer>
       <ModalContent>
-        <AmountInput value={usdInput} onChange={handleAmountChange} />
+        <AmountInputContainer>
+          <AmountInput value={usdInput} onChange={handleAmountChange} />
+        </AmountInputContainer>
         {message && <ModalBody>{message}</ModalBody>}
         <Button onClick={handleContinue} disabled={continueDisabled}>
           Continue
@@ -116,6 +118,12 @@ const AnimationContainer = styled(motion.div)<{
         box-shadow: inset 0 0 0 3.5px var(--ck-body-color-danger);
       `}
   }
+`;
+
+const AmountInputContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 export default SelectDepositAddressAmount;

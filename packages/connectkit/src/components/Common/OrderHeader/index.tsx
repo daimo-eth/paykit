@@ -21,27 +21,35 @@ export const OrderHeader = ({ minified = false }: { minified?: boolean }) => {
   const orderUsd = paymentState.daimoPayOrder?.destFinalCallTokenAmount.usd;
 
   const titleAmountContent = (() => {
-    if (paymentState.isDepositFlow && route === ROUTES.SELECT_TOKEN) {
-      return <ModalH1>Your balances</ModalH1>;
+    if (paymentState.isDepositFlow) {
+      return route === ROUTES.SELECT_TOKEN ? (
+        <ModalH1>Your balances</ModalH1>
+      ) : null;
+    } else {
+      return orderUsd != null ? <span>{formatUsd(orderUsd)}</span> : null;
     }
-
-    return <>{orderUsd != null && <span>{formatUsd(orderUsd)}</span>}</>;
   })();
 
   if (minified) {
-    return (
-      <MinifiedContainer>
-        <MinifiedTitleAmount>{titleAmountContent}</MinifiedTitleAmount>
-        <CoinLogos $size={32} />
-      </MinifiedContainer>
-    );
+    if (titleAmountContent != null) {
+      return (
+        <MinifiedContainer>
+          <MinifiedTitleAmount>{titleAmountContent}</MinifiedTitleAmount>
+          <CoinLogos $size={32} />
+        </MinifiedContainer>
+      );
+    } else {
+      return (
+        <MinifiedContainer>
+          <CoinLogos />
+          <Subtitle>1000+ tokens accepted</Subtitle>
+        </MinifiedContainer>
+      );
+    }
   } else {
     return (
       <>
-        {!paymentState.isDepositFlow && (
-          <TitleAmount>{titleAmountContent}</TitleAmount>
-        )}
-
+        <TitleAmount>{titleAmountContent}</TitleAmount>
         <AnyChainAnyCoinContainer>
           <CoinLogos />
           <Subtitle>1000+ tokens accepted</Subtitle>

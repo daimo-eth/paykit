@@ -155,6 +155,10 @@ export const DaimoPayModal: React.FC<{
   };
 
   function hide() {
+    if (isDepositFlow) {
+      assert(payParams != null, "payParams cannot be null in deposit flow");
+      generatePreviewOrder(payParams);
+    }
     context.setOpen(false);
   }
 

@@ -183,24 +183,17 @@ const SelectAmount: React.FC = () => {
   };
 
   const handleContinue = () => {
-    const usd = isEditingUsd
-      ? editableValue
-      : tokenAmountToFormattedUsd(
-          parseUnits(editableValue, balanceToken.decimals),
-          balanceToken,
-        );
-    const amountUnits = isEditingUsd
-      ? usdToFormattedTokenAmount(Number(editableValue), balanceToken)
-      : editableValue;
-    const amount = parseUnits(amountUnits, balanceToken.decimals);
+    const usd = Number(isEditingUsd ? editableValue : secondaryValue);
+    const amountUnits = usd / balanceToken.usd;
+    const amount = parseUnits(amountUnits.toString(), balanceToken.decimals);
     setSelectedTokenOption({
       required: {
         token: assertNotNull(
-          selectedTokenBalance?.balance.token,
-          `Token is null for ${selectedTokenBalance?.balance.token.token} on chain ${selectedTokenBalance?.balance.token.chainId}`,
+          balanceToken,
+          `Token is null for ${balanceToken.token} on chain ${balanceToken.chainId}`,
         ),
         amount: `${BigInt(amount)}`,
-        usd: Number(usd),
+        usd,
       },
       ...selectedTokenBalance!,
     });
@@ -214,16 +207,15 @@ const SelectAmount: React.FC = () => {
         <AnimationContainer $circle={true}>
           <AnimatePresence>
             <ChainLogoContainer key="ChainLogoContainer">
-              {selectedTokenBalance &&
-                chainToLogo[selectedTokenBalance.balance.token.chainId]}
+              {chainToLogo[balanceToken.chainId]}
             </ChainLogoContainer>
             <CircleSpinner
               key="CircleSpinner"
               logo={
                 <img
-                  src={selectedTokenBalance?.balance.token.logoURI}
-                  alt={selectedTokenBalance?.balance.token.symbol}
-                  key={selectedTokenBalance?.balance.token.logoURI}
+                  src={balanceToken.logoURI}
+                  alt={balanceToken.symbol}
+                  key={balanceToken.logoURI}
                 />
               }
               loading={true}
@@ -233,7 +225,7 @@ const SelectAmount: React.FC = () => {
         </AnimationContainer>
       </LoadingContainer>
       <ModalContent>
-        <PrimaryAmountContainer>
+        <AmountInputContainer>
           {/* Invisible div to balance spacing */}
           <MaxButton style={{ visibility: "hidden" }}>Max</MaxButton>
           <AmountInput
@@ -242,7 +234,7 @@ const SelectAmount: React.FC = () => {
             currency={isEditingUsd ? "$" : balanceToken.symbol}
           />
           <MaxButton onClick={handleMax}>Max</MaxButton>
-        </PrimaryAmountContainer>
+        </AmountInputContainer>
 
         {!isUsdStablecoin && (
           <SwitchContainer>
@@ -330,7 +322,7 @@ const ChainLogoContainer = styled(motion.div)`
   }
 `;
 
-const PrimaryAmountContainer = styled.div`
+const AmountInputContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
