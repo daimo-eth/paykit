@@ -22,7 +22,8 @@ export const OrderHeader = ({ minified = false }: { minified?: boolean }) => {
 
   const titleAmountContent = (() => {
     if (paymentState.isDepositFlow) {
-      return route === ROUTES.SELECT_TOKEN ? (
+      return route === ROUTES.SELECT_TOKEN ||
+        route === ROUTES.SOLANA_SELECT_TOKEN ? (
         <ModalH1>Your balances</ModalH1>
       ) : null;
     } else {

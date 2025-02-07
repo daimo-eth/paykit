@@ -4,7 +4,6 @@ import { ROUTES, usePayContext } from "../../DaimoPay";
 import { PageContent } from "../../Common/Modal/styles";
 
 import {
-  DaimoPayOrderMode,
   DepositAddressPaymentOptionMetadata,
   getAddressContraction,
 } from "@daimo/common";

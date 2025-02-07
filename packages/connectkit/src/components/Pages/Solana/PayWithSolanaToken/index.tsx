@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { ROUTES, usePayContext } from "../../../DaimoPay";
 
-import { WalletSignTransactionError } from "@solana/wallet-adapter-base";
+import {
+  WalletSendTransactionError,
+  WalletSignTransactionError,
+} from "@solana/wallet-adapter-base";
 import {
   ModalContent,
   ModalH1,
@@ -13,6 +16,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { css } from "styled-components";
 import styled from "../../../../styles/styled";
 import Button from "../../../Common/Button";
+import PaymentBreakdown from "../../../Common/PaymentBreakdown";
 import CircleSpinner from "../../../Spinners/CircleSpinner";
 
 enum PayState {
@@ -24,7 +28,12 @@ enum PayState {
 
 const PayWithSolanaToken: React.FC = () => {
   const { triggerResize, paymentState, setRoute } = usePayContext();
-  const { selectedSolanaTokenOption, payWithSolanaToken } = paymentState;
+  const {
+    payParams,
+    generatePreviewOrder,
+    selectedSolanaTokenOption,
+    payWithSolanaToken,
+  } = paymentState;
   const [payState, setPayState] = useState<PayState>(
     PayState.RequestingPayment,
   );
@@ -41,7 +50,10 @@ const PayWithSolanaToken: React.FC = () => {
       }, 200);
     } catch (error) {
       console.error(error);
-      if (error instanceof WalletSignTransactionError) {
+      if (
+        error instanceof WalletSignTransactionError ||
+        error instanceof WalletSendTransactionError
+      ) {
         setPayState(PayState.RequestCancelled);
       } else {
         setPayState(PayState.RequestFailed);
@@ -84,11 +96,23 @@ const PayWithSolanaToken: React.FC = () => {
       </LoadingContainer>
       <ModalContent style={{ paddingBottom: 0 }}>
         <ModalH1>{payState}</ModalH1>
+        {selectedSolanaTokenOption && (
+          <PaymentBreakdown paymentOption={selectedSolanaTokenOption} />
+        )}
         {payState === PayState.RequestCancelled && (
           <Button onClick={handleTransfer}>Retry Payment</Button>
         )}
         {payState === PayState.RequestFailed && (
-          <Button onClick={() => setRoute(ROUTES.SELECT_METHOD)}>
+          <Button
+            onClick={() => {
+              assert(
+                payParams != null,
+                "payParams cannot be null in deposit flow",
+              );
+              generatePreviewOrder(payParams);
+              setRoute(ROUTES.SELECT_METHOD);
+            }}
+          >
             Select Another Method
           </Button>
         )}

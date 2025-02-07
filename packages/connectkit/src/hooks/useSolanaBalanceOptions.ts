@@ -1,32 +1,29 @@
-import { WalletPaymentOption } from "@daimo/common";
+import { WalletBalanceOption } from "@daimo/common";
 import { useEffect, useState } from "react";
 import { TrpcClient } from "../utils/trpc";
 
-/** Wallet payment options. User picks one. */
-export function useSolanaPaymentOptions({
+/** Wallet balance options for deposit flow. User picks one. */
+export function useSolanaBalanceOptions({
   trpc,
   address,
-  usdRequired,
   isDepositFlow,
 }: {
   trpc: TrpcClient;
   address: string | undefined;
-  usdRequired: number | undefined;
   isDepositFlow: boolean;
 }) {
-  const [options, setOptions] = useState<WalletPaymentOption[] | null>(null);
+  const [options, setOptions] = useState<WalletBalanceOption[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const refreshWalletPaymentOptions = async () => {
-      if (!address || !usdRequired) return;
+      if (!address) return;
 
       setOptions(null);
       setIsLoading(true);
       try {
-        const newOptions = await trpc.getSolanaPaymentOptions.query({
+        const newOptions = await trpc.getSolanaBalanceOptions.query({
           pubKey: address,
-          usdRequired,
         });
         setOptions(newOptions);
       } catch (error) {
@@ -36,12 +33,12 @@ export function useSolanaPaymentOptions({
       }
     };
 
-    // No need to get options for deposit. Balances are fetched separately.
-    if (isDepositFlow) return;
-    if (address && usdRequired != null) {
+    // No need to get balances for non-deposit flows. Payment options are fetched separately.
+    if (!isDepositFlow) return;
+    if (address != null) {
       refreshWalletPaymentOptions();
     }
-  }, [address, usdRequired, isDepositFlow]);
+  }, [address, isDepositFlow]);
 
   return {
     options,

@@ -7,63 +7,100 @@ import {
   PageContent,
 } from "../../../Common/Modal/styles";
 
-import { getDisplayPrice } from "@daimo/common";
+import { DaimoPayToken, getDisplayPrice } from "@daimo/common";
+import { formatUsd } from "../../../../utils/format";
 import Button from "../../../Common/Button";
 import OptionsList from "../../../Common/OptionsList";
 import { OrderHeader } from "../../../Common/OrderHeader";
 
+function getDaimoSolanaTokenKey(token: DaimoPayToken) {
+  return `${token.chainId}-${token.token}`;
+}
+
 const SelectSolanaToken: React.FC = () => {
   const { paymentState, setRoute } = usePayContext();
-  const { solanaPaymentOptions, setSelectedSolanaTokenOption } = paymentState;
+  const {
+    isDepositFlow,
+    solanaPaymentOptions,
+    solanaBalanceOptions,
+    setSelectedSolanaTokenOption,
+    setSelectedSolanaTokenBalance,
+  } = paymentState;
+
+  const isLoading = isDepositFlow
+    ? solanaBalanceOptions.isLoading
+    : solanaPaymentOptions.isLoading;
+
+  const optionsList = isDepositFlow
+    ? (solanaBalanceOptions.options?.map((option) => {
+        const balanceUsd = formatUsd(option.balance.usd, "down");
+        const title = `${balanceUsd} ${option.balance.token.symbol} on Solana`;
+        const subtitle = `${getDisplayPrice(option.balance)} ${option.balance.token.symbol}`;
+
+        return {
+          id: getDaimoSolanaTokenKey(option.balance.token),
+          title,
+          subtitle,
+          icons: [
+            <img
+              src={option.balance.token.logoURI}
+              alt={option.balance.token.symbol}
+              style={{ borderRadius: 9999 }}
+            />,
+          ],
+          onClick: () => {
+            setSelectedSolanaTokenBalance(option);
+            setRoute(ROUTES.SOLANA_SELECT_AMOUNT);
+          },
+        };
+      }) ?? [])
+    : (solanaPaymentOptions.options?.map((option) => {
+        const title = `${getDisplayPrice(option.required)} ${option.required.token.symbol} on Solana`;
+        const subtitle = `Balance: ${getDisplayPrice(option.balance)} ${option.balance.token.symbol}`;
+
+        return {
+          id: getDaimoSolanaTokenKey(option.required.token),
+          title,
+          subtitle,
+          icons: [
+            <img
+              src={option.required.token.logoURI}
+              alt={option.required.token.symbol}
+              style={{ borderRadius: 9999 }}
+            />,
+          ],
+          onClick: () => {
+            setSelectedSolanaTokenOption(option);
+            setRoute(ROUTES.SOLANA_PAY_WITH_TOKEN);
+          },
+        };
+      }) ?? []);
 
   return (
     <PageContent>
       <OrderHeader minified />
 
-      {!solanaPaymentOptions.isLoading &&
-        solanaPaymentOptions.options?.length === 0 && (
-          <ModalContent
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              paddingTop: 16,
-              paddingBottom: 16,
-            }}
-          >
-            <ModalH1>Insufficient balance.</ModalH1>
-            <Button onClick={() => setRoute(ROUTES.SELECT_METHOD)}>
-              Select Another Method
-            </Button>
-          </ModalContent>
-        )}
+      {!isLoading && optionsList.length === 0 && (
+        <ModalContent
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            paddingTop: 16,
+            paddingBottom: 16,
+          }}
+        >
+          <ModalH1>Insufficient balance.</ModalH1>
+          <Button onClick={() => setRoute(ROUTES.SELECT_METHOD)}>
+            Select Another Method
+          </Button>
+        </ModalContent>
+      )}
 
       <OptionsList
         requiredSkeletons={4}
-        isLoading={solanaPaymentOptions.isLoading}
-        options={
-          solanaPaymentOptions.options?.map((option) => {
-            const title = `${getDisplayPrice(option.required)} ${option.required.token.symbol}`;
-            const subtitle = `Balance: ${getDisplayPrice(option.balance)} ${option.balance.token.symbol}`;
-
-            return {
-              id: `${option.required.token.token}-${option.required.token.symbol}`,
-              title,
-              subtitle,
-              icons: [
-                <img
-                  src={option.required.token.logoURI}
-                  alt={option.required.token.symbol}
-                  style={{ borderRadius: 9999 }}
-                />,
-              ],
-              onClick: () => {
-                setSelectedSolanaTokenOption(option);
-                setRoute(ROUTES.SOLANA_PAY_WITH_TOKEN);
-              },
-            };
-          }) ?? []
-        }
+        isLoading={isLoading}
+        options={optionsList}
       />
     </PageContent>
   );

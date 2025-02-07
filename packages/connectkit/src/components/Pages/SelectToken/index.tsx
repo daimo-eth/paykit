@@ -49,36 +49,37 @@ const SelectToken: React.FC = () => {
   const { setRoute, paymentState } = usePayContext();
   const {
     isDepositFlow,
+    walletPaymentOptions,
+    walletBalanceOptions,
     setSelectedTokenOption,
     setSelectedTokenBalance,
-    walletPaymentOptions,
-    walletBalances,
   } = paymentState;
 
   const isLoading = isDepositFlow
-    ? walletBalances.isLoading
+    ? walletBalanceOptions.isLoading
     : walletPaymentOptions.isLoading;
+
   const optionsList = isDepositFlow
-    ? (walletBalances.balances?.map((balance) => {
+    ? (walletBalanceOptions.options?.map((option) => {
         const capitalizedChainName = capitalize(
-          getChainName(balance.balance.token.chainId),
+          getChainName(option.balance.token.chainId),
         );
-        const balanceUsd = formatUsd(balance.balance.usd, "down");
-        const title = `${balanceUsd} ${balance.balance.token.symbol} on ${capitalizedChainName}`;
-        const subtitle = `${getDisplayPrice(balance.balance)} ${balance.balance.token.symbol}`;
+        const balanceUsd = formatUsd(option.balance.usd, "down");
+        const title = `${balanceUsd} ${option.balance.token.symbol} on ${capitalizedChainName}`;
+        const subtitle = `${getDisplayPrice(option.balance)} ${option.balance.token.symbol}`;
 
         return {
-          id: getDaimoTokenKey(balance.balance.token),
+          id: getDaimoTokenKey(option.balance.token),
           title,
           subtitle,
           icons: [
             <TokenChainLogo
-              key={getDaimoTokenKey(balance.balance.token)}
-              token={balance.balance.token}
+              key={getDaimoTokenKey(option.balance.token)}
+              token={option.balance.token}
             />,
           ],
           onClick: () => {
-            setSelectedTokenBalance(balance);
+            setSelectedTokenBalance(option);
             setRoute(ROUTES.SELECT_AMOUNT);
           },
         };

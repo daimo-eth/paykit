@@ -11,7 +11,7 @@ import {
   PlatformType,
   readDaimoPayOrderID,
   SolanaPublicKey,
-  WalletBalance,
+  WalletBalanceOption,
   WalletPaymentOption,
 } from "@daimo/common";
 import { ethereum } from "@daimo/contract";
@@ -28,11 +28,9 @@ import { useDepositAddressOptions } from "./useDepositAddressOptions";
 import { useExternalPaymentOptions } from "./useExternalPaymentOptions";
 import { usePayWithSolanaToken } from "./usePayWithSolanaToken";
 import { usePayWithToken } from "./usePayWithToken";
-import {
-  SolanaPaymentOption,
-  useSolanaPaymentOptions,
-} from "./useSolanaPaymentOptions";
-import { useWalletBalances } from "./useWalletBalances";
+import { useSolanaBalanceOptions } from "./useSolanaBalanceOptions";
+import { useSolanaPaymentOptions } from "./useSolanaPaymentOptions";
+import { useWalletBalanceOptions } from "./useWalletBalanceOptions";
 import { useWalletPaymentOptions } from "./useWalletPaymentOptions";
 
 /** Wallet payment details, sent to processSourcePayment after submitting tx. */
@@ -80,22 +78,27 @@ export interface PaymentState {
   paymentWaitingMessage: string | undefined;
   externalPaymentOptions: ReturnType<typeof useExternalPaymentOptions>;
   walletPaymentOptions: ReturnType<typeof useWalletPaymentOptions>;
-  walletBalances: ReturnType<typeof useWalletBalances>;
+  walletBalanceOptions: ReturnType<typeof useWalletBalanceOptions>;
   solanaPaymentOptions: ReturnType<typeof useSolanaPaymentOptions>;
+  solanaBalanceOptions: ReturnType<typeof useSolanaBalanceOptions>;
   depositAddressOptions: ReturnType<typeof useDepositAddressOptions>;
   selectedExternalOption: ExternalPaymentOptionMetadata | undefined;
   selectedTokenOption: WalletPaymentOption | undefined;
-  selectedTokenBalance: WalletBalance | undefined;
-  selectedSolanaTokenOption: SolanaPaymentOption | undefined;
+  selectedTokenBalance: WalletBalanceOption | undefined;
+  selectedSolanaTokenOption: WalletPaymentOption | undefined;
+  selectedSolanaTokenBalance: WalletBalanceOption | undefined;
   selectedDepositAddressOption: DepositAddressPaymentOptionMetadata | undefined;
   setPaymentWaitingMessage: (message: string | undefined) => void;
   setSelectedExternalOption: (
     option: ExternalPaymentOptionMetadata | undefined,
   ) => void;
   setSelectedTokenOption: (option: WalletPaymentOption | undefined) => void;
-  setSelectedTokenBalance: (option: WalletBalance | undefined) => void;
+  setSelectedTokenBalance: (option: WalletBalanceOption | undefined) => void;
   setSelectedSolanaTokenOption: (
-    option: SolanaPaymentOption | undefined,
+    option: WalletPaymentOption | undefined,
+  ) => void;
+  setSelectedSolanaTokenBalance: (
+    option: WalletBalanceOption | undefined,
   ) => void;
   setSelectedDepositAddressOption: (
     option: DepositAddressPaymentOptionMetadata | undefined,
@@ -170,7 +173,7 @@ export function usePaymentState({
     isDepositFlow,
     log,
   });
-  const walletBalances = useWalletBalances({
+  const walletBalanceOptions = useWalletBalanceOptions({
     trpc,
     address: senderAddr,
     destChainId: daimoPayOrder?.destFinalCallTokenAmount.token.chainId,
@@ -183,6 +186,12 @@ export function usePaymentState({
     trpc,
     address: solanaPubKey,
     usdRequired: daimoPayOrder?.destFinalCallTokenAmount.usd,
+    isDepositFlow,
+  });
+  const solanaBalanceOptions = useSolanaBalanceOptions({
+    trpc,
+    address: solanaPubKey,
+    isDepositFlow,
   });
   const depositAddressOptions = useDepositAddressOptions({
     trpc,
@@ -258,10 +267,12 @@ export function usePaymentState({
   const [selectedTokenOption, setSelectedTokenOption] =
     useState<WalletPaymentOption>();
   const [selectedTokenBalance, setSelectedTokenBalance] =
-    useState<WalletBalance>();
+    useState<WalletBalanceOption>();
 
   const [selectedSolanaTokenOption, setSelectedSolanaTokenOption] =
-    useState<SolanaPaymentOption>();
+    useState<WalletPaymentOption>();
+  const [selectedSolanaTokenBalance, setSelectedSolanaTokenBalance] =
+    useState<WalletBalanceOption>();
 
   const [selectedDepositAddressOption, setSelectedDepositAddressOption] =
     useState<DepositAddressPaymentOptionMetadata>();
@@ -425,10 +436,12 @@ export function usePaymentState({
     selectedTokenOption,
     selectedTokenBalance,
     selectedSolanaTokenOption,
+    selectedSolanaTokenBalance,
     externalPaymentOptions,
     walletPaymentOptions,
-    walletBalances,
+    walletBalanceOptions,
     solanaPaymentOptions,
+    solanaBalanceOptions,
     depositAddressOptions,
     selectedDepositAddressOption,
     setPaymentWaitingMessage,
@@ -436,6 +449,7 @@ export function usePaymentState({
     setSelectedTokenOption,
     setSelectedTokenBalance,
     setSelectedSolanaTokenOption,
+    setSelectedSolanaTokenBalance,
     setSelectedDepositAddressOption,
     setChosenUsd,
     payWithToken,

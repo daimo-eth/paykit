@@ -1,10 +1,10 @@
-import { WalletBalance } from "@daimo/common";
+import { WalletBalanceOption } from "@daimo/common";
 import { useEffect, useState } from "react";
 import { supportedChainIds } from "../utils/exports";
 import { TrpcClient } from "../utils/trpc";
 
-/** Wallet balances. Use picks one. */
-export function useWalletBalances({
+/** Wallet balance options for deposit flow. User picks one. */
+export function useWalletBalanceOptions({
   trpc,
   address,
   destChainId,
@@ -21,17 +21,17 @@ export function useWalletBalances({
   isDepositFlow: boolean;
   log: (msg: string) => void;
 }) {
-  const [balances, setBalances] = useState<WalletBalance[] | null>(null);
+  const [options, setOptions] = useState<WalletBalanceOption[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const refreshWalletBalances = async () => {
       if (!address || !destChainId) return;
 
-      setBalances(null);
+      setOptions(null);
       setIsLoading(true);
       try {
-        const newBalances = await trpc.getWalletBalances.query({
+        const newBalances = await trpc.getWalletBalanceOptions.query({
           payerAddress: address,
           destChainId,
           preferredChains,
@@ -39,7 +39,7 @@ export function useWalletBalances({
         });
 
         // Filter out chains we don't support yet.
-        const isSupported = (b: WalletBalance) =>
+        const isSupported = (b: WalletBalanceOption) =>
           supportedChainIds.has(b.balance.token.chainId);
         const filteredBalances = newBalances.filter(isSupported);
         if (filteredBalances.length < newBalances.length) {
@@ -48,7 +48,7 @@ export function useWalletBalances({
           );
         }
 
-        setBalances(filteredBalances);
+        setOptions(filteredBalances);
       } catch (error) {
         console.error(error);
       } finally {
@@ -61,10 +61,10 @@ export function useWalletBalances({
     if (address != null && destChainId) {
       refreshWalletBalances();
     }
-  }, [address, destChainId]);
+  }, [address, destChainId, isDepositFlow]);
 
   return {
-    balances,
+    options,
     isLoading,
   };
 }

@@ -12,7 +12,7 @@ import { css } from "styled-components";
 import styled from "../../../styles/styled";
 import { formatUsd, USD_DECIMALS } from "../../../utils/format";
 import { isValidNumber } from "../../../utils/validateInput";
-import AmountInput from "../../Common/AmountInput";
+import AmountInputField from "../../Common/AmountInput/AmountInputField";
 import Button from "../../Common/Button";
 import CircleSpinner from "../../Spinners/CircleSpinner";
 import SquircleSpinner from "../../Spinners/SquircleSpinner";
@@ -92,7 +92,7 @@ const SelectExternalAmount: React.FC = () => {
       </LoadingContainer>
       <ModalContent>
         <AmountInputContainer>
-          <AmountInput value={usdInput} onChange={handleAmountChange} />
+          <AmountInputField value={usdInput} onChange={handleAmountChange} />
         </AmountInputContainer>
         {message && <ModalBody>{message}</ModalBody>}
         <Button onClick={handleContinue} disabled={continueDisabled}>

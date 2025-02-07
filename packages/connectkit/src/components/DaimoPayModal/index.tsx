@@ -27,6 +27,7 @@ import SelectToken from "../Pages/SelectToken";
 import ConnectorSolana from "../Pages/Solana/ConnectorSolana";
 import ConnectSolana from "../Pages/Solana/ConnectSolana";
 import PayWithSolanaToken from "../Pages/Solana/PayWithSolanaToken";
+import SelectSolanaAmount from "../Pages/Solana/SelectSolanaAmount";
 import SelectSolanaToken from "../Pages/Solana/SelectSolanaToken";
 import WaitingDepositAddress from "../Pages/WaitingDepositAddress";
 import WaitingOther from "../Pages/WaitingOther";
@@ -55,6 +56,7 @@ export const DaimoPayModal: React.FC<{
     setSelectedTokenOption,
     setSelectedTokenBalance,
     setSelectedSolanaTokenOption,
+    setSelectedSolanaTokenBalance,
     setSelectedDepositAddressOption,
   } = paymentState;
 
@@ -120,9 +122,19 @@ export const DaimoPayModal: React.FC<{
         setSelectedDepositAddressOption(undefined);
         context.setRoute(ROUTES.SELECT_DEPOSIT_ADDRESS_CHAIN);
       }
-    } else if (context.route === ROUTES.SOLANA_PAY_WITH_TOKEN) {
+    } else if (context.route === ROUTES.SOLANA_SELECT_AMOUNT) {
       setSelectedSolanaTokenOption(undefined);
+      setSelectedSolanaTokenBalance(undefined);
       context.setRoute(ROUTES.SOLANA_SELECT_TOKEN);
+    } else if (context.route === ROUTES.SOLANA_PAY_WITH_TOKEN) {
+      if (isDepositFlow) {
+        assert(payParams != null, "payParams cannot be null in deposit flow");
+        generatePreviewOrder(payParams);
+        context.setRoute(ROUTES.SOLANA_SELECT_AMOUNT);
+      } else {
+        setSelectedSolanaTokenOption(undefined);
+        context.setRoute(ROUTES.SOLANA_SELECT_TOKEN);
+      }
     } else {
       context.setRoute(ROUTES.SELECT_METHOD);
     }
@@ -142,6 +154,7 @@ export const DaimoPayModal: React.FC<{
     [ROUTES.SOLANA_CONNECT]: <ConnectSolana />,
     [ROUTES.SOLANA_CONNECTOR]: <ConnectorSolana />,
     [ROUTES.SOLANA_SELECT_TOKEN]: <SelectSolanaToken />,
+    [ROUTES.SOLANA_SELECT_AMOUNT]: <SelectSolanaAmount />,
     [ROUTES.SOLANA_PAY_WITH_TOKEN]: <PayWithSolanaToken />,
 
     // Unused routes. Kept to minimize connectkit merge conflicts.
