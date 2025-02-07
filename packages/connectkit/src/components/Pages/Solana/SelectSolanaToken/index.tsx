@@ -29,7 +29,11 @@ const SelectSolanaToken: React.FC = () => {
         ? formatUsd(option.balance.usd)
         : roundTokenAmount(option.required.amount, option.required.token);
       const title = `${titlePrice} ${option.balance.token.symbol} on Solana`;
-      const subtitle = `${isDepositFlow ? "" : "Balance: "}${roundTokenAmount(option.balance.amount, option.balance.token)} ${option.balance.token.symbol}`;
+      const balanceStr = `${roundTokenAmount(option.balance.amount, option.balance.token)} ${option.balance.token.symbol}`;
+      const subtitle =
+        option.disabledReason ??
+        `${isDepositFlow ? "" : "Balance: "}${balanceStr}`;
+      const disabled = option.disabledReason != null;
 
       return {
         id: getDaimoSolanaTokenKey(option.balance.token),
@@ -49,6 +53,7 @@ const SelectSolanaToken: React.FC = () => {
             setRoute(ROUTES.SOLANA_PAY_WITH_TOKEN);
           }
         },
+        disabled,
       };
     }) ?? [];
 

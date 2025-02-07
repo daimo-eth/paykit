@@ -29,7 +29,12 @@ const SelectToken: React.FC = () => {
         ? formatUsd(option.balance.usd)
         : roundTokenAmount(option.required.amount, option.required.token);
       const title = `${titlePrice} ${option.balance.token.symbol} on ${capitalizedChainName}`;
-      const subtitle = `${isDepositFlow ? "" : "Balance: "}${roundTokenAmount(option.balance.amount, option.balance.token)} ${option.balance.token.symbol}`;
+
+      const balanceStr = `${roundTokenAmount(option.balance.amount, option.balance.token)} ${option.balance.token.symbol}`;
+      const subtitle =
+        option.disabledReason ??
+        `${isDepositFlow ? "" : "Balance: "}${balanceStr}`;
+      const disabled = option.disabledReason != null;
 
       return {
         id: getDaimoTokenKey(option.balance.token),
@@ -49,6 +54,7 @@ const SelectToken: React.FC = () => {
             setRoute(ROUTES.PAY_WITH_TOKEN);
           }
         },
+        disabled,
       };
     }) ?? [];
 
