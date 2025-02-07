@@ -11,18 +11,16 @@ export default function DemoDeposit() {
     <Container>
       <Text>
         Onboard users to your app using the tokens they already own on other
-        chains. Set a default amount and enable <Code>amountEditable</Code> to
-        let users customize their deposit amount.
+        chains. Omit the <Code>toUnits</Code> parameter to let users customize
+        their deposit amount.
       </Text>
       <div />
       <DaimoPayButton
         appId={APP_ID}
         toChain={baseUSDC.chainId}
         toAddress={DAIMO_ADDRESS}
-        toUnits="10.00" /* $10.00 USDC */
         toToken={getAddress(baseUSDC.token)}
         intent="Deposit"
-        amountEditable
         preferredChains={[10]} /* Show assets on Optimism first. */
         onPaymentStarted={printEvent}
         onPaymentCompleted={printEvent}

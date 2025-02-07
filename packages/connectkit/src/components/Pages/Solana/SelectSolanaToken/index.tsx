@@ -7,63 +7,81 @@ import {
   PageContent,
 } from "../../../Common/Modal/styles";
 
-import { getDisplayPrice } from "@daimo/common";
+import { DaimoPayToken } from "@daimo/common";
+import { formatUsd, roundTokenAmount } from "../../../../utils/format";
 import Button from "../../../Common/Button";
 import OptionsList from "../../../Common/OptionsList";
 import { OrderHeader } from "../../../Common/OrderHeader";
+import TokenChainLogo from "../../../Common/TokenChainLogo";
+
+function getDaimoSolanaTokenKey(token: DaimoPayToken) {
+  return `${token.chainId}-${token.token}`;
+}
 
 const SelectSolanaToken: React.FC = () => {
   const { paymentState, setRoute } = usePayContext();
-  const { solanaPaymentOptions, setSelectedSolanaTokenOption } = paymentState;
+  const { isDepositFlow, solanaPaymentOptions, setSelectedSolanaTokenOption } =
+    paymentState;
+
+  const optionsList =
+    solanaPaymentOptions.options?.map((option) => {
+      const titlePrice = isDepositFlow
+        ? formatUsd(option.balance.usd)
+        : roundTokenAmount(option.required.amount, option.required.token);
+      const title = `${titlePrice} ${option.balance.token.symbol} on Solana`;
+      const balanceStr = `${roundTokenAmount(option.balance.amount, option.balance.token)} ${option.balance.token.symbol}`;
+      const subtitle =
+        option.disabledReason ??
+        `${isDepositFlow ? "" : "Balance: "}${balanceStr}`;
+      const disabled = option.disabledReason != null;
+
+      return {
+        id: getDaimoSolanaTokenKey(option.balance.token),
+        title,
+        subtitle,
+        icons: [
+          <TokenChainLogo
+            key={getDaimoSolanaTokenKey(option.balance.token)}
+            token={option.balance.token}
+          />,
+        ],
+        onClick: () => {
+          setSelectedSolanaTokenOption(option);
+          if (isDepositFlow) {
+            setRoute(ROUTES.SOLANA_SELECT_AMOUNT);
+          } else {
+            setRoute(ROUTES.SOLANA_PAY_WITH_TOKEN);
+          }
+        },
+        disabled,
+      };
+    }) ?? [];
 
   return (
     <PageContent>
       <OrderHeader minified />
 
-      {!solanaPaymentOptions.isLoading &&
-        solanaPaymentOptions.options?.length === 0 && (
-          <ModalContent
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              paddingTop: 16,
-              paddingBottom: 16,
-            }}
-          >
-            <ModalH1>Insufficient balance.</ModalH1>
-            <Button onClick={() => setRoute(ROUTES.SELECT_METHOD)}>
-              Select Another Method
-            </Button>
-          </ModalContent>
-        )}
+      {!solanaPaymentOptions.isLoading && optionsList.length === 0 && (
+        <ModalContent
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            paddingTop: 16,
+            paddingBottom: 16,
+          }}
+        >
+          <ModalH1>Insufficient balance.</ModalH1>
+          <Button onClick={() => setRoute(ROUTES.SELECT_METHOD)}>
+            Select Another Method
+          </Button>
+        </ModalContent>
+      )}
 
       <OptionsList
         requiredSkeletons={4}
         isLoading={solanaPaymentOptions.isLoading}
-        options={
-          solanaPaymentOptions.options?.map((option) => {
-            const title = `${getDisplayPrice(option.required)} ${option.required.token.symbol}`;
-            const subtitle = `Balance: ${getDisplayPrice(option.balance)} ${option.balance.token.symbol}`;
-
-            return {
-              id: `${option.required.token.token}-${option.required.token.symbol}`,
-              title,
-              subtitle,
-              icons: [
-                <img
-                  src={option.required.token.logoURI}
-                  alt={option.required.token.symbol}
-                  style={{ borderRadius: 9999 }}
-                />,
-              ],
-              onClick: () => {
-                setSelectedSolanaTokenOption(option);
-                setRoute(ROUTES.SOLANA_PAY_WITH_TOKEN);
-              },
-            };
-          }) ?? []
-        }
+        options={optionsList}
       />
     </PageContent>
   );

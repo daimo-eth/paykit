@@ -12,20 +12,25 @@ import Onboarding from "../Pages/Onboarding";
 import SwitchNetworks from "../Pages/SwitchNetworks";
 import ConnectUsing from "./ConnectUsing";
 
+import assert from "assert";
 import { getAppName } from "../../defaultConfig";
 import { useChainIsSupported } from "../../hooks/useChainIsSupported";
 import { DaimoPayThemeProvider } from "../DaimoPayThemeProvider/DaimoPayThemeProvider";
 import Confirmation from "../Pages/Confirmation";
 import PayWithToken from "../Pages/PayWithToken";
+import SelectAmount from "../Pages/SelectAmount";
+import SelectDepositAddressAmount from "../Pages/SelectDepositAddressAmount";
 import SelectDepositAddressChain from "../Pages/SelectDepositAddressChain";
+import SelectExternalAmount from "../Pages/SelectExternalAmount";
 import SelectMethod from "../Pages/SelectMethod";
 import SelectToken from "../Pages/SelectToken";
 import ConnectorSolana from "../Pages/Solana/ConnectorSolana";
 import ConnectSolana from "../Pages/Solana/ConnectSolana";
 import PayWithSolanaToken from "../Pages/Solana/PayWithSolanaToken";
+import SelectSolanaAmount from "../Pages/Solana/SelectSolanaAmount";
 import SelectSolanaToken from "../Pages/Solana/SelectSolanaToken";
 import WaitingDepositAddress from "../Pages/WaitingDepositAddress";
-import WaitingOther from "../Pages/WaitingOther";
+import WaitingExternal from "../Pages/WaitingExternal";
 
 const customThemeDefault: object = {};
 
@@ -41,12 +46,18 @@ export const DaimoPayModal: React.FC<{
   lang = "en-US",
 }) => {
   const context = usePayContext();
+  const paymentState = context.paymentState;
   const {
+    payParams,
+    generatePreviewOrder,
+    isDepositFlow,
+    setPaymentWaitingMessage,
     setSelectedExternalOption,
     setSelectedTokenOption,
-    setSelectedDepositAddressOption,
     setSelectedSolanaTokenOption,
-  } = context.paymentState;
+    setSelectedDepositAddressOption,
+  } = paymentState;
+
   const { isConnected, chain } = useAccount();
   const chainIsSupported = useChainIsSupported(chain?.id);
 
@@ -69,48 +80,94 @@ export const DaimoPayModal: React.FC<{
       context.setRoute(ROUTES.SELECT_METHOD);
     } else if (context.route === ROUTES.SELECT_TOKEN) {
       context.setRoute(ROUTES.SELECT_METHOD);
-    } else if (context.route === ROUTES.WAITING_OTHER) {
-      setSelectedExternalOption(undefined);
-      context.setRoute(ROUTES.SELECT_METHOD);
-    } else if (context.route === ROUTES.PAY_WITH_TOKEN) {
+    } else if (context.route === ROUTES.SELECT_AMOUNT) {
       setSelectedTokenOption(undefined);
       context.setRoute(ROUTES.SELECT_TOKEN);
+    } else if (context.route === ROUTES.SELECT_EXTERNAL_AMOUNT) {
+      setSelectedExternalOption(undefined);
+      context.setRoute(ROUTES.SELECT_METHOD);
+    } else if (context.route === ROUTES.SELECT_DEPOSIT_ADDRESS_AMOUNT) {
+      setSelectedDepositAddressOption(undefined);
+      context.setRoute(ROUTES.SELECT_DEPOSIT_ADDRESS_CHAIN);
+    } else if (context.route === ROUTES.WAITING_EXTERNAL) {
+      setPaymentWaitingMessage(undefined);
+      if (isDepositFlow) {
+        assert(payParams != null, "payParams cannot be null in deposit flow");
+        generatePreviewOrder(payParams);
+        context.setRoute(ROUTES.SELECT_EXTERNAL_AMOUNT);
+      } else {
+        setSelectedExternalOption(undefined);
+        context.setRoute(ROUTES.SELECT_METHOD);
+      }
+    } else if (context.route === ROUTES.PAY_WITH_TOKEN) {
+      if (isDepositFlow) {
+        assert(payParams != null, "payParams cannot be null in deposit flow");
+        generatePreviewOrder(payParams);
+        context.setRoute(ROUTES.SELECT_AMOUNT);
+      } else {
+        setSelectedTokenOption(undefined);
+        context.setRoute(ROUTES.SELECT_TOKEN);
+      }
     } else if (context.route === ROUTES.ONBOARDING) {
       context.setRoute(ROUTES.CONNECTORS);
     } else if (context.route === ROUTES.WAITING_DEPOSIT_ADDRESS) {
-      setSelectedDepositAddressOption(undefined);
-      context.setRoute(ROUTES.SELECT_DEPOSIT_ADDRESS_CHAIN);
-    } else if (context.route === ROUTES.SOLANA_PAY_WITH_TOKEN) {
+      if (isDepositFlow) {
+        assert(payParams != null, "payParams cannot be null in deposit flow");
+        generatePreviewOrder(payParams);
+        context.setRoute(ROUTES.SELECT_DEPOSIT_ADDRESS_AMOUNT);
+      } else {
+        setSelectedDepositAddressOption(undefined);
+        context.setRoute(ROUTES.SELECT_DEPOSIT_ADDRESS_CHAIN);
+      }
+    } else if (context.route === ROUTES.SOLANA_SELECT_AMOUNT) {
       setSelectedSolanaTokenOption(undefined);
       context.setRoute(ROUTES.SOLANA_SELECT_TOKEN);
+    } else if (context.route === ROUTES.SOLANA_PAY_WITH_TOKEN) {
+      if (isDepositFlow) {
+        assert(payParams != null, "payParams cannot be null in deposit flow");
+        generatePreviewOrder(payParams);
+        context.setRoute(ROUTES.SOLANA_SELECT_AMOUNT);
+      } else {
+        setSelectedSolanaTokenOption(undefined);
+        context.setRoute(ROUTES.SOLANA_SELECT_TOKEN);
+      }
     } else {
       context.setRoute(ROUTES.SELECT_METHOD);
     }
   };
 
   const pages: Record<ROUTES, React.ReactNode> = {
-    daimoPaySelectMethod: <SelectMethod />,
-    daimoPaySelectToken: <SelectToken />,
-    daimoPayWaitingOther: <WaitingOther />,
-    daimoPaySelectDepositAddressChain: <SelectDepositAddressChain />,
-    daimoPayWaitingDepositAddress: <WaitingDepositAddress />,
-    daimoPayConfirmation: <Confirmation />,
-    daimoPayPayWithToken: <PayWithToken />,
-    daimoPaySolanaConnect: <ConnectSolana />,
-    daimoPaySolanaConnector: <ConnectorSolana />,
-    daimoPaySolanaSelectToken: <SelectSolanaToken />,
-    daimoPaySolanaPayWithToken: <PayWithSolanaToken />,
+    [ROUTES.SELECT_METHOD]: <SelectMethod />,
+    [ROUTES.SELECT_TOKEN]: <SelectToken />,
+    [ROUTES.SELECT_AMOUNT]: <SelectAmount />,
+    [ROUTES.SELECT_EXTERNAL_AMOUNT]: <SelectExternalAmount />,
+    [ROUTES.SELECT_DEPOSIT_ADDRESS_AMOUNT]: <SelectDepositAddressAmount />,
+    [ROUTES.WAITING_EXTERNAL]: <WaitingExternal />,
+    [ROUTES.SELECT_DEPOSIT_ADDRESS_CHAIN]: <SelectDepositAddressChain />,
+    [ROUTES.WAITING_DEPOSIT_ADDRESS]: <WaitingDepositAddress />,
+    [ROUTES.CONFIRMATION]: <Confirmation />,
+    [ROUTES.PAY_WITH_TOKEN]: <PayWithToken />,
+    [ROUTES.SOLANA_CONNECT]: <ConnectSolana />,
+    [ROUTES.SOLANA_CONNECTOR]: <ConnectorSolana />,
+    [ROUTES.SOLANA_SELECT_TOKEN]: <SelectSolanaToken />,
+    [ROUTES.SOLANA_SELECT_AMOUNT]: <SelectSolanaAmount />,
+    [ROUTES.SOLANA_PAY_WITH_TOKEN]: <PayWithSolanaToken />,
 
-    onboarding: <Onboarding />,
-    about: <About />,
-    download: <DownloadApp />,
-    connectors: <Connectors />,
-    mobileConnectors: <MobileConnectors />,
-    connect: <ConnectUsing />,
-    switchNetworks: <SwitchNetworks />,
+    // Unused routes. Kept to minimize connectkit merge conflicts.
+    [ROUTES.ONBOARDING]: <Onboarding />,
+    [ROUTES.ABOUT]: <About />,
+    [ROUTES.DOWNLOAD]: <DownloadApp />,
+    [ROUTES.CONNECTORS]: <Connectors />,
+    [ROUTES.MOBILECONNECTORS]: <MobileConnectors />,
+    [ROUTES.CONNECT]: <ConnectUsing />,
+    [ROUTES.SWITCHNETWORKS]: <SwitchNetworks />,
   };
 
   function hide() {
+    if (isDepositFlow) {
+      assert(payParams != null, "payParams cannot be null in deposit flow");
+      generatePreviewOrder(payParams);
+    }
     context.setOpen(false);
   }
 

@@ -361,22 +361,27 @@ const Modal: React.FC<ModalProps> = ({
       case ROUTES.SOLANA_PAY_WITH_TOKEN:
         if (!selectedSolanaTokenOption) return undefined;
         return `Pay with ${selectedSolanaTokenOption.required.token.symbol}`;
-      case ROUTES.WAITING_OTHER:
+      case ROUTES.WAITING_EXTERNAL:
         return selectedExternalOption?.cta;
       case ROUTES.SELECT_DEPOSIT_ADDRESS_CHAIN:
         return "Select Chain";
       case ROUTES.WAITING_DEPOSIT_ADDRESS:
         if (!selectedDepositAddressOption) return undefined;
         return `Pay with ${selectedDepositAddressOption.id}`;
+      case ROUTES.SELECT_AMOUNT:
+      case ROUTES.SELECT_EXTERNAL_AMOUNT:
+      case ROUTES.SELECT_DEPOSIT_ADDRESS_AMOUNT:
+      case ROUTES.SOLANA_SELECT_AMOUNT:
+        return "Select Amount";
       case ROUTES.PAY_WITH_TOKEN:
-        if (!selectedTokenOption) return undefined;
+        if (selectedTokenOption == null) return undefined;
 
         const chainName = getChainName(
-          selectedTokenOption.required.token.chainId ?? 0,
+          selectedTokenOption.balance.token.chainId,
         );
         const capitalizedChainName =
           chainName.charAt(0).toUpperCase() + chainName.slice(1);
-        return `Pay with ${capitalizedChainName} ${selectedTokenOption.required.token.symbol}`;
+        return `Pay with ${capitalizedChainName} ${selectedTokenOption.balance.token.symbol}`;
       case ROUTES.CONFIRMATION:
         return "Payment Successful";
     }

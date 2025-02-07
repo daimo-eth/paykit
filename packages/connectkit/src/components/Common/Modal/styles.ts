@@ -130,7 +130,7 @@ export const ModalContentContainer = styled(motion.div)`
   position: relative;
   padding: 0;
 `;
-export const ModalContent = styled(motion.div)`
+export const ModalContent = styled(motion.div)<{ $preserveDisplay?: boolean }>`
   left: 0;
   right: 0;
   text-align: center;
@@ -140,7 +140,8 @@ export const ModalContent = styled(motion.div)`
   padding: 0 0 16px;
 
   @media only screen and (max-width: ${defaultTheme.mobileWidth}px) {
-    display: block;
+    display: ${(props) => (props.$preserveDisplay ? "flex" : "block")};
+    gap: ${(props) => (props.$preserveDisplay ? "4px" : undefined)};
   }
 `;
 export const ModalH1 = styled(motion.h1)<{

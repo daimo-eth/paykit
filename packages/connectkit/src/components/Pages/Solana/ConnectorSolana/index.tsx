@@ -12,7 +12,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import styled from "../../../../styles/styled";
 import { ROUTES, usePayContext } from "../../../DaimoPay";
 import SquircleSpinner from "../../../Spinners/SquircleSpinner";
-import { LoadingContainer } from "../../WaitingOther";
 
 const ConnectSolana: React.FC = () => {
   const solanaWallets = useWallet();
@@ -73,6 +72,13 @@ const ConnectSolana: React.FC = () => {
   );
 };
 
+export const LoadingContainer = styled(motion.div)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px auto 16px;
+  height: 120px;
+`;
 const AnimationContainer = styled(motion.div)`
   user-select: none;
   position: relative;

@@ -43,7 +43,10 @@ import { Web3ContextProvider } from "./contexts/web3";
 export enum ROUTES {
   SELECT_METHOD = "daimoPaySelectMethod",
   SELECT_TOKEN = "daimoPaySelectToken",
-  WAITING_OTHER = "daimoPayWaitingOther",
+  SELECT_AMOUNT = "daimoPaySelectAmount",
+  SELECT_EXTERNAL_AMOUNT = "daimoPaySelectExternalAmount",
+  SELECT_DEPOSIT_ADDRESS_AMOUNT = "daimoPaySelectDepositAddressAmount",
+  WAITING_EXTERNAL = "daimoPayWaitingExternal",
   SELECT_DEPOSIT_ADDRESS_CHAIN = "daimoPaySelectDepositAddressChain",
   WAITING_DEPOSIT_ADDRESS = "daimoPayWaitingDepositAddress",
   PAY_WITH_TOKEN = "daimoPayPayWithToken",
@@ -51,6 +54,7 @@ export enum ROUTES {
   SOLANA_CONNECT = "daimoPaySolanaConnect",
   SOLANA_CONNECTOR = "daimoPaySolanaConnector",
   SOLANA_SELECT_TOKEN = "daimoPaySolanaSelectToken",
+  SOLANA_SELECT_AMOUNT = "daimoPaySolanaSelectAmount",
   SOLANA_PAY_WITH_TOKEN = "daimoPaySolanaPayWithToken",
 
   // Unused routes. Kept to minimize connectkit merge conflicts.
@@ -289,10 +293,12 @@ const DaimoPayProviderWithoutSolana = ({
     }
 
     log(`[PAY] polling in ${intervalMs}ms`);
-    setTimeout(
+    const timeout = setTimeout(
       () => retryBackoff("refreshOrder", () => paymentState.refreshOrder()),
       intervalMs,
     );
+
+    return () => clearTimeout(timeout);
   }, [daimoPayOrder]);
 
   const showPayment = async (modalOptions: DaimoPayModalOptions) => {
