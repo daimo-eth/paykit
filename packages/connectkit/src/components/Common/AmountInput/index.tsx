@@ -8,22 +8,22 @@ import {
 } from "../../Common/Modal/styles";
 
 import { WalletPaymentOption } from "@daimo/common";
-import { formatUnits, parseUnits } from "viem";
+import { parseUnits } from "viem";
 import styled from "../../../styles/styled";
 import {
   formatUsd,
-  roundDecimals,
-  tokenAmountToFormattedUsd,
+  roundTokenAmount,
+  roundTokenAmountUnits,
+  roundUsd,
+  tokenAmountToRoundedUsd,
   USD_DECIMALS,
-  usdToFormattedTokenAmount,
+  usdToRoundedTokenAmount,
 } from "../../../utils/format";
-import { isValidNumber } from "../../../utils/validateInput";
+import { isValidNumber, sanitizeNumber } from "../../../utils/validateInput";
 import Button from "../../Common/Button";
 import SwitchButton from "../../Common/SwitchButton";
 import TokenLogoSpinner from "../../Spinners/TokenLogoSpinner";
 import AmountInputField from "./AmountInputField";
-
-const MAX_USD_VALUE = 20000;
 
 const MultiCurrencySelectAmount: React.FC<{
   selectedTokenOption: WalletPaymentOption;
@@ -31,6 +31,7 @@ const MultiCurrencySelectAmount: React.FC<{
   nextPage: ROUTES;
 }> = ({ selectedTokenOption, setSelectedTokenOption, nextPage }) => {
   const { paymentState, setRoute, triggerResize } = usePayContext();
+  const maxUsdLimit = paymentState.getOrderUsdLimit();
 
   const balanceToken = selectedTokenOption.balance.token;
   const isUsdStablecoin = balanceToken.fiatSymbol === "$";
@@ -41,9 +42,9 @@ const MultiCurrencySelectAmount: React.FC<{
   ${formatUsd(selectedTokenOption.minimumRequired.usd, "up")}`
       : null;
 
-  const [editableValue, setEditableValue] = useState("");
-  const [secondaryValue, setSecondaryValue] = useState(
-    usdToFormattedTokenAmount(0, balanceToken),
+  const [usdValue, setUsdValue] = useState("");
+  const [tokenValue, setTokenValue] = useState(
+    usdToRoundedTokenAmount(0, balanceToken),
   );
   const [isEditingUsd, setIsEditingUsd] = useState(true);
   const [message, setMessage] = useState<string | null>(minimumMessage);
@@ -58,82 +59,38 @@ const MultiCurrencySelectAmount: React.FC<{
    * the user is currently editing the USD value or the token value.
    */
   const updateValues = (
-    newEditableValue: string,
-    isUsdValue: boolean,
-    newSecondaryValue?: string,
+    newUsdValue: string,
+    newTokenValue: string,
+    newIsEditingUsd: boolean,
   ) => {
-    const sanitizedEditableValue = /^\d+\.?\d*$/.test(newEditableValue)
-      ? newEditableValue
-      : "0";
+    const sanitizedUsdValue = sanitizeNumber(newUsdValue);
+    const sanitizedTokenValue = sanitizeNumber(newTokenValue);
 
-    let usdValue: string;
-    let tokenValue: string;
-
-    if (isUsdValue) {
-      usdValue = roundDecimals(
-        Number(sanitizedEditableValue),
-        USD_DECIMALS,
-        "down",
-      );
-      if (newSecondaryValue != null) {
-        const sanitizedSecondaryValue = /^\d+\.?\d*$/.test(newSecondaryValue)
-          ? newSecondaryValue
-          : "0";
-        tokenValue = roundDecimals(
-          Number(sanitizedSecondaryValue),
-          balanceToken.displayDecimals,
-          "down",
-        );
-      } else {
-        tokenValue = usdToFormattedTokenAmount(
-          Number(sanitizedEditableValue),
-          balanceToken,
-          "down",
-        );
-      }
-    } else {
-      tokenValue = roundDecimals(
-        Number(sanitizedEditableValue),
-        balanceToken.displayDecimals,
-        "down",
-      );
-      if (newSecondaryValue != null) {
-        const sanitizedSecondaryValue = /^\d+\.?\d*$/.test(newSecondaryValue)
-          ? newSecondaryValue
-          : "0";
-        usdValue = roundDecimals(
-          Number(sanitizedSecondaryValue),
-          USD_DECIMALS,
-          "down",
-        );
-      } else {
-        usdValue = tokenAmountToFormattedUsd(
-          parseUnits(sanitizedEditableValue, balanceToken.decimals),
-          balanceToken,
-          "down",
-        );
-      }
-    }
-
-    // Update the state
-    setEditableValue(newEditableValue);
-    setSecondaryValue(isUsdValue ? tokenValue : usdValue);
-    setIsEditingUsd(isUsdValue);
+    // Update the state. Don't sanitize the value if the user is editing it.
+    setUsdValue(
+      newIsEditingUsd ? newUsdValue : roundUsd(Number(sanitizedUsdValue)),
+    );
+    setTokenValue(
+      newIsEditingUsd
+        ? roundTokenAmountUnits(Number(sanitizedTokenValue), balanceToken)
+        : newTokenValue,
+    );
+    setIsEditingUsd(newIsEditingUsd);
 
     setContinueDisabled(
-      Number(usdValue) <= 0 ||
-        Number(usdValue) < selectedTokenOption.minimumRequired.usd ||
-        Number(usdValue) > selectedTokenOption.balance.usd ||
-        Number(usdValue) > MAX_USD_VALUE,
+      Number(sanitizedUsdValue) <= 0 ||
+        Number(sanitizedUsdValue) < selectedTokenOption.minimumRequired.usd ||
+        Number(sanitizedUsdValue) > selectedTokenOption.balance.usd ||
+        Number(sanitizedUsdValue) > maxUsdLimit,
     );
 
-    if (Number(usdValue) > selectedTokenOption.balance.usd) {
+    if (Number(sanitizedUsdValue) > selectedTokenOption.balance.usd) {
       setMessage(
         `Amount exceeds your balance: 
-  ${formatUsd(selectedTokenOption.balance.usd, "down")}`,
+  ${formatUsd(selectedTokenOption.balance.usd)}`,
       );
-    } else if (Number(usdValue) > MAX_USD_VALUE) {
-      setMessage(`Maximum ${formatUsd(MAX_USD_VALUE)}`);
+    } else if (Number(usdValue) > maxUsdLimit) {
+      setMessage(`Maximum ${formatUsd(maxUsdLimit)}`);
     } else {
       setMessage(minimumMessage);
     }
@@ -145,49 +102,47 @@ const MultiCurrencySelectAmount: React.FC<{
       ? USD_DECIMALS
       : balanceToken.displayDecimals;
     if (value !== "" && !isValidNumber(value, maxDecimals)) return;
-    updateValues(value, isEditingUsd);
+
+    const sanitizedValue = sanitizeNumber(value);
+
+    const newUsdValue = isEditingUsd
+      ? value
+      : tokenAmountToRoundedUsd(
+          parseUnits(sanitizedValue, balanceToken.decimals),
+          balanceToken,
+        );
+    const newTokenValue = isEditingUsd
+      ? usdToRoundedTokenAmount(Number(sanitizedValue), balanceToken)
+      : value;
+    updateValues(newUsdValue, newTokenValue, isEditingUsd);
   };
 
   const handleMax = () => {
-    const usdValue = roundDecimals(
-      Number(selectedTokenOption.balance.usd),
-      USD_DECIMALS,
-      "down",
+    const usdValue = roundUsd(Number(selectedTokenOption.balance.usd));
+    const tokenValue = roundTokenAmount(
+      selectedTokenOption.balance.amount,
+      balanceToken,
     );
-    const tokenValue = roundDecimals(
-      Number(
-        formatUnits(
-          BigInt(selectedTokenOption.balance.amount),
-          balanceToken.decimals,
-        ),
-      ),
-      balanceToken.displayDecimals,
-      "down",
-    );
-    updateValues(
-      isEditingUsd ? usdValue : tokenValue,
-      isEditingUsd,
-      isEditingUsd ? tokenValue : usdValue,
-    );
+    updateValues(usdValue, tokenValue, isEditingUsd);
   };
 
   const handleSwitchCurrency = () => {
-    updateValues(secondaryValue, !isEditingUsd, editableValue);
+    updateValues(usdValue, tokenValue, !isEditingUsd);
   };
 
   const handleContinue = () => {
-    const usd = Number(isEditingUsd ? editableValue : secondaryValue);
+    const usd = Number(sanitizeNumber(usdValue));
     const amountUnits = usd / balanceToken.usd;
     const amount = parseUnits(amountUnits.toString(), balanceToken.decimals);
     setSelectedTokenOption({
       ...selectedTokenOption,
       required: {
         token: balanceToken,
-        amount: `${amount}` as `${bigint}`,
+        amount: amount.toString() as `${bigint}`,
         usd,
       },
     });
-    paymentState.setChosenUsd(Number(usd));
+    paymentState.setChosenUsd(usd);
     setRoute(nextPage);
   };
 
@@ -199,7 +154,7 @@ const MultiCurrencySelectAmount: React.FC<{
           {/* Invisible div to balance spacing */}
           <MaxButton style={{ visibility: "hidden" }}>Max</MaxButton>
           <AmountInputField
-            value={editableValue}
+            value={isEditingUsd ? usdValue : tokenValue}
             onChange={handleAmountChange}
             currency={isEditingUsd ? "$" : balanceToken.symbol}
           />
@@ -211,8 +166,8 @@ const MultiCurrencySelectAmount: React.FC<{
             <SwitchButton onClick={handleSwitchCurrency}>
               <SecondaryAmount>
                 {isEditingUsd
-                  ? `${secondaryValue} ${balanceToken.symbol}`
-                  : `$${secondaryValue}`}
+                  ? `${tokenValue} ${balanceToken.symbol}`
+                  : `$${usdValue}`}
               </SecondaryAmount>
             </SwitchButton>
           </SwitchContainer>

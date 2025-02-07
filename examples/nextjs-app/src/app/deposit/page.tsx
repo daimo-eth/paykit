@@ -11,8 +11,8 @@ export default function DemoDeposit() {
     <Container>
       <Text>
         Onboard users to your app using the tokens they already own on other
-        chains. Set a default amount and enable <Code>amountEditable</Code> to
-        let users customize their deposit amount.
+        chains. Omit the <Code>toUnits</Code> parameter to let users customize
+        their deposit amount.
       </Text>
       <div />
       <DaimoPayButton

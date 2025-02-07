@@ -1,4 +1,4 @@
-import { DaimoPayToken } from "@daimo/common";
+import { BigIntStr, DaimoPayToken } from "@daimo/common";
 import { formatUnits } from "viem";
 
 export const USD_DECIMALS = 2;
@@ -40,12 +40,48 @@ export function roundDecimals(
  */
 export function formatUsd(
   usd: number,
-  round: "up" | "down" | "nearest" = "nearest",
+  round: "up" | "down" | "nearest" = "down",
 ): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
-  }).format(Number(roundDecimals(usd, USD_DECIMALS, round)));
+  }).format(Number(roundUsd(usd, round)));
+}
+
+/**
+ * Round a USD amount to `USD_DECIMALS` precision
+ */
+export function roundUsd(
+  usd: number,
+  round: "up" | "down" | "nearest" = "down",
+): string {
+  return roundDecimals(usd, USD_DECIMALS, round);
+}
+
+/**
+ * Round a token amount to `displayDecimals` precision
+ */
+export function roundTokenAmount(
+  amount: bigint | BigIntStr,
+  token: DaimoPayToken,
+  round: "up" | "down" | "nearest" = "down",
+): string {
+  return roundDecimals(
+    Number(formatUnits(BigInt(amount), token.decimals)),
+    token.displayDecimals,
+    round,
+  );
+}
+
+/**
+ * Round a token amount in units to `displayDecimals` precision
+ */
+export function roundTokenAmountUnits(
+  amountUnits: number,
+  token: DaimoPayToken,
+  round: "up" | "down" | "nearest" = "down",
+): string {
+  return roundDecimals(amountUnits, token.displayDecimals, round);
 }
 
 /**
@@ -56,12 +92,12 @@ export function formatUsd(
  * @param round - The rounding strategy to use ("up", "down", or "nearest")
  * @returns The token amount
  */
-export function usdToFormattedTokenAmount(
+export function usdToRoundedTokenAmount(
   usd: number,
   token: DaimoPayToken,
-  round: "up" | "down" | "nearest" = "nearest",
+  round: "up" | "down" | "nearest" = "down",
 ): string {
-  return roundDecimals(usd / token.usd, token.displayDecimals, round);
+  return roundTokenAmountUnits(usd / token.usd, token, round);
 }
 
 /**
@@ -72,11 +108,11 @@ export function usdToFormattedTokenAmount(
  * @param round - The rounding strategy to use ("up", "down", or "nearest")
  * @returns The formatted USD amount
  */
-export function tokenAmountToFormattedUsd(
-  amount: bigint,
+export function tokenAmountToRoundedUsd(
+  amount: bigint | BigIntStr,
   token: DaimoPayToken,
   round: "up" | "down" | "nearest" = "nearest",
 ): string {
-  const amountUnits = formatUnits(amount, token.decimals);
-  return roundDecimals(Number(amountUnits) * token.usd, USD_DECIMALS, round);
+  const amountUnits = formatUnits(BigInt(amount), token.decimals);
+  return roundUsd(Number(amountUnits) * token.usd, round);
 }

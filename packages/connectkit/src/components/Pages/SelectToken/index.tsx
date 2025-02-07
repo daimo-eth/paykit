@@ -3,9 +3,9 @@ import { ROUTES, usePayContext } from "../../DaimoPay";
 
 import { ModalContent, ModalH1, PageContent } from "../../Common/Modal/styles";
 
-import { capitalize, DaimoPayToken, getDisplayPrice } from "@daimo/common";
+import { capitalize, DaimoPayToken } from "@daimo/common";
 import { getChainName } from "@daimo/contract";
-import { formatUsd } from "../../../utils/format";
+import { formatUsd, roundTokenAmount } from "../../../utils/format";
 import Button from "../../Common/Button";
 import OptionsList from "../../Common/OptionsList";
 import { OrderHeader } from "../../Common/OrderHeader";
@@ -26,10 +26,10 @@ const SelectToken: React.FC = () => {
         getChainName(option.balance.token.chainId),
       );
       const titlePrice = isDepositFlow
-        ? formatUsd(option.balance.usd, "down")
-        : getDisplayPrice(option.required);
+        ? formatUsd(option.balance.usd)
+        : roundTokenAmount(option.required.amount, option.required.token);
       const title = `${titlePrice} ${option.balance.token.symbol} on ${capitalizedChainName}`;
-      const subtitle = `${!isDepositFlow && "Balance: "}${getDisplayPrice(option.balance)} ${option.balance.token.symbol}`;
+      const subtitle = `${isDepositFlow ? "" : "Balance: "}${roundTokenAmount(option.balance.amount, option.balance.token)} ${option.balance.token.symbol}`;
 
       return {
         id: getDaimoTokenKey(option.balance.token),

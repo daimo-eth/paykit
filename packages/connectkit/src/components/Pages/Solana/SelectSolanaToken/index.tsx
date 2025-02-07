@@ -7,8 +7,8 @@ import {
   PageContent,
 } from "../../../Common/Modal/styles";
 
-import { DaimoPayToken, getDisplayPrice } from "@daimo/common";
-import { formatUsd } from "../../../../utils/format";
+import { DaimoPayToken } from "@daimo/common";
+import { formatUsd, roundTokenAmount } from "../../../../utils/format";
 import Button from "../../../Common/Button";
 import OptionsList from "../../../Common/OptionsList";
 import { OrderHeader } from "../../../Common/OrderHeader";
@@ -26,10 +26,10 @@ const SelectSolanaToken: React.FC = () => {
   const optionsList =
     solanaPaymentOptions.options?.map((option) => {
       const titlePrice = isDepositFlow
-        ? formatUsd(option.balance.usd, "down")
-        : getDisplayPrice(option.required);
+        ? formatUsd(option.balance.usd)
+        : roundTokenAmount(option.required.amount, option.required.token);
       const title = `${titlePrice} ${option.balance.token.symbol} on Solana`;
-      const subtitle = `${!isDepositFlow && "Balance: "}${getDisplayPrice(option.balance)} ${option.balance.token.symbol}`;
+      const subtitle = `${isDepositFlow ? "" : "Balance: "}${roundTokenAmount(option.balance.amount, option.balance.token)} ${option.balance.token.symbol}`;
 
       return {
         id: getDaimoSolanaTokenKey(option.balance.token),

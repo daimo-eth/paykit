@@ -9,17 +9,16 @@ import {
 
 import styled from "../../../styles/styled";
 import { formatUsd, USD_DECIMALS } from "../../../utils/format";
-import { isValidNumber } from "../../../utils/validateInput";
+import { isValidNumber, sanitizeNumber } from "../../../utils/validateInput";
 import AmountInputField from "../../Common/AmountInput/AmountInputField";
 import Button from "../../Common/Button";
 import ExternalPaymentSpinner from "../../Spinners/ExternalPaymentSpinner";
-
-const MAX_USD_VALUE = 20000;
 
 const SelectExternalAmount: React.FC = () => {
   const { paymentState, setRoute, triggerResize } = usePayContext();
   const { selectedExternalOption } = paymentState;
 
+  const maxUsdLimit = paymentState.getOrderUsdLimit();
   const minimumMessage =
     (selectedExternalOption?.minimumUsd ?? 0) > 0
       ? `Minimum ${formatUsd(selectedExternalOption?.minimumUsd ?? 0, "up")}`
@@ -43,22 +42,22 @@ const SelectExternalAmount: React.FC = () => {
 
     setUsdInput(value);
 
-    if (Number(value) > MAX_USD_VALUE) {
-      setMessage(`Maximum ${formatUsd(MAX_USD_VALUE, "up")}`);
+    if (Number(value) > maxUsdLimit) {
+      setMessage(`Maximum ${formatUsd(maxUsdLimit)}`);
     } else {
       setMessage(minimumMessage);
     }
 
+    const usd = Number(sanitizeNumber(value));
     setContinueDisabled(
-      value === "" ||
-        Number(value) <= 0 ||
-        Number(value) < (selectedExternalOption.minimumUsd ?? 0) ||
-        Number(value) > MAX_USD_VALUE,
+      usd <= 0 ||
+        usd < (selectedExternalOption.minimumUsd ?? 0) ||
+        usd > maxUsdLimit,
     );
   };
 
   const handleContinue = () => {
-    paymentState.setChosenUsd(Number(usdInput));
+    paymentState.setChosenUsd(Number(sanitizeNumber(usdInput)));
     setRoute(ROUTES.WAITING_EXTERNAL);
   };
 

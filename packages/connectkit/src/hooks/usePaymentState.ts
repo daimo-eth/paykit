@@ -25,6 +25,7 @@ import { detectPlatform } from "../utils/platform";
 import { TrpcClient } from "../utils/trpc";
 import { useDepositAddressOptions } from "./useDepositAddressOptions";
 import { useExternalPaymentOptions } from "./useExternalPaymentOptions";
+import { useOrderUsdLimits } from "./useOrderUsdLimits";
 import { usePayWithSolanaToken } from "./usePayWithSolanaToken";
 import { usePayWithToken } from "./usePayWithToken";
 import { useSolanaPaymentOptions } from "./useSolanaPaymentOptions";
@@ -82,6 +83,7 @@ export interface PaymentState {
   selectedTokenOption: WalletPaymentOption | undefined;
   selectedSolanaTokenOption: WalletPaymentOption | undefined;
   selectedDepositAddressOption: DepositAddressPaymentOptionMetadata | undefined;
+  getOrderUsdLimit: () => number;
   setPaymentWaitingMessage: (message: string | undefined) => void;
   setSelectedExternalOption: (
     option: ExternalPaymentOptionMetadata | undefined,
@@ -175,6 +177,8 @@ export function usePaymentState({
     mode: daimoPayOrder?.mode,
   });
 
+  const chainOrderUsdLimits = useOrderUsdLimits({ trpc });
+
   /** Create a new order or hydrate an existing one. */
   const createOrHydrate = async ({
     order,
@@ -249,6 +253,17 @@ export function usePaymentState({
 
   const [selectedDepositAddressOption, setSelectedDepositAddressOption] =
     useState<DepositAddressPaymentOptionMetadata>();
+
+  const getOrderUsdLimit = () => {
+    const DEFAULT_USD_LIMIT = 20000;
+    if (daimoPayOrder == null || chainOrderUsdLimits.loading) {
+      return DEFAULT_USD_LIMIT;
+    }
+    const destChainId = daimoPayOrder.destFinalCallTokenAmount.token.chainId;
+    return destChainId in chainOrderUsdLimits.limits
+      ? chainOrderUsdLimits.limits[destChainId]
+      : DEFAULT_USD_LIMIT;
+  };
 
   const payWithExternal = async (option: ExternalPaymentOptions) => {
     assert(!!daimoPayOrder && !!platform);
@@ -414,6 +429,7 @@ export function usePaymentState({
     solanaPaymentOptions,
     depositAddressOptions,
     selectedDepositAddressOption,
+    getOrderUsdLimit,
     setPaymentWaitingMessage,
     setSelectedExternalOption,
     setSelectedTokenOption,

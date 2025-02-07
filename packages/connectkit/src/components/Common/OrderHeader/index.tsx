@@ -29,7 +29,9 @@ export const OrderHeader = ({ minified = false }: { minified?: boolean }) => {
         </span>
       ) : null;
     } else {
-      return orderUsd != null ? <span>{formatUsd(orderUsd)}</span> : null;
+      return orderUsd != null ? (
+        <span>{formatUsd(orderUsd, "nearest")}</span>
+      ) : null;
     }
   })();
 

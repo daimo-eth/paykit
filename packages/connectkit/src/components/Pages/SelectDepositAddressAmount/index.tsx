@@ -9,20 +9,19 @@ import {
 
 import styled from "../../../styles/styled";
 import { formatUsd, USD_DECIMALS } from "../../../utils/format";
-import { isValidNumber } from "../../../utils/validateInput";
+import { isValidNumber, sanitizeNumber } from "../../../utils/validateInput";
 import AmountInputField from "../../Common/AmountInput/AmountInputField";
 import Button from "../../Common/Button";
 import ExternalPaymentSpinner from "../../Spinners/ExternalPaymentSpinner";
 
 // TODO: min amount for deposit address should come from the backend
 const MIN_USD_VALUE = 20;
-// TODO: make max amount a shared constant
-const MAX_USD_VALUE = 20000;
 
 const SelectDepositAddressAmount: React.FC = () => {
   const { paymentState, setRoute, triggerResize } = usePayContext();
   const { selectedDepositAddressOption } = paymentState;
 
+  const maxUsdLimit = paymentState.getOrderUsdLimit();
   const minimumMessage = `Minimum ${formatUsd(MIN_USD_VALUE, "up")}`;
 
   const [usdInput, setUsdInput] = useState<string>("");
@@ -43,22 +42,18 @@ const SelectDepositAddressAmount: React.FC = () => {
 
     setUsdInput(value);
 
-    if (Number(value) > MAX_USD_VALUE) {
-      setMessage(`Maximum ${formatUsd(MAX_USD_VALUE, "up")}`);
+    if (Number(value) > maxUsdLimit) {
+      setMessage(`Maximum ${formatUsd(maxUsdLimit)}`);
     } else {
       setMessage(minimumMessage);
     }
 
-    setContinueDisabled(
-      value === "" ||
-        Number(value) <= 0 ||
-        Number(value) < MIN_USD_VALUE ||
-        Number(value) > MAX_USD_VALUE,
-    );
+    const usd = Number(sanitizeNumber(value));
+    setContinueDisabled(usd <= 0 || usd < MIN_USD_VALUE || usd > maxUsdLimit);
   };
 
   const handleContinue = () => {
-    paymentState.setChosenUsd(Number(usdInput));
+    paymentState.setChosenUsd(Number(sanitizeNumber(usdInput)));
     setRoute(ROUTES.WAITING_DEPOSIT_ADDRESS);
   };
 
