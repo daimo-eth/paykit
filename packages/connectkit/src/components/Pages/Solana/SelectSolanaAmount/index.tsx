@@ -6,16 +6,16 @@ import { PageContent } from "../../../Common/Modal/styles";
 
 const SelectSolanaAmount: React.FC = () => {
   const { paymentState } = usePayContext();
-  const { selectedSolanaTokenBalance, setSelectedSolanaTokenOption } =
+  const { selectedSolanaTokenOption, setSelectedSolanaTokenOption } =
     paymentState;
 
-  if (selectedSolanaTokenBalance == null) {
+  if (selectedSolanaTokenOption == null) {
     return <PageContent></PageContent>;
   }
 
   return (
     <MultiCurrencySelectAmount
-      selectedTokenBalance={selectedSolanaTokenBalance}
+      selectedTokenOption={selectedSolanaTokenOption}
       setSelectedTokenOption={setSelectedSolanaTokenOption}
       nextPage={ROUTES.SOLANA_PAY_WITH_TOKEN}
     />

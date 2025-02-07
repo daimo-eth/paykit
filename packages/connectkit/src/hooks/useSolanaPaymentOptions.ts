@@ -7,19 +7,17 @@ export function useSolanaPaymentOptions({
   trpc,
   address,
   usdRequired,
-  isDepositFlow,
 }: {
   trpc: TrpcClient;
   address: string | undefined;
   usdRequired: number | undefined;
-  isDepositFlow: boolean;
 }) {
   const [options, setOptions] = useState<WalletPaymentOption[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const refreshWalletPaymentOptions = async () => {
-      if (!address || !usdRequired) return;
+      if (address == null || usdRequired == null) return;
 
       setOptions(null);
       setIsLoading(true);
@@ -36,12 +34,10 @@ export function useSolanaPaymentOptions({
       }
     };
 
-    // No need to get options for deposit. Balances are fetched separately.
-    if (isDepositFlow) return;
-    if (address && usdRequired != null) {
+    if (address != null && usdRequired != null) {
       refreshWalletPaymentOptions();
     }
-  }, [address, usdRequired, isDepositFlow]);
+  }, [address, usdRequired]);
 
   return {
     options,

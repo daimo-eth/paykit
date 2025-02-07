@@ -17,72 +17,46 @@ function getDaimoTokenKey(token: DaimoPayToken) {
 
 const SelectToken: React.FC = () => {
   const { setRoute, paymentState } = usePayContext();
-  const {
-    isDepositFlow,
-    walletPaymentOptions,
-    walletBalanceOptions,
-    setSelectedTokenOption,
-    setSelectedTokenBalance,
-  } = paymentState;
+  const { isDepositFlow, walletPaymentOptions, setSelectedTokenOption } =
+    paymentState;
 
-  const isLoading = isDepositFlow
-    ? walletBalanceOptions.isLoading
-    : walletPaymentOptions.isLoading;
+  const optionsList =
+    walletPaymentOptions.options?.map((option) => {
+      const capitalizedChainName = capitalize(
+        getChainName(option.balance.token.chainId),
+      );
+      const titlePrice = isDepositFlow
+        ? formatUsd(option.balance.usd, "down")
+        : getDisplayPrice(option.required);
+      const title = `${titlePrice} ${option.balance.token.symbol} on ${capitalizedChainName}`;
+      const subtitle = `${!isDepositFlow && "Balance: "}${getDisplayPrice(option.balance)} ${option.balance.token.symbol}`;
 
-  const optionsList = isDepositFlow
-    ? (walletBalanceOptions.options?.map((option) => {
-        const capitalizedChainName = capitalize(
-          getChainName(option.balance.token.chainId),
-        );
-        const balanceUsd = formatUsd(option.balance.usd, "down");
-        const title = `${balanceUsd} ${option.balance.token.symbol} on ${capitalizedChainName}`;
-        const subtitle = `${getDisplayPrice(option.balance)} ${option.balance.token.symbol}`;
-
-        return {
-          id: getDaimoTokenKey(option.balance.token),
-          title,
-          subtitle,
-          icons: [
-            <TokenChainLogo
-              key={getDaimoTokenKey(option.balance.token)}
-              token={option.balance.token}
-            />,
-          ],
-          onClick: () => {
-            setSelectedTokenBalance(option);
+      return {
+        id: getDaimoTokenKey(option.balance.token),
+        title,
+        subtitle,
+        icons: [
+          <TokenChainLogo
+            key={getDaimoTokenKey(option.balance.token)}
+            token={option.balance.token}
+          />,
+        ],
+        onClick: () => {
+          setSelectedTokenOption(option);
+          if (isDepositFlow) {
             setRoute(ROUTES.SELECT_AMOUNT);
-          },
-        };
-      }) ?? [])
-    : (walletPaymentOptions.options?.map((option) => {
-        const capitalizedChainName = capitalize(
-          getChainName(option.required.token.chainId),
-        );
-        const title = `${getDisplayPrice(option.required)} ${option.required.token.symbol} on ${capitalizedChainName}`;
-        const subtitle = `Balance: ${getDisplayPrice(option.balance)} ${option.balance.token.symbol}`;
-
-        return {
-          id: getDaimoTokenKey(option.required.token),
-          title,
-          subtitle,
-          icons: [
-            <TokenChainLogo
-              key={getDaimoTokenKey(option.required.token)}
-              token={option.required.token}
-            />,
-          ],
-          onClick: () => {
-            setSelectedTokenOption(option);
+          } else {
             setRoute(ROUTES.PAY_WITH_TOKEN);
-          },
-        };
-      }) ?? []);
+          }
+        },
+      };
+    }) ?? [];
 
   return (
     <PageContent>
       <OrderHeader minified />
 
-      {!isLoading && optionsList.length === 0 && (
+      {!walletPaymentOptions.isLoading && optionsList.length === 0 && (
         <ModalContent
           style={{
             display: "flex",
@@ -101,7 +75,7 @@ const SelectToken: React.FC = () => {
 
       <OptionsList
         requiredSkeletons={4}
-        isLoading={isLoading}
+        isLoading={walletPaymentOptions.isLoading}
         options={optionsList}
       />
     </PageContent>

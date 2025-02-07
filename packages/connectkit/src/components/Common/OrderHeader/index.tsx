@@ -12,7 +12,6 @@ import defaultTheme from "../../../constants/defaultTheme";
 import styled from "../../../styles/styled";
 import { formatUsd } from "../../../utils/format";
 import { ROUTES, usePayContext } from "../../DaimoPay";
-import { ModalH1 } from "../Modal/styles";
 
 /** Shows payment amount. */
 export const OrderHeader = ({ minified = false }: { minified?: boolean }) => {
@@ -24,7 +23,10 @@ export const OrderHeader = ({ minified = false }: { minified?: boolean }) => {
     if (paymentState.isDepositFlow) {
       return route === ROUTES.SELECT_TOKEN ||
         route === ROUTES.SOLANA_SELECT_TOKEN ? (
-        <ModalH1>Your balances</ModalH1>
+        // TODO: make this match `ModalH1` font size for mobile
+        <span style={{ fontSize: "19px", lineHeight: "22px" }}>
+          Your balances
+        </span>
       ) : null;
     } else {
       return orderUsd != null ? <span>{formatUsd(orderUsd)}</span> : null;

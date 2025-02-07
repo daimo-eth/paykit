@@ -11,7 +11,6 @@ export function useWalletPaymentOptions({
   destChainId,
   preferredChains,
   preferredTokens,
-  isDepositFlow,
   log,
 }: {
   trpc: TrpcClient;
@@ -20,7 +19,6 @@ export function useWalletPaymentOptions({
   destChainId: number | undefined;
   preferredChains: number[] | undefined;
   preferredTokens: { chain: number; address: string }[] | undefined;
-  isDepositFlow: boolean;
   log: (msg: string) => void;
 }) {
   const [options, setOptions] = useState<WalletPaymentOption[] | null>(null);
@@ -28,7 +26,7 @@ export function useWalletPaymentOptions({
 
   useEffect(() => {
     const refreshWalletPaymentOptions = async () => {
-      if (!address || !usdRequired || !destChainId) return;
+      if (address == null || usdRequired == null || destChainId == null) return;
 
       setOptions(null);
       setIsLoading(true);
@@ -59,12 +57,10 @@ export function useWalletPaymentOptions({
       }
     };
 
-    // No need to get options for deposit. Balances are fetched separately.
-    if (isDepositFlow) return;
-    if (address && usdRequired != null && destChainId) {
+    if (address != null && usdRequired != null && destChainId != null) {
       refreshWalletPaymentOptions();
     }
-  }, [address, usdRequired, destChainId, isDepositFlow]);
+  }, [address, usdRequired, destChainId]);
 
   return {
     options,

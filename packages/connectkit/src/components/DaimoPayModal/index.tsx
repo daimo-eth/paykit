@@ -54,9 +54,7 @@ export const DaimoPayModal: React.FC<{
     setPaymentWaitingMessage,
     setSelectedExternalOption,
     setSelectedTokenOption,
-    setSelectedTokenBalance,
     setSelectedSolanaTokenOption,
-    setSelectedSolanaTokenBalance,
     setSelectedDepositAddressOption,
   } = paymentState;
 
@@ -84,7 +82,6 @@ export const DaimoPayModal: React.FC<{
       context.setRoute(ROUTES.SELECT_METHOD);
     } else if (context.route === ROUTES.SELECT_AMOUNT) {
       setSelectedTokenOption(undefined);
-      setSelectedTokenBalance(undefined);
       context.setRoute(ROUTES.SELECT_TOKEN);
     } else if (context.route === ROUTES.SELECT_EXTERNAL_AMOUNT) {
       setSelectedExternalOption(undefined);
@@ -124,7 +121,6 @@ export const DaimoPayModal: React.FC<{
       }
     } else if (context.route === ROUTES.SOLANA_SELECT_AMOUNT) {
       setSelectedSolanaTokenOption(undefined);
-      setSelectedSolanaTokenBalance(undefined);
       context.setRoute(ROUTES.SOLANA_SELECT_TOKEN);
     } else if (context.route === ROUTES.SOLANA_PAY_WITH_TOKEN) {
       if (isDepositFlow) {

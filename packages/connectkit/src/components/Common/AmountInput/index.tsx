@@ -7,11 +7,7 @@ import {
   PageContent,
 } from "../../Common/Modal/styles";
 
-import {
-  assertNotNull,
-  WalletBalanceOption,
-  WalletPaymentOption,
-} from "@daimo/common";
+import { WalletPaymentOption } from "@daimo/common";
 import { formatUnits, parseUnits } from "viem";
 import styled from "../../../styles/styled";
 import {
@@ -30,24 +26,24 @@ import AmountInputField from "./AmountInputField";
 const MAX_USD_VALUE = 20000;
 
 const MultiCurrencySelectAmount: React.FC<{
-  selectedTokenBalance: WalletBalanceOption;
+  selectedTokenOption: WalletPaymentOption;
   setSelectedTokenOption: (option: WalletPaymentOption) => void;
   nextPage: ROUTES;
-}> = ({ selectedTokenBalance, setSelectedTokenOption, nextPage }) => {
+}> = ({ selectedTokenOption, setSelectedTokenOption, nextPage }) => {
   const { paymentState, setRoute, triggerResize } = usePayContext();
 
-  const balanceToken = selectedTokenBalance.balance.token;
+  const balanceToken = selectedTokenOption.balance.token;
   const isUsdStablecoin = balanceToken.fiatSymbol === "$";
 
   const minimumMessage =
-    selectedTokenBalance.minimumRequired.usd > 0
+    selectedTokenOption.minimumRequired.usd > 0
       ? `Minimum 
-  ${formatUsd(selectedTokenBalance.minimumRequired.usd, "up")}`
+  ${formatUsd(selectedTokenOption.minimumRequired.usd, "up")}`
       : null;
 
   const [editableValue, setEditableValue] = useState("");
   const [secondaryValue, setSecondaryValue] = useState(
-    usdToFormattedTokenAmount(0, selectedTokenBalance.balance.token),
+    usdToFormattedTokenAmount(0, balanceToken),
   );
   const [isEditingUsd, setIsEditingUsd] = useState(true);
   const [message, setMessage] = useState<string | null>(minimumMessage);
@@ -126,15 +122,15 @@ const MultiCurrencySelectAmount: React.FC<{
 
     setContinueDisabled(
       Number(usdValue) <= 0 ||
-        Number(usdValue) < selectedTokenBalance.minimumRequired.usd ||
-        Number(usdValue) > selectedTokenBalance.balance.usd ||
+        Number(usdValue) < selectedTokenOption.minimumRequired.usd ||
+        Number(usdValue) > selectedTokenOption.balance.usd ||
         Number(usdValue) > MAX_USD_VALUE,
     );
 
-    if (Number(usdValue) > selectedTokenBalance.balance.usd) {
+    if (Number(usdValue) > selectedTokenOption.balance.usd) {
       setMessage(
         `Amount exceeds your balance: 
-  ${formatUsd(selectedTokenBalance?.balance.usd, "down")}`,
+  ${formatUsd(selectedTokenOption.balance.usd, "down")}`,
       );
     } else if (Number(usdValue) > MAX_USD_VALUE) {
       setMessage(`Maximum ${formatUsd(MAX_USD_VALUE)}`);
@@ -154,14 +150,14 @@ const MultiCurrencySelectAmount: React.FC<{
 
   const handleMax = () => {
     const usdValue = roundDecimals(
-      Number(selectedTokenBalance.balance.usd),
+      Number(selectedTokenOption.balance.usd),
       USD_DECIMALS,
       "down",
     );
     const tokenValue = roundDecimals(
       Number(
         formatUnits(
-          BigInt(selectedTokenBalance.balance.amount),
+          BigInt(selectedTokenOption.balance.amount),
           balanceToken.decimals,
         ),
       ),
@@ -184,15 +180,12 @@ const MultiCurrencySelectAmount: React.FC<{
     const amountUnits = usd / balanceToken.usd;
     const amount = parseUnits(amountUnits.toString(), balanceToken.decimals);
     setSelectedTokenOption({
+      ...selectedTokenOption,
       required: {
-        token: assertNotNull(
-          balanceToken,
-          `Token is null for ${balanceToken.token} on chain ${balanceToken.chainId}`,
-        ),
-        amount: `${BigInt(amount)}`,
+        token: balanceToken,
+        amount: `${amount}` as `${bigint}`,
         usd,
       },
-      ...selectedTokenBalance!,
     });
     paymentState.setChosenUsd(Number(usd));
     setRoute(nextPage);

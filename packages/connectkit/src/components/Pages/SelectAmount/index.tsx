@@ -5,15 +5,15 @@ import { ROUTES, usePayContext } from "../../DaimoPay";
 
 const SelectAmount: React.FC = () => {
   const { paymentState } = usePayContext();
-  const { selectedTokenBalance, setSelectedTokenOption } = paymentState;
+  const { selectedTokenOption, setSelectedTokenOption } = paymentState;
 
-  if (selectedTokenBalance == null) {
+  if (selectedTokenOption == null) {
     return <PageContent></PageContent>;
   }
 
   return (
     <MultiCurrencySelectAmount
-      selectedTokenBalance={selectedTokenBalance}
+      selectedTokenOption={selectedTokenOption}
       setSelectedTokenOption={setSelectedTokenOption}
       nextPage={ROUTES.PAY_WITH_TOKEN}
     />
