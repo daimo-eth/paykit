@@ -12,6 +12,7 @@ import { formatUsd } from "../../../../utils/format";
 import Button from "../../../Common/Button";
 import OptionsList from "../../../Common/OptionsList";
 import { OrderHeader } from "../../../Common/OrderHeader";
+import TokenChainLogo from "../../../Common/TokenChainLogo";
 
 function getDaimoSolanaTokenKey(token: DaimoPayToken) {
   return `${token.chainId}-${token.token}`;
@@ -42,10 +43,9 @@ const SelectSolanaToken: React.FC = () => {
           title,
           subtitle,
           icons: [
-            <img
-              src={option.balance.token.logoURI}
-              alt={option.balance.token.symbol}
-              style={{ borderRadius: 9999 }}
+            <TokenChainLogo
+              key={getDaimoSolanaTokenKey(option.balance.token)}
+              token={option.balance.token}
             />,
           ],
           onClick: () => {
@@ -63,10 +63,9 @@ const SelectSolanaToken: React.FC = () => {
           title,
           subtitle,
           icons: [
-            <img
-              src={option.required.token.logoURI}
-              alt={option.required.token.symbol}
-              style={{ borderRadius: 9999 }}
+            <TokenChainLogo
+              key={getDaimoSolanaTokenKey(option.balance.token)}
+              token={option.balance.token}
             />,
           ],
           onClick: () => {

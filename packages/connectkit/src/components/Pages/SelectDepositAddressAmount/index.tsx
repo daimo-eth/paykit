@@ -7,14 +7,12 @@ import {
   PageContent,
 } from "../../Common/Modal/styles";
 
-import { AnimatePresence, motion } from "framer-motion";
-import { css } from "styled-components";
 import styled from "../../../styles/styled";
 import { formatUsd, USD_DECIMALS } from "../../../utils/format";
 import { isValidNumber } from "../../../utils/validateInput";
 import AmountInputField from "../../Common/AmountInput/AmountInputField";
 import Button from "../../Common/Button";
-import CircleSpinner from "../../Spinners/CircleSpinner";
+import ExternalPaymentSpinner from "../../Spinners/ExternalPaymentSpinner";
 
 // TODO: min amount for deposit address should come from the backend
 const MIN_USD_VALUE = 20;
@@ -66,17 +64,10 @@ const SelectDepositAddressAmount: React.FC = () => {
 
   return (
     <PageContent>
-      <LoadingContainer>
-        <AnimationContainer $circle={true}>
-          <AnimatePresence>
-            <CircleSpinner
-              logo={<img src={selectedDepositAddressOption.logoURI} />}
-              loading={true}
-              unavailable={false}
-            />
-          </AnimatePresence>
-        </AnimationContainer>
-      </LoadingContainer>
+      <ExternalPaymentSpinner
+        logoURI={selectedDepositAddressOption.logoURI}
+        logoShape="circle"
+      />
       <ModalContent>
         <AmountInputContainer>
           <AmountInputField value={usdInput} onChange={handleAmountChange} />
@@ -89,36 +80,6 @@ const SelectDepositAddressAmount: React.FC = () => {
     </PageContent>
   );
 };
-
-const LoadingContainer = styled(motion.div)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 10px auto 16px;
-  height: 120px;
-`;
-const AnimationContainer = styled(motion.div)<{
-  $circle: boolean;
-}>`
-  user-select: none;
-  position: relative;
-  --spinner-error-opacity: 0;
-  &:before {
-    content: "";
-    position: absolute;
-    inset: 1px;
-    opacity: 0;
-    background: var(--ck-body-color-danger);
-    ${(props) =>
-      props.$circle &&
-      css`
-        inset: -5px;
-        border-radius: 50%;
-        background: none;
-        box-shadow: inset 0 0 0 3.5px var(--ck-body-color-danger);
-      `}
-  }
-`;
 
 const AmountInputContainer = styled.div`
   display: flex;

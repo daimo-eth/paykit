@@ -14,7 +14,7 @@ const Container = styled.button`
 const IconWrapper = styled.div<{ $isFlipped: boolean }>`
   opacity: ${({ $isFlipped }) => ($isFlipped ? 1 : 1)};
   transform: scaleY(${({ $isFlipped }) => ($isFlipped ? -1 : 1)});
-  transition: all 0.15s ease-in-out;
+  transition: all 0.2s ease-in-out;
 
   &.fade {
     opacity: 0;

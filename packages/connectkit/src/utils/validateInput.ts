@@ -11,18 +11,10 @@ export function isValidNumber(value: string, maxDecimals?: number): boolean {
 
   // Test that the value is digits, followed by an optional decimal, followed
   // by more digits
-  if (!/^\d+\.?\d*$/.test(value)) {
-    return false;
-  }
+  const match = /^\d+\.?(\d*)$/.exec(value);
+  if (match == null) return false;
 
-  const [, digitsAfterDecimal] = (() => {
-    if (value.includes(".")) return value.split(".");
-    else return [value, ""];
-  })();
-
-  if (maxDecimals != null && digitsAfterDecimal.length > maxDecimals) {
-    return false;
-  }
-
-  return true;
+  // Check that the number of digits after the decimal is less than or equal to
+  // maxDecimals
+  return maxDecimals == null || match[1].length <= maxDecimals;
 }

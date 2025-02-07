@@ -37,12 +37,9 @@ type PayButtonPaymentProps =
       toToken: Address;
       /**
        * The amount of destination token to send (transfer or approve).
+       * If not provided, the user will be prompted to enter an amount.
        */
-      toUnits: string;
-      /**
-       * Let the user edit the amount to send.
-       */
-      amountEditable?: boolean;
+      toUnits?: string;
       /**
        * The destination address to transfer to, or contract to call.
        */
@@ -153,7 +150,6 @@ function DaimoPayButtonCustom(props: DaimoPayButtonCustomProps) {
           toToken: props.toToken,
           toUnits: props.toUnits,
           toCallData: props.toCallData,
-          isAmountEditable: props.amountEditable ?? false,
           intent: props.intent,
           paymentOptions: props.paymentOptions,
           preferredChains: props.preferredChains,

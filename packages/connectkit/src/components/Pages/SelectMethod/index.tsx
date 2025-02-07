@@ -137,7 +137,7 @@ const SelectMethod: React.FC = () => {
         if (paymentState.isDepositFlow) {
           setRoute(ROUTES.SELECT_EXTERNAL_AMOUNT);
         } else {
-          setRoute(ROUTES.WAITING_OTHER);
+          setRoute(ROUTES.WAITING_EXTERNAL);
         }
       },
       disabled: option.disabled,

@@ -7,15 +7,12 @@ import {
   PageContent,
 } from "../../Common/Modal/styles";
 
-import { AnimatePresence, motion } from "framer-motion";
-import { css } from "styled-components";
 import styled from "../../../styles/styled";
 import { formatUsd, USD_DECIMALS } from "../../../utils/format";
 import { isValidNumber } from "../../../utils/validateInput";
 import AmountInputField from "../../Common/AmountInput/AmountInputField";
 import Button from "../../Common/Button";
-import CircleSpinner from "../../Spinners/CircleSpinner";
-import SquircleSpinner from "../../Spinners/SquircleSpinner";
+import ExternalPaymentSpinner from "../../Spinners/ExternalPaymentSpinner";
 
 const MAX_USD_VALUE = 20000;
 
@@ -23,7 +20,10 @@ const SelectExternalAmount: React.FC = () => {
   const { paymentState, setRoute, triggerResize } = usePayContext();
   const { selectedExternalOption } = paymentState;
 
-  const minimumMessage = `Minimum ${formatUsd(selectedExternalOption?.minimumUsd ?? 0, "up")}`;
+  const minimumMessage =
+    (selectedExternalOption?.minimumUsd ?? 0) > 0
+      ? `Minimum ${formatUsd(selectedExternalOption?.minimumUsd ?? 0, "up")}`
+      : null;
 
   const [usdInput, setUsdInput] = useState<string>("");
   const [message, setMessage] = useState<string | null>(minimumMessage);
@@ -59,37 +59,15 @@ const SelectExternalAmount: React.FC = () => {
 
   const handleContinue = () => {
     paymentState.setChosenUsd(Number(usdInput));
-    setRoute(ROUTES.WAITING_OTHER);
+    setRoute(ROUTES.WAITING_EXTERNAL);
   };
-
-  const optionSpinner = (() => {
-    if (selectedExternalOption.logoShape === "circle") {
-      return (
-        <CircleSpinner
-          logo={<img src={selectedExternalOption.logoURI} />}
-          loading={true}
-          unavailable={false}
-        />
-      );
-    } else {
-      return (
-        <SquircleSpinner
-          logo={<img src={selectedExternalOption.logoURI} />}
-          loading={true}
-        />
-      );
-    }
-  })();
 
   return (
     <PageContent>
-      <LoadingContainer>
-        <AnimationContainer
-          $circle={selectedExternalOption.logoShape === "circle"}
-        >
-          <AnimatePresence>{optionSpinner}</AnimatePresence>
-        </AnimationContainer>
-      </LoadingContainer>
+      <ExternalPaymentSpinner
+        logoURI={selectedExternalOption.logoURI}
+        logoShape={selectedExternalOption.logoShape}
+      />
       <ModalContent>
         <AmountInputContainer>
           <AmountInputField value={usdInput} onChange={handleAmountChange} />
@@ -102,36 +80,6 @@ const SelectExternalAmount: React.FC = () => {
     </PageContent>
   );
 };
-
-const LoadingContainer = styled(motion.div)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 10px auto 16px;
-  height: 120px;
-`;
-const AnimationContainer = styled(motion.div)<{
-  $circle: boolean;
-}>`
-  user-select: none;
-  position: relative;
-  --spinner-error-opacity: 0;
-  &:before {
-    content: "";
-    position: absolute;
-    inset: 1px;
-    opacity: 0;
-    background: var(--ck-body-color-danger);
-    ${(props) =>
-      props.$circle &&
-      css`
-        inset: -5px;
-        border-radius: 50%;
-        background: none;
-        box-shadow: inset 0 0 0 3.5px var(--ck-body-color-danger);
-      `}
-  }
-`;
 
 const AmountInputContainer = styled.div`
   display: flex;

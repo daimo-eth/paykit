@@ -19,10 +19,8 @@ export default function DemoDeposit() {
         appId={APP_ID}
         toChain={baseUSDC.chainId}
         toAddress={DAIMO_ADDRESS}
-        toUnits="10.00" /* $10.00 USDC */
         toToken={getAddress(baseUSDC.token)}
         intent="Deposit"
-        amountEditable
         preferredChains={[10]} /* Show assets on Optimism first. */
         onPaymentStarted={printEvent}
         onPaymentCompleted={printEvent}

@@ -46,14 +46,15 @@ export interface PayParams {
   toChain: number;
   /** The destination token to send. */
   toToken: Address;
-  /** The amount of the token to send. */
-  toUnits: string;
+  /**
+   * The amount of the token to send.
+   * If not provided, the user will be prompted to enter an amount.
+   */
+  toUnits?: string;
   /** The final address to transfer to or contract to call. */
   toAddress: Address;
   /** Calldata for final call, or empty data for transfer. */
   toCallData?: Hex;
-  /** Let the user edit the amount to send. */
-  isAmountEditable: boolean;
   /** The intent verb, such as Pay, Deposit, or Purchase. Default: Pay */
   intent?: string;
   /** Payment options. By default, all are enabled. */
@@ -223,7 +224,7 @@ export function usePaymentState({
     }
 
     log(`[CHECKOUT] creating+hydrating new order ${order.id}`);
-    // Update units, if amountEditable the user may have changed the amount.
+    // Update units, if isDepositFlow then the user may have changed the amount.
     const toUnits = formatUnits(
       BigInt(order.destFinalCallTokenAmount.amount),
       order.destFinalCallTokenAmount.token.decimals,
@@ -233,8 +234,9 @@ export function usePaymentState({
       paymentInput: {
         ...payParams,
         id: order.id.toString(),
-        toUnits: toUnits,
+        toUnits,
         metadata: order.metadata,
+        isAmountEditable: isDepositFlow,
       },
       platform,
       refundAddress,
@@ -382,7 +384,7 @@ export function usePaymentState({
   const setPayParams = async (payParams: PayParams | undefined) => {
     assert(payParams != null);
     setPayParamsState(payParams);
-    setIsDepositFlow(payParams.isAmountEditable);
+    setIsDepositFlow(payParams.toUnits == null);
 
     generatePreviewOrder(payParams);
   };
@@ -390,8 +392,9 @@ export function usePaymentState({
   const generatePreviewOrder = async (payParams: PayParams) => {
     const newPayId = generatePayId();
     const newId = readDaimoPayOrderID(newPayId).toString();
+    // toUnits is undefined if and only if we're in deposit flow.
     // Set dummy value for deposit flow, since user can edit the amount.
-    const toUnits = payParams.isAmountEditable ? "0" : payParams.toUnits;
+    const toUnits = payParams.toUnits == null ? "0" : payParams.toUnits;
 
     const orderPreview = await trpc.previewOrder.query({
       id: newId,
@@ -400,7 +403,7 @@ export function usePaymentState({
       toUnits,
       toAddress: payParams.toAddress,
       toCallData: payParams.toCallData,
-      isAmountEditable: payParams.isAmountEditable,
+      isAmountEditable: payParams.toUnits == null,
       metadata: {
         intent: payParams.intent ?? "Pay",
         items: [],

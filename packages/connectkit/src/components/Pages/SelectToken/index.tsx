@@ -5,45 +5,15 @@ import { ModalContent, ModalH1, PageContent } from "../../Common/Modal/styles";
 
 import { capitalize, DaimoPayToken, getDisplayPrice } from "@daimo/common";
 import { getChainName } from "@daimo/contract";
-import { motion } from "framer-motion";
-import { chainToLogo } from "../../../assets/chains";
-import styled from "../../../styles/styled";
 import { formatUsd } from "../../../utils/format";
 import Button from "../../Common/Button";
 import OptionsList from "../../Common/OptionsList";
 import { OrderHeader } from "../../Common/OrderHeader";
+import TokenChainLogo from "../../Common/TokenChainLogo";
 
 function getDaimoTokenKey(token: DaimoPayToken) {
   return `${token.chainId}-${token.token}`;
 }
-
-const TokenChainLogo = ({ token }: { token: DaimoPayToken }) => {
-  return (
-    <TokenChainContainer>
-      <img
-        src={token.logoURI}
-        alt={token.symbol}
-        style={{ borderRadius: 9999 }}
-      />
-      <ChainContainer>{chainToLogo[token.chainId]}</ChainContainer>
-    </TokenChainContainer>
-  );
-};
-
-const TokenChainContainer = styled(motion.div)`
-  width: 100%;
-  height: 100%;
-`;
-
-const ChainContainer = styled(motion.div)`
-  position: absolute;
-  width: 16px;
-  height: 16px;
-  border-radius: 9999px;
-  overflow: hidden;
-  bottom: 0px;
-  right: 0px;
-`;
 
 const SelectToken: React.FC = () => {
   const { setRoute, paymentState } = usePayContext();

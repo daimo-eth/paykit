@@ -1,10 +1,9 @@
 import React from "react";
 
-import { ModalBody } from "../../Common/Modal/styles";
-
 import { WalletPaymentOption } from "@daimo/common";
 import defaultTheme from "../../../constants/defaultTheme";
 import styled from "../../../styles/styled";
+import { ModalBody } from "../../Common/Modal/styles";
 
 const PaymentBreakdown: React.FC<{
   paymentOption: WalletPaymentOption;

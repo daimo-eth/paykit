@@ -12,10 +12,7 @@ import {
   WalletBalanceOption,
   WalletPaymentOption,
 } from "@daimo/common";
-import { AnimatePresence, motion } from "framer-motion";
-import { css } from "styled-components";
 import { formatUnits, parseUnits } from "viem";
-import { chainToLogo } from "../../../assets/chains";
 import styled from "../../../styles/styled";
 import {
   formatUsd,
@@ -27,7 +24,7 @@ import {
 import { isValidNumber } from "../../../utils/validateInput";
 import Button from "../../Common/Button";
 import SwitchButton from "../../Common/SwitchButton";
-import CircleSpinner from "../../Spinners/CircleSpinner";
+import TokenLogoSpinner from "../../Spinners/TokenLogoSpinner";
 import AmountInputField from "./AmountInputField";
 
 const MAX_USD_VALUE = 20000;
@@ -69,7 +66,7 @@ const MultiCurrencySelectAmount: React.FC<{
     isUsdValue: boolean,
     newSecondaryValue?: string,
   ) => {
-    const sanitizedEditableValue = /\d/.test(newEditableValue)
+    const sanitizedEditableValue = /^\d+\.?\d*$/.test(newEditableValue)
       ? newEditableValue
       : "0";
 
@@ -83,7 +80,7 @@ const MultiCurrencySelectAmount: React.FC<{
         "down",
       );
       if (newSecondaryValue != null) {
-        const sanitizedSecondaryValue = /\d/.test(newSecondaryValue)
+        const sanitizedSecondaryValue = /^\d+\.?\d*$/.test(newSecondaryValue)
           ? newSecondaryValue
           : "0";
         tokenValue = roundDecimals(
@@ -105,7 +102,7 @@ const MultiCurrencySelectAmount: React.FC<{
         "down",
       );
       if (newSecondaryValue != null) {
-        const sanitizedSecondaryValue = /\d/.test(newSecondaryValue)
+        const sanitizedSecondaryValue = /^\d+\.?\d*$/.test(newSecondaryValue)
           ? newSecondaryValue
           : "0";
         usdValue = roundDecimals(
@@ -203,30 +200,8 @@ const MultiCurrencySelectAmount: React.FC<{
 
   return (
     <PageContent>
-      <LoadingContainer>
-        <AnimationContainer $circle={true}>
-          <AnimatePresence>
-            {chainToLogo[balanceToken.chainId] && (
-              <ChainLogoContainer key="ChainLogoContainer">
-                {chainToLogo[balanceToken.chainId]}
-              </ChainLogoContainer>
-            )}
-            <CircleSpinner
-              key="CircleSpinner"
-              logo={
-                <img
-                  src={balanceToken.logoURI}
-                  alt={balanceToken.symbol}
-                  key={balanceToken.logoURI}
-                />
-              }
-              loading={true}
-              unavailable={false}
-            />
-          </AnimatePresence>
-        </AnimationContainer>
-      </LoadingContainer>
-      <ModalContent>
+      <TokenLogoSpinner token={balanceToken} />
+      <ModalContent $preserveDisplay={true}>
         <AmountInputContainer>
           {/* Invisible div to balance spacing */}
           <MaxButton style={{ visibility: "hidden" }}>Max</MaxButton>
@@ -260,77 +235,12 @@ const MultiCurrencySelectAmount: React.FC<{
   );
 };
 
-const LoadingContainer = styled(motion.div)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 10px auto 16px;
-  height: 120px;
-`;
-const AnimationContainer = styled(motion.div)<{
-  $circle: boolean;
-}>`
-  user-select: none;
-  position: relative;
-  --spinner-error-opacity: 0;
-  &:before {
-    content: "";
-    position: absolute;
-    inset: 1px;
-    opacity: 0;
-    background: var(--ck-body-color-danger);
-    ${(props) =>
-      props.$circle &&
-      css`
-        inset: -5px;
-        border-radius: 50%;
-        background: none;
-        box-shadow: inset 0 0 0 3.5px var(--ck-body-color-danger);
-      `}
-  }
-`;
-const ChainLogoContainer = styled(motion.div)`
-  z-index: 10;
-  position: absolute;
-  right: 2px;
-  bottom: 2px;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 16px;
-  overflow: hidden;
-
-  color: var(--ck-body-background);
-  transition: color 200ms ease;
-
-  &:before {
-    z-index: 5;
-    content: "";
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    transition: opacity 200ms ease;
-    background: var(--ck-body-color);
-  }
-
-  svg {
-    display: block;
-    position: relative;
-    width: 100%;
-    height: 100%;
-  }
-`;
-
 const AmountInputContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
 `;
-
 const SecondaryAmount = styled.div`
   font-size: 16px;
   font-weight: 400;
@@ -341,7 +251,6 @@ const SecondaryAmount = styled.div`
     color: var(--ck-body-color);
   }
 `;
-
 const MaxButton = styled.button`
   display: inline-block;
   padding: 3px 8px;
@@ -355,7 +264,6 @@ const MaxButton = styled.button`
   color: var(--ck-body-color-muted);
   cursor: pointer;
 `;
-
 const SwitchContainer = styled.div`
   display: flex;
   align-items: center;

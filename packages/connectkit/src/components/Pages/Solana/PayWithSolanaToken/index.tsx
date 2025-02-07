@@ -12,12 +12,12 @@ import {
 } from "../../../Common/Modal/styles";
 
 import { assert } from "@daimo/common";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { css } from "styled-components";
 import styled from "../../../../styles/styled";
 import Button from "../../../Common/Button";
 import PaymentBreakdown from "../../../Common/PaymentBreakdown";
-import CircleSpinner from "../../../Spinners/CircleSpinner";
+import TokenLogoSpinner from "../../../Spinners/TokenLogoSpinner";
 
 enum PayState {
   RequestingPayment = "Requesting Payment",
@@ -76,24 +76,9 @@ const PayWithSolanaToken: React.FC = () => {
 
   return (
     <PageContent>
-      <LoadingContainer>
-        <AnimationContainer $circle={true}>
-          <AnimatePresence>
-            <CircleSpinner
-              key="CircleSpinner"
-              logo={
-                <img
-                  src={selectedSolanaTokenOption?.required.token.logoURI}
-                  alt={selectedSolanaTokenOption?.required.token.symbol}
-                  key={selectedSolanaTokenOption?.required.token.logoURI}
-                />
-              }
-              loading={true}
-              unavailable={false}
-            />
-          </AnimatePresence>
-        </AnimationContainer>
-      </LoadingContainer>
+      {selectedSolanaTokenOption && (
+        <TokenLogoSpinner token={selectedSolanaTokenOption.required.token} />
+      )}
       <ModalContent style={{ paddingBottom: 0 }}>
         <ModalH1>{payState}</ModalH1>
         {selectedSolanaTokenOption && (

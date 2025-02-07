@@ -50,7 +50,7 @@ export const OrderHeader = ({ minified = false }: { minified?: boolean }) => {
   } else {
     return (
       <>
-        <TitleAmount>{titleAmountContent}</TitleAmount>
+        {titleAmountContent && <TitleAmount>{titleAmountContent}</TitleAmount>}
         <AnyChainAnyCoinContainer>
           <CoinLogos />
           <Subtitle>1000+ tokens accepted</Subtitle>

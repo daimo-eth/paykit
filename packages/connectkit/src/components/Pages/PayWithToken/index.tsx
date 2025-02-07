@@ -4,14 +4,10 @@ import { ROUTES, usePayContext } from "../../DaimoPay";
 import { ModalContent, ModalH1, PageContent } from "../../Common/Modal/styles";
 
 import { WalletPaymentOption } from "@daimo/common";
-import { AnimatePresence, motion } from "framer-motion";
-import { css } from "styled-components";
 import { useChainId, useSwitchChain } from "wagmi";
-import { chainToLogo } from "../../../assets/chains";
-import styled from "../../../styles/styled";
 import Button from "../../Common/Button";
 import PaymentBreakdown from "../../Common/PaymentBreakdown";
-import CircleSpinner from "../../Spinners/CircleSpinner";
+import TokenLogoSpinner from "../../Spinners/TokenLogoSpinner";
 
 enum PayState {
   RequestingPayment = "Requesting Payment",
@@ -115,29 +111,10 @@ const PayWithToken: React.FC = () => {
 
   return (
     <PageContent>
-      <LoadingContainer>
-        <AnimationContainer $circle={true}>
-          <AnimatePresence>
-            <ChainLogoContainer key="ChainLogoContainer">
-              {selectedTokenOption &&
-                chainToLogo[selectedTokenOption.required.token.chainId]}
-            </ChainLogoContainer>
-            <CircleSpinner
-              key="CircleSpinner"
-              logo={
-                <img
-                  src={selectedTokenOption?.required.token.logoURI}
-                  alt={selectedTokenOption?.required.token.symbol}
-                  key={selectedTokenOption?.required.token.logoURI}
-                />
-              }
-              loading={true}
-              unavailable={false}
-            />
-          </AnimatePresence>
-        </AnimationContainer>
-      </LoadingContainer>
-      <ModalContent style={{ paddingBottom: 0 }}>
+      {selectedTokenOption && (
+        <TokenLogoSpinner token={selectedTokenOption.required.token} />
+      )}
+      <ModalContent style={{ paddingBottom: 0 }} $preserveDisplay={true}>
         <ModalH1>{payState}</ModalH1>
         {selectedTokenOption && (
           <PaymentBreakdown paymentOption={selectedTokenOption} />
@@ -155,69 +132,5 @@ const PayWithToken: React.FC = () => {
     </PageContent>
   );
 };
-
-const LoadingContainer = styled(motion.div)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 10px auto 16px;
-  height: 120px;
-`;
-const AnimationContainer = styled(motion.div)<{
-  $circle: boolean;
-}>`
-  user-select: none;
-  position: relative;
-  --spinner-error-opacity: 0;
-  &:before {
-    content: "";
-    position: absolute;
-    inset: 1px;
-    opacity: 0;
-    background: var(--ck-body-color-danger);
-    ${(props) =>
-      props.$circle &&
-      css`
-        inset: -5px;
-        border-radius: 50%;
-        background: none;
-        box-shadow: inset 0 0 0 3.5px var(--ck-body-color-danger);
-      `}
-  }
-`;
-const ChainLogoContainer = styled(motion.div)`
-  z-index: 10;
-  position: absolute;
-  right: 2px;
-  bottom: 2px;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 16px;
-  overflow: hidden;
-
-  color: var(--ck-body-background);
-  transition: color 200ms ease;
-
-  &:before {
-    z-index: 5;
-    content: "";
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    transition: opacity 200ms ease;
-    background: var(--ck-body-color);
-  }
-
-  svg {
-    display: block;
-    position: relative;
-    width: 100%;
-    height: 100%;
-  }
-`;
 
 export default PayWithToken;

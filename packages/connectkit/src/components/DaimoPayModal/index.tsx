@@ -30,7 +30,7 @@ import PayWithSolanaToken from "../Pages/Solana/PayWithSolanaToken";
 import SelectSolanaAmount from "../Pages/Solana/SelectSolanaAmount";
 import SelectSolanaToken from "../Pages/Solana/SelectSolanaToken";
 import WaitingDepositAddress from "../Pages/WaitingDepositAddress";
-import WaitingOther from "../Pages/WaitingOther";
+import WaitingExternal from "../Pages/WaitingExternal";
 
 const customThemeDefault: object = {};
 
@@ -92,7 +92,7 @@ export const DaimoPayModal: React.FC<{
     } else if (context.route === ROUTES.SELECT_DEPOSIT_ADDRESS_AMOUNT) {
       setSelectedDepositAddressOption(undefined);
       context.setRoute(ROUTES.SELECT_DEPOSIT_ADDRESS_CHAIN);
-    } else if (context.route === ROUTES.WAITING_OTHER) {
+    } else if (context.route === ROUTES.WAITING_EXTERNAL) {
       setPaymentWaitingMessage(undefined);
       if (isDepositFlow) {
         assert(payParams != null, "payParams cannot be null in deposit flow");
@@ -146,7 +146,7 @@ export const DaimoPayModal: React.FC<{
     [ROUTES.SELECT_AMOUNT]: <SelectAmount />,
     [ROUTES.SELECT_EXTERNAL_AMOUNT]: <SelectExternalAmount />,
     [ROUTES.SELECT_DEPOSIT_ADDRESS_AMOUNT]: <SelectDepositAddressAmount />,
-    [ROUTES.WAITING_OTHER]: <WaitingOther />,
+    [ROUTES.WAITING_EXTERNAL]: <WaitingExternal />,
     [ROUTES.SELECT_DEPOSIT_ADDRESS_CHAIN]: <SelectDepositAddressChain />,
     [ROUTES.WAITING_DEPOSIT_ADDRESS]: <WaitingDepositAddress />,
     [ROUTES.CONFIRMATION]: <Confirmation />,
