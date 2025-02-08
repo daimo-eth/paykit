@@ -6,21 +6,25 @@ import { AnimationContainer, LoadingContainer } from "../styles";
 const ExternalPaymentSpinner = ({
   logoURI,
   logoShape,
+  showSpinner = true,
 }: {
   logoURI: string;
   logoShape: "circle" | "squircle";
+  showSpinner?: boolean;
 }) => {
   const optionSpinner = (() => {
     if (logoShape === "circle") {
       return (
         <CircleSpinner
           logo={<img src={logoURI} />}
-          loading={true}
+          loading={showSpinner}
           unavailable={false}
         />
       );
     } else {
-      return <SquircleSpinner logo={<img src={logoURI} />} loading={true} />;
+      return (
+        <SquircleSpinner logo={<img src={logoURI} />} loading={showSpinner} />
+      );
     }
   })();
 

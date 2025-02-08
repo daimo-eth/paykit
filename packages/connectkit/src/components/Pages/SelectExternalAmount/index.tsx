@@ -56,6 +56,12 @@ const SelectExternalAmount: React.FC = () => {
     );
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && !continueDisabled) {
+      handleContinue();
+    }
+  };
+
   const handleContinue = () => {
     paymentState.setChosenUsd(Number(sanitizeNumber(usdInput)));
     setRoute(ROUTES.WAITING_EXTERNAL);
@@ -66,10 +72,15 @@ const SelectExternalAmount: React.FC = () => {
       <ExternalPaymentSpinner
         logoURI={selectedExternalOption.logoURI}
         logoShape={selectedExternalOption.logoShape}
+        showSpinner={false}
       />
-      <ModalContent>
+      <ModalContent $preserveDisplay={true}>
         <AmountInputContainer>
-          <AmountInputField value={usdInput} onChange={handleAmountChange} />
+          <AmountInputField
+            value={usdInput}
+            onChange={handleAmountChange}
+            onKeyDown={handleKeyDown}
+          />
         </AmountInputContainer>
         {message && <ModalBody>{message}</ModalBody>}
         <Button onClick={handleContinue} disabled={continueDisabled}>

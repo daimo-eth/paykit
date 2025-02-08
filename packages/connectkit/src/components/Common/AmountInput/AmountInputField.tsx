@@ -51,12 +51,13 @@ const AmountInputField: React.FC<{
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   currency?: string;
-}> = ({ value, onChange, currency = "$" }) => {
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+}> = ({ value, onChange, currency = "$", onKeyDown }) => {
   // Focus the input when the component mounts so the user can start typing immediately
   const inputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     inputRef.current?.focus();
-  }, []);
+  }, [value]);
 
   return (
     <Container>
@@ -67,6 +68,7 @@ const AmountInputField: React.FC<{
         value={value}
         onChange={onChange}
         placeholder="0.00"
+        onKeyDown={onKeyDown}
       />
       {currency !== "$" && (
         <AnimatedCurrency $small>{currency}</AnimatedCurrency>

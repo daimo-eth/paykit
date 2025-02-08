@@ -5,7 +5,13 @@ import CircleSpinner from "../CircleSpinner";
 import { AnimationContainer, LoadingContainer } from "../styles";
 import { ChainLogoContainer } from "./styles";
 
-const TokenLogoSpinner = ({ token }: { token: DaimoPayToken }) => {
+const TokenLogoSpinner = ({
+  token,
+  showSpinner = true,
+}: {
+  token: DaimoPayToken;
+  showSpinner?: boolean;
+}) => {
   return (
     <LoadingContainer>
       <AnimationContainer $circle={true}>
@@ -20,7 +26,7 @@ const TokenLogoSpinner = ({ token }: { token: DaimoPayToken }) => {
             logo={
               <img src={token.logoURI} alt={token.symbol} key={token.logoURI} />
             }
-            loading={true}
+            loading={showSpinner}
             unavailable={false}
           />
         </AnimatePresence>

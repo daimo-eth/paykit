@@ -126,6 +126,12 @@ const MultiCurrencySelectAmount: React.FC<{
     updateValues(usdValue, tokenValue, isEditingUsd);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && !continueDisabled) {
+      handleContinue();
+    }
+  };
+
   const handleSwitchCurrency = () => {
     updateValues(usdValue, tokenValue, !isEditingUsd);
   };
@@ -148,7 +154,7 @@ const MultiCurrencySelectAmount: React.FC<{
 
   return (
     <PageContent>
-      <TokenLogoSpinner token={balanceToken} />
+      <TokenLogoSpinner token={balanceToken} showSpinner={false} />
       <ModalContent $preserveDisplay={true}>
         <AmountInputContainer>
           {/* Invisible div to balance spacing */}
@@ -157,6 +163,7 @@ const MultiCurrencySelectAmount: React.FC<{
             value={isEditingUsd ? usdValue : tokenValue}
             onChange={handleAmountChange}
             currency={isEditingUsd ? "$" : balanceToken.symbol}
+            onKeyDown={handleKeyDown}
           />
           <MaxButton onClick={handleMax}>Max</MaxButton>
         </AmountInputContainer>

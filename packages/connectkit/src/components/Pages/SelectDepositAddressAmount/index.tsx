@@ -52,6 +52,12 @@ const SelectDepositAddressAmount: React.FC = () => {
     setContinueDisabled(usd <= 0 || usd < MIN_USD_VALUE || usd > maxUsdLimit);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && !continueDisabled) {
+      handleContinue();
+    }
+  };
+
   const handleContinue = () => {
     paymentState.setChosenUsd(Number(sanitizeNumber(usdInput)));
     setRoute(ROUTES.WAITING_DEPOSIT_ADDRESS);
@@ -62,10 +68,15 @@ const SelectDepositAddressAmount: React.FC = () => {
       <ExternalPaymentSpinner
         logoURI={selectedDepositAddressOption.logoURI}
         logoShape="circle"
+        showSpinner={false}
       />
-      <ModalContent>
+      <ModalContent $preserveDisplay={true}>
         <AmountInputContainer>
-          <AmountInputField value={usdInput} onChange={handleAmountChange} />
+          <AmountInputField
+            value={usdInput}
+            onChange={handleAmountChange}
+            onKeyDown={handleKeyDown}
+          />
         </AmountInputContainer>
         {message && <ModalBody>{message}</ModalBody>}
         <Button onClick={handleContinue} disabled={continueDisabled}>
