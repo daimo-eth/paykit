@@ -7,10 +7,12 @@ export function useSolanaPaymentOptions({
   trpc,
   address,
   usdRequired,
+  isDepositFlow,
 }: {
   trpc: TrpcClient;
   address: string | undefined;
   usdRequired: number | undefined;
+  isDepositFlow: boolean;
 }) {
   const [options, setOptions] = useState<WalletPaymentOption[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -24,7 +26,8 @@ export function useSolanaPaymentOptions({
       try {
         const newOptions = await trpc.getSolanaPaymentOptions.query({
           pubKey: address,
-          usdRequired,
+          // API expects undefined for deposit flow.
+          usdRequired: isDepositFlow ? undefined : usdRequired,
         });
         setOptions(newOptions);
       } catch (error) {
@@ -37,7 +40,7 @@ export function useSolanaPaymentOptions({
     if (address != null && usdRequired != null) {
       refreshWalletPaymentOptions();
     }
-  }, [address, usdRequired]);
+  }, [address, usdRequired, isDepositFlow]);
 
   return {
     options,

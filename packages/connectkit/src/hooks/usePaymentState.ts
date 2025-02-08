@@ -158,18 +158,18 @@ export function usePaymentState({
   const walletPaymentOptions = useWalletPaymentOptions({
     trpc,
     address: senderAddr,
-    usdRequired: isDepositFlow
-      ? 0
-      : daimoPayOrder?.destFinalCallTokenAmount.usd,
+    usdRequired: daimoPayOrder?.destFinalCallTokenAmount.usd,
     destChainId: daimoPayOrder?.destFinalCallTokenAmount.token.chainId,
     preferredChains: daimoPayOrder?.metadata.payer?.preferredChains,
     preferredTokens: daimoPayOrder?.metadata.payer?.preferredTokens,
+    isDepositFlow,
     log,
   });
   const solanaPaymentOptions = useSolanaPaymentOptions({
     trpc,
     address: solanaPubKey,
     usdRequired: daimoPayOrder?.destFinalCallTokenAmount.usd,
+    isDepositFlow,
   });
   const depositAddressOptions = useDepositAddressOptions({
     trpc,
