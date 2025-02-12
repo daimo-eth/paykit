@@ -3,6 +3,7 @@ import {
   assertNotNull,
   DaimoPayOrder,
   DaimoPayTokenAmount,
+  DaimoPayUserMetadata,
   DepositAddressPaymentOptionData,
   DepositAddressPaymentOptionMetadata,
   DepositAddressPaymentOptions,
@@ -61,6 +62,8 @@ export interface PayParams {
   preferredChains?: number[];
   /** Preferred tokens. These appear first in the token list. */
   preferredTokens?: { chain: number; address: Address }[];
+  /** Developer metadata. E.g. correlation ID. */
+  metadata?: DaimoPayUserMetadata;
 }
 
 /** Creates (or loads) a payment and manages the corresponding modal. */
@@ -215,6 +218,7 @@ export function usePaymentState({
         id: order.id.toString(),
         toUnits,
         metadata: order.metadata,
+        userMetadata: payParams.metadata,
         isAmountEditable: isDepositFlow,
       },
       platform,
@@ -399,6 +403,7 @@ export function usePaymentState({
           preferredTokens: payParams.preferredTokens,
         },
       },
+      userMetadata: payParams.metadata,
     });
 
     setDaimoPayOrder(orderPreview);

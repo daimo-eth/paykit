@@ -8,6 +8,7 @@ import {
   DaimoPayIntentStatus,
   DaimoPayOrderMode,
   DaimoPayOrderStatusSource,
+  DaimoPayUserMetadata,
   PaymentBouncedEvent,
   PaymentCompletedEvent,
   PaymentStartedEvent,
@@ -64,6 +65,10 @@ type PayButtonPaymentProps =
        * Preferred tokens. These appear first in the token list.
        */
       preferredTokens?: { chain: number; address: Address }[];
+      /**
+       * Developer metadata. E.g. correlation ID.
+       * */
+      metadata?: DaimoPayUserMetadata;
     }
   | {
       /** The payment ID, generated via the Daimo Pay API. Replaces params above. */
@@ -154,6 +159,7 @@ function DaimoPayButtonCustom(props: DaimoPayButtonCustomProps) {
           paymentOptions: props.paymentOptions,
           preferredChains: props.preferredChains,
           preferredTokens: props.preferredTokens,
+          metadata: props.metadata,
         }
       : null;
   let payId = "payId" in props ? props.payId : null;
@@ -191,6 +197,7 @@ function DaimoPayButtonCustom(props: DaimoPayButtonCustomProps) {
   };
   const hide = () => context.setOpen(false);
 
+  // Emit onPaymentStarted event when payment is initiated
   useEffect(() => {
     if (hydOrder == null || !isStarted) return;
     onPaymentStarted?.({
@@ -198,9 +205,11 @@ function DaimoPayButtonCustom(props: DaimoPayButtonCustomProps) {
       type: "payment_started",
       chainId: assertNotNull(hydOrder.sourceTokenAmount).token.chainId,
       txHash: assertNotNull(hydOrder.sourceInitiateTxHash),
+      metadata: hydOrder.userMetadata,
     });
   }, [isStarted]);
 
+  // Emit onPaymentCompleted or onPaymentBounced event when payment is completed or bounced
   useEffect(() => {
     if (hydOrder == null) return;
     if (hydOrder.intentStatus === DaimoPayIntentStatus.PENDING) return;
@@ -211,6 +220,7 @@ function DaimoPayButtonCustom(props: DaimoPayButtonCustomProps) {
       txHash: assertNotNull(
         hydOrder.destFastFinishTxHash ?? hydOrder.destClaimTxHash,
       ),
+      metadata: hydOrder.userMetadata,
     };
     if (hydOrder.intentStatus === DaimoPayIntentStatus.SUCCESSFUL) {
       onPaymentCompleted?.({ type: "payment_completed", ...commonFields });
