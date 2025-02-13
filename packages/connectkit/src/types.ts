@@ -56,13 +56,6 @@ export type DaimoPayModalOptions = {
   closeOnSuccess?: boolean;
 };
 
-/** Payment status. See webhooks and React useDaimoPayStatus() hook. */
-export type PaymentStatus =
-  | "payment_pending"
-  | "payment_started"
-  | "payment_completed"
-  | "payment_bounced";
-
 // TODO: move types here from daimo-common/daimoPay.ts:
 // type PayEventBase = {
 //   /** The type of payment event. */
