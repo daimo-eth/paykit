@@ -21,7 +21,6 @@ import { Address, formatUnits, Hex, parseUnits } from "viem";
 import { useAccount, useEnsName } from "wagmi";
 
 import { DaimoPayModalOptions, PaymentOption } from "../types";
-import { generatePayId } from "../utils/exports";
 import { detectPlatform } from "../utils/platform";
 import { TrpcClient } from "../utils/trpc";
 import { useDepositAddressOptions } from "./useDepositAddressOptions";
@@ -62,6 +61,8 @@ export interface PayParams {
   preferredChains?: number[];
   /** Preferred tokens. These appear first in the token list. */
   preferredTokens?: { chain: number; address: Address }[];
+  /** External ID. E.g. a correlation ID. */
+  externalId?: string;
   /** Developer metadata. E.g. correlation ID. */
   metadata?: DaimoPayUserMetadata;
 }
@@ -380,14 +381,12 @@ export function usePaymentState({
   };
 
   const generatePreviewOrder = async (payParams: PayParams) => {
-    const newPayId = generatePayId();
-    const newId = readDaimoPayOrderID(newPayId).toString();
     // toUnits is undefined if and only if we're in deposit flow.
     // Set dummy value for deposit flow, since user can edit the amount.
     const toUnits = payParams.toUnits == null ? "0" : payParams.toUnits;
 
     const orderPreview = await trpc.previewOrder.query({
-      id: newId,
+      appId: payParams.appId,
       toChain: payParams.toChain,
       toToken: payParams.toToken,
       toUnits,
@@ -403,6 +402,7 @@ export function usePaymentState({
           preferredTokens: payParams.preferredTokens,
         },
       },
+      externalId: payParams.externalId,
       userMetadata: payParams.metadata,
     });
 

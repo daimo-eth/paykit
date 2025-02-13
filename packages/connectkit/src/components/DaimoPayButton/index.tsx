@@ -8,6 +8,7 @@ import {
   DaimoPayIntentStatus,
   DaimoPayOrderMode,
   DaimoPayUserMetadata,
+  getDaimoPayOrderView,
   PaymentBouncedEvent,
   PaymentCompletedEvent,
   PaymentStartedEvent,
@@ -64,6 +65,10 @@ type PayButtonPaymentProps =
        * Preferred tokens. These appear first in the token list.
        */
       preferredTokens?: { chain: number; address: Address }[];
+      /**
+       * External ID. E.g. a correlation ID.
+       */
+      externalId?: string;
       /**
        * Developer metadata. E.g. correlation ID.
        * */
@@ -158,6 +163,7 @@ function DaimoPayButtonCustom(props: DaimoPayButtonCustomProps) {
           paymentOptions: props.paymentOptions,
           preferredChains: props.preferredChains,
           preferredTokens: props.preferredTokens,
+          externalId: props.externalId,
           metadata: props.metadata,
         }
       : null;
@@ -209,7 +215,7 @@ function DaimoPayButtonCustom(props: DaimoPayButtonCustomProps) {
           hydOrder.sourceInitiateTxHash,
           `source initiate tx hash null on order ${hydOrder.id} when intent status is ${intentStatus}`,
         ),
-        metadata: hydOrder.userMetadata,
+        payment: getDaimoPayOrderView(hydOrder),
       });
     } else if (
       intentStatus === DaimoPayIntentStatus.COMPLETED ||
@@ -223,7 +229,7 @@ function DaimoPayButtonCustom(props: DaimoPayButtonCustomProps) {
           hydOrder.destFastFinishTxHash ?? hydOrder.destClaimTxHash,
           `dest tx hash null on order ${hydOrder.id} when intent status is ${intentStatus}`,
         ),
-        metadata: hydOrder.userMetadata,
+        payment: getDaimoPayOrderView(hydOrder),
       };
 
       if (intentStatus === DaimoPayIntentStatus.COMPLETED) {
@@ -232,7 +238,7 @@ function DaimoPayButtonCustom(props: DaimoPayButtonCustomProps) {
         onPaymentBounced?.(event as PaymentBouncedEvent);
       }
     }
-  }, [hydOrder, intentStatus]);
+  }, [hydOrder?.id, intentStatus]);
 
   useEffect(() => {
     if (props.defaultOpen) {
