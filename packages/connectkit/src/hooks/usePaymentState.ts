@@ -283,7 +283,7 @@ export function usePaymentState({
     );
 
     log(
-      `[PAY EXTERNAL] Hydrated order: ${JSON.stringify(
+      `[PAY EXTERNAL] hydrated order: ${JSON.stringify(
         hydratedOrder,
       )}, checking out with external payment: ${option}`,
     );
@@ -304,7 +304,7 @@ export function usePaymentState({
     setDaimoPayOrder(hydratedOrder);
 
     log(
-      `[PAY DEPOSIT ADDRESS] Hydrated order: ${JSON.stringify(
+      `[PAY DEPOSIT ADDRESS] hydrated order: ${JSON.stringify(
         hydratedOrder,
       )}, checking out with deposit address: ${option}`,
     );
@@ -330,22 +330,27 @@ export function usePaymentState({
 
     // Don't overwrite the order if a new order was generated.
     if (daimoPayOrder == null || order.id === daimoPayOrder.id) {
+      log(`[CHECKOUT] refreshed order: ${order.id}`);
       setDaimoPayOrder(order);
+    } else {
+      log(
+        `[CHECKOUT] IGNORING refreshOrder, wrong ID: ${order.id} vs ${daimoPayOrder.id}`,
+      );
     }
   }, [daimoPayOrder?.id]);
 
   /** User picked a different deposit amount. */
   const setChosenUsd = (usd: number) => {
-    log(`[CHECKOUT] Setting chosen USD amount to ${usd}`);
     assert(!!daimoPayOrder, "[SET CHOSEN USD] daimoPayOrder cannot be null");
     const token = daimoPayOrder.destFinalCallTokenAmount.token;
-    const tokenAmount = parseUnits(
-      (usd / token.usd).toString(),
-      token.decimals,
-    );
+    const tokenUnits = (usd / token.usd).toString();
+    const tokenAmount = parseUnits(tokenUnits, token.decimals);
 
     // TODO: remove amount from destFinalCall, it is redundant with
     // destFinalCallTokenAmount. Here, we only modify one and not the other.
+    log(
+      `[CHECKOUT] setting chosen USD amount to $${usd} = ${tokenUnits} ${token.symbol}`,
+    );
     setDaimoPayOrder({
       ...daimoPayOrder,
       destFinalCallTokenAmount: {
@@ -368,10 +373,10 @@ export function usePaymentState({
 
       const { order } = await trpc.getOrder.query({ id });
       if (!order) {
-        console.error(`[CHECKOUT] No order found for ${payId}`);
+        console.error(`[CHECKOUT] setPayId: no order found for ${payId}`);
         return;
       }
-      log(`[CHECKOUT] fetched order: ${JSON.stringify(order)}`);
+      log(`[CHECKOUT] setPayId: fetched order: ${JSON.stringify(order)}`);
 
       setDaimoPayOrder(order);
     },
@@ -413,6 +418,7 @@ export function usePaymentState({
       userMetadata: payParams.metadata,
     });
 
+    log(`[CHECKOUT] generated preview: ${JSON.stringify(orderPreview)}`);
     setDaimoPayOrder(orderPreview);
   };
 

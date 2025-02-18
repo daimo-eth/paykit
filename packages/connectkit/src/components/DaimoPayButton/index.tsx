@@ -176,7 +176,7 @@ function DaimoPayButtonCustom(props: DaimoPayButtonCustomProps) {
     } else if (payParams != null) {
       paymentState.setPayParams(payParams);
     }
-  }, [payId, ...Object.values(payParams || {})]);
+  }, [payId, ...JSON.stringify(payParams || {})]);
 
   const { setConfirmationMessage } = context;
   useEffect(() => {

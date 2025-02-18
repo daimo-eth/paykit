@@ -10,6 +10,7 @@ import { Buffer } from "buffer";
 import React, {
   createContext,
   createElement,
+  useCallback,
   useEffect,
   useMemo,
   useState,
@@ -267,7 +268,18 @@ const DaimoPayProviderWithoutSolana = ({
   // plus all associated status and callbacks. In order for useContext() and
   // downstream hooks like useDaimoPayStatus() to work correctly, we must set
   // set refresh context when payment status changes; done via setDaimoPayOrder.
-  const [daimoPayOrder, setDaimoPayOrder] = useState<DaimoPayOrder>();
+  const [daimoPayOrder, setDaimoPayOrderInner] = useState<DaimoPayOrder>();
+  const setDaimoPayOrder = useCallback(
+    (order: DaimoPayOrder) => {
+      setDaimoPayOrderInner(order);
+      let extra = `> $${order.destFinalCallTokenAmount.usd.toFixed(2)} to ${order.destFinalCallTokenAmount.token.chainId} ${order.destFinalCall.to}`;
+      if (order.mode === DaimoPayOrderMode.HYDRATED) {
+        extra += ` via ${order.intentAddr} ${order.sourceStatus} ${order.intentStatus}`;
+      }
+      log(`[PAY] setDaimoPayOrder: ${order.id} ${extra}`);
+    },
+    [setDaimoPayOrderInner],
+  );
   const paymentState = usePaymentState({
     trpc,
     daimoPayOrder,

@@ -41,10 +41,11 @@ export function usePayWithToken({
     });
 
     log(
-      `[CHECKOUT] Hydrated order: ${JSON.stringify(
+      `[CHECKOUT] hydrated order: ${JSON.stringify(
         hydratedOrder,
       )}, checking out with ${tokenAmount.token.token}`,
     );
+    setDaimoPayOrder(hydratedOrder);
 
     const txHash = await (async () => {
       try {
@@ -62,11 +63,8 @@ export function usePayWithToken({
           });
         }
       } catch (e) {
-        console.error(`[CHECKOUT] Error sending token: ${e}`);
-        setDaimoPayOrder(hydratedOrder);
+        console.error(`[CHECKOUT] error sending token: ${e}`);
         throw e;
-      } finally {
-        setDaimoPayOrder(hydratedOrder);
       }
     })();
 
@@ -82,6 +80,7 @@ export function usePayWithToken({
         sourceToken: tokenAmount.token.token,
         sourceAmount: tokenAmount.amount,
       });
+      // TODO: update order immediately, do not wait for polling.
     }
   };
 
