@@ -31,7 +31,11 @@ const ConnectSolana: React.FC = () => {
   useEffect(() => {
     if (isConnected) {
       // Wait so user can see it's connected
-      setTimeout(() => setRoute(ROUTES.SOLANA_SELECT_TOKEN), 500);
+      const meta = {
+        event: "wait-solana-connected",
+        walletName: solanaWallets.wallet?.adapter.name,
+      };
+      setTimeout(() => setRoute(ROUTES.SOLANA_SELECT_TOKEN, meta), 500);
     }
   }, [isConnected]);
 

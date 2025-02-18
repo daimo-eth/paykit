@@ -123,7 +123,7 @@ export function usePaymentState({
   trpc: TrpcClient;
   daimoPayOrder: DaimoPayOrder | undefined;
   setDaimoPayOrder: (o: DaimoPayOrder) => void;
-  setOpen: (showModal: boolean) => void;
+  setOpen: (showModal: boolean, meta?: Record<string, any>) => void;
   log: (...args: any[]) => void;
 }): PaymentState {
   // Browser state.
@@ -425,7 +425,7 @@ export function usePaymentState({
   const onSuccess = ({ txHash, txURL }: { txHash: string; txURL?: string }) => {
     if (modalOptions?.closeOnSuccess) {
       log(`[CHECKOUT] transaction succeeded, closing: ${txHash} ${txURL}`);
-      setTimeout(() => setOpen(false), 1000);
+      setTimeout(() => setOpen(false, { event: "wait-success" }), 1000);
     }
   };
 

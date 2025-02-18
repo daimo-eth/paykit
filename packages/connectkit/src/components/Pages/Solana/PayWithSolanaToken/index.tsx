@@ -46,7 +46,7 @@ const PayWithSolanaToken: React.FC = () => {
 
       setPayState(PayState.RequestSuccessful);
       setTimeout(() => {
-        setRoute(ROUTES.CONFIRMATION);
+        setRoute(ROUTES.CONFIRMATION, { event: "wait-pay-with-solana" });
       }, 200);
     } catch (error) {
       console.error(error);
@@ -95,7 +95,7 @@ const PayWithSolanaToken: React.FC = () => {
                 "[PAY SOLANA] payParams cannot be null in deposit flow",
               );
               generatePreviewOrder(payParams);
-              setRoute(ROUTES.SELECT_METHOD);
+              setRoute(ROUTES.SELECT_METHOD, { event: "click-select-another" });
             }}
           >
             Select Another Method

@@ -48,10 +48,15 @@ const SelectToken: React.FC = () => {
         ],
         onClick: () => {
           setSelectedTokenOption(option);
+          const meta = {
+            event: "click-token",
+            tokenSymbol: option.balance.token.symbol,
+            chainId: option.balance.token.chainId,
+          };
           if (isDepositFlow) {
-            setRoute(ROUTES.SELECT_AMOUNT);
+            setRoute(ROUTES.SELECT_AMOUNT, meta);
           } else {
-            setRoute(ROUTES.PAY_WITH_TOKEN);
+            setRoute(ROUTES.PAY_WITH_TOKEN, meta);
           }
         },
         disabled,

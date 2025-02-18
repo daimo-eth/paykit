@@ -70,7 +70,11 @@ const WaitingDepositAddress: React.FC = () => {
             We're unable to process {selectedDepositAddressOption?.id} payments
             at this time. Please select another payment method.
           </ModalBody>
-          <Button onClick={() => setRoute(ROUTES.SELECT_METHOD)}>
+          <Button
+            onClick={() =>
+              setRoute(ROUTES.SELECT_METHOD, { event: "click-select-another" })
+            }
+          >
             Select Another Method
           </Button>
         </ModalContent>

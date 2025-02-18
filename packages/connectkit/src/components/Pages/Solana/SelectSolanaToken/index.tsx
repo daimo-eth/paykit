@@ -47,10 +47,15 @@ const SelectSolanaToken: React.FC = () => {
         ],
         onClick: () => {
           setSelectedSolanaTokenOption(option);
+          const meta = {
+            event: "click-solana-token",
+            tokenSymbol: option.balance.token.symbol,
+            chainId: option.balance.token.chainId,
+          };
           if (isDepositFlow) {
-            setRoute(ROUTES.SOLANA_SELECT_AMOUNT);
+            setRoute(ROUTES.SOLANA_SELECT_AMOUNT, meta);
           } else {
-            setRoute(ROUTES.SOLANA_PAY_WITH_TOKEN);
+            setRoute(ROUTES.SOLANA_PAY_WITH_TOKEN, meta);
           }
         },
         disabled,

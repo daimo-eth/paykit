@@ -58,7 +58,7 @@ export const DaimoPayModal: React.FC<{
     setSelectedDepositAddressOption,
   } = paymentState;
 
-  const { isConnected, chain } = useAccount();
+  const { isConnected, connector, chain, address } = useAccount();
   const chainIsSupported = useChainIsSupported(chain?.id);
 
   //if chain is unsupported we enforce a "switch chain" prompt
@@ -74,21 +74,22 @@ export const DaimoPayModal: React.FC<{
     context.route !== ROUTES.CONFIRMATION;
 
   const onBack = () => {
+    const meta = { event: "click-back" };
     if (context.route === ROUTES.DOWNLOAD) {
-      context.setRoute(ROUTES.CONNECT);
+      context.setRoute(ROUTES.CONNECT, meta);
     } else if (context.route === ROUTES.CONNECTORS) {
-      context.setRoute(ROUTES.SELECT_METHOD);
+      context.setRoute(ROUTES.SELECT_METHOD, meta);
     } else if (context.route === ROUTES.SELECT_TOKEN) {
-      context.setRoute(ROUTES.SELECT_METHOD);
+      context.setRoute(ROUTES.SELECT_METHOD, meta);
     } else if (context.route === ROUTES.SELECT_AMOUNT) {
       setSelectedTokenOption(undefined);
-      context.setRoute(ROUTES.SELECT_TOKEN);
+      context.setRoute(ROUTES.SELECT_TOKEN, meta);
     } else if (context.route === ROUTES.SELECT_EXTERNAL_AMOUNT) {
       setSelectedExternalOption(undefined);
-      context.setRoute(ROUTES.SELECT_METHOD);
+      context.setRoute(ROUTES.SELECT_METHOD, meta);
     } else if (context.route === ROUTES.SELECT_DEPOSIT_ADDRESS_AMOUNT) {
       setSelectedDepositAddressOption(undefined);
-      context.setRoute(ROUTES.SELECT_DEPOSIT_ADDRESS_CHAIN);
+      context.setRoute(ROUTES.SELECT_DEPOSIT_ADDRESS_CHAIN, meta);
     } else if (context.route === ROUTES.WAITING_EXTERNAL) {
       setPaymentWaitingMessage(undefined);
       if (isDepositFlow) {
@@ -97,10 +98,10 @@ export const DaimoPayModal: React.FC<{
           "[PAY MODAL] payParams cannot be null in deposit flow",
         );
         generatePreviewOrder(payParams);
-        context.setRoute(ROUTES.SELECT_EXTERNAL_AMOUNT);
+        context.setRoute(ROUTES.SELECT_EXTERNAL_AMOUNT, meta);
       } else {
         setSelectedExternalOption(undefined);
-        context.setRoute(ROUTES.SELECT_METHOD);
+        context.setRoute(ROUTES.SELECT_METHOD, meta);
       }
     } else if (context.route === ROUTES.PAY_WITH_TOKEN) {
       if (isDepositFlow) {
@@ -109,13 +110,13 @@ export const DaimoPayModal: React.FC<{
           "[PAY MODAL] payParams cannot be null in deposit flow",
         );
         generatePreviewOrder(payParams);
-        context.setRoute(ROUTES.SELECT_AMOUNT);
+        context.setRoute(ROUTES.SELECT_AMOUNT, meta);
       } else {
         setSelectedTokenOption(undefined);
-        context.setRoute(ROUTES.SELECT_TOKEN);
+        context.setRoute(ROUTES.SELECT_TOKEN, meta);
       }
     } else if (context.route === ROUTES.ONBOARDING) {
-      context.setRoute(ROUTES.CONNECTORS);
+      context.setRoute(ROUTES.CONNECTORS, meta);
     } else if (context.route === ROUTES.WAITING_DEPOSIT_ADDRESS) {
       if (isDepositFlow) {
         assert(
@@ -123,14 +124,14 @@ export const DaimoPayModal: React.FC<{
           "[PAY MODAL] payParams cannot be null in deposit flow",
         );
         generatePreviewOrder(payParams);
-        context.setRoute(ROUTES.SELECT_DEPOSIT_ADDRESS_AMOUNT);
+        context.setRoute(ROUTES.SELECT_DEPOSIT_ADDRESS_AMOUNT, meta);
       } else {
         setSelectedDepositAddressOption(undefined);
-        context.setRoute(ROUTES.SELECT_DEPOSIT_ADDRESS_CHAIN);
+        context.setRoute(ROUTES.SELECT_DEPOSIT_ADDRESS_CHAIN, meta);
       }
     } else if (context.route === ROUTES.SOLANA_SELECT_AMOUNT) {
       setSelectedSolanaTokenOption(undefined);
-      context.setRoute(ROUTES.SOLANA_SELECT_TOKEN);
+      context.setRoute(ROUTES.SOLANA_SELECT_TOKEN, meta);
     } else if (context.route === ROUTES.SOLANA_PAY_WITH_TOKEN) {
       if (isDepositFlow) {
         assert(
@@ -138,13 +139,13 @@ export const DaimoPayModal: React.FC<{
           "[PAY MODAL] payParams cannot be null in deposit flow",
         );
         generatePreviewOrder(payParams);
-        context.setRoute(ROUTES.SOLANA_SELECT_AMOUNT);
+        context.setRoute(ROUTES.SOLANA_SELECT_AMOUNT, meta);
       } else {
         setSelectedSolanaTokenOption(undefined);
-        context.setRoute(ROUTES.SOLANA_SELECT_TOKEN);
+        context.setRoute(ROUTES.SOLANA_SELECT_TOKEN, meta);
       }
     } else {
-      context.setRoute(ROUTES.SELECT_METHOD);
+      context.setRoute(ROUTES.SELECT_METHOD, meta);
     }
   };
 
@@ -183,7 +184,7 @@ export const DaimoPayModal: React.FC<{
       );
       generatePreviewOrder(payParams);
     }
-    context.setOpen(false);
+    context.setOpen(false, { event: "click-close" });
   }
 
   useEffect(() => {
@@ -193,7 +194,12 @@ export const DaimoPayModal: React.FC<{
       context.route === ROUTES.MOBILECONNECTORS
     ) {
       if (isConnected) {
-        context.setRoute(ROUTES.SELECT_TOKEN);
+        context.setRoute(ROUTES.SELECT_TOKEN, {
+          event: "connected",
+          walletId: connector?.id,
+          chainId: chain?.id,
+          address,
+        });
       }
     }
   }, [isConnected, context.route]);

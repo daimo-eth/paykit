@@ -66,7 +66,7 @@ const PayWithToken: React.FC = () => {
       await payWithToken(option.required);
       setPayState(PayState.RequestSuccessful);
       setTimeout(() => {
-        setRoute(ROUTES.CONFIRMATION);
+        setRoute(ROUTES.CONFIRMATION, { event: "wait-pay-with-token" });
       }, 200);
     } catch (e: any) {
       if (e?.name === "ConnectorChainMismatchError") {

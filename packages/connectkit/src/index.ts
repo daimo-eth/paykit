@@ -13,7 +13,7 @@ export { DaimoPayButton } from "./components/DaimoPayButton";
 export { useDaimoPayStatus } from "./hooks/useDaimoPayStatus";
 
 // TODO: replace with useDaimoPay() more comprehensive status.
-export { useModal as useDaimoPayModal } from "./hooks/useModal";
+// export { useModal as useDaimoPayModal } from "./hooks/useModal";
 
 // For convenience, export components to show connected account.
 export { default as Avatar } from "./components/Common/Avatar";

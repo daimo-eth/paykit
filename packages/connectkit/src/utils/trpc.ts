@@ -8,13 +8,17 @@ import { daimoPayVersion } from "./exports";
 
 export type TrpcClient = CreateTRPCClient<AppRouter>;
 
-export function createTrpcClient(apiUrl: string): TrpcClient {
+export function createTrpcClient(
+  apiUrl: string,
+  sessionId: string,
+): TrpcClient {
   return createTRPCClient<AppRouter>({
     links: [
       httpBatchLink({
         url: apiUrl,
         headers: {
           "x-pay-version": daimoPayVersion,
+          "x-session-id": sessionId,
         },
       }),
     ],

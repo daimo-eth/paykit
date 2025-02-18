@@ -78,7 +78,7 @@ function getDepositAddressOption(depositAddressOptions: {
 const SelectMethod: React.FC = () => {
   const isMobile = useIsMobile();
 
-  const { address, isConnected, connector } = useAccount();
+  const { address, chain, isConnected, connector } = useAccount();
   const { disconnectAsync } = useDisconnect();
 
   const { setRoute, paymentState, log } = usePayContext();
@@ -97,7 +97,12 @@ const SelectMethod: React.FC = () => {
         title: `Pay with ${displayName}`,
         icons: connector && connector.icon ? [connector.icon] : [<MetaMask />],
         onClick: () => {
-          setRoute(ROUTES.SELECT_TOKEN);
+          setRoute(ROUTES.SELECT_TOKEN, {
+            event: "click-wallet",
+            walletId: connector?.id,
+            chainId: chain?.id,
+            address: address,
+          });
         },
       }
     : null;
@@ -134,10 +139,11 @@ const SelectMethod: React.FC = () => {
       icons: [option.logoURI],
       onClick: () => {
         setSelectedExternalOption(option);
+        const meta = { event: "click-option", option: option.id };
         if (paymentState.isDepositFlow) {
-          setRoute(ROUTES.SELECT_EXTERNAL_AMOUNT);
+          setRoute(ROUTES.SELECT_EXTERNAL_AMOUNT, meta);
         } else {
-          setRoute(ROUTES.WAITING_EXTERNAL);
+          setRoute(ROUTES.WAITING_EXTERNAL, meta);
         }
       },
       disabled: option.disabled,

@@ -59,8 +59,9 @@ const SelectDepositAddressAmount: React.FC = () => {
   };
 
   const handleContinue = () => {
-    paymentState.setChosenUsd(Number(sanitizeNumber(usdInput)));
-    setRoute(ROUTES.WAITING_DEPOSIT_ADDRESS);
+    const amountUsd = Number(sanitizeNumber(usdInput));
+    paymentState.setChosenUsd(amountUsd);
+    setRoute(ROUTES.WAITING_DEPOSIT_ADDRESS, { amountUsd });
   };
 
   return (

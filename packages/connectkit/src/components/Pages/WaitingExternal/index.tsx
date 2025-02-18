@@ -36,7 +36,7 @@ const WaitingExternal: React.FC = () => {
       });
 
       if (found) {
-        setRoute(ROUTES.CONFIRMATION);
+        setRoute(ROUTES.CONFIRMATION, { event: "found-source-payment" });
       }
     };
 

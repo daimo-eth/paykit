@@ -63,8 +63,9 @@ const SelectExternalAmount: React.FC = () => {
   };
 
   const handleContinue = () => {
-    paymentState.setChosenUsd(Number(sanitizeNumber(usdInput)));
-    setRoute(ROUTES.WAITING_EXTERNAL);
+    const amountUsd = Number(sanitizeNumber(usdInput));
+    paymentState.setChosenUsd(amountUsd);
+    setRoute(ROUTES.WAITING_EXTERNAL, { amountUsd });
   };
 
   return (

@@ -27,7 +27,10 @@ const ConnectSolana: React.FC = () => {
       if (solanaWallets.connected) {
         await solanaWallets.disconnect();
       }
-      setRoute(ROUTES.SOLANA_CONNECTOR);
+      setRoute(ROUTES.SOLANA_CONNECTOR, {
+        event: "click-solana-wallet",
+        walletName: wallet.adapter.name,
+      });
     },
   }));
 
@@ -46,7 +49,11 @@ const ConnectSolana: React.FC = () => {
           }}
         >
           <ModalH1>No Solana wallets detected.</ModalH1>
-          <Button onClick={() => setRoute(ROUTES.SELECT_METHOD)}>
+          <Button
+            onClick={() =>
+              setRoute(ROUTES.SELECT_METHOD, { event: "click-select-another" })
+            }
+          >
             Select Another Method
           </Button>
         </ModalContent>

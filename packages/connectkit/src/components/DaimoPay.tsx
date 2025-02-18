@@ -1,4 +1,5 @@
 import {
+  assert,
   DaimoPayIntentStatus,
   DaimoPayOrder,
   DaimoPayOrderMode,
@@ -85,9 +86,9 @@ type ContextValue = {
   lang: Languages;
   setLang: React.Dispatch<React.SetStateAction<Languages>>;
   open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setOpen: (open: boolean, meta?: Record<string, any>) => void;
   route: string;
-  setRoute: React.Dispatch<React.SetStateAction<ROUTES>>;
+  setRoute: (route: ROUTES, data?: Record<string, any>) => void;
   connector: Connector;
   setConnector: React.Dispatch<React.SetStateAction<Connector>>;
   errorMessage: Error;
@@ -98,6 +99,8 @@ type ContextValue = {
   triggerResize: () => void;
 
   // All options below are new, specific to Daimo Pay.
+  /** Session ID. */
+  sessionId: string;
   /** Chosen Solana wallet, eg Phantom.*/
   solanaConnector: SolanaWalletName | undefined;
   setSolanaConnector: React.Dispatch<
@@ -225,14 +228,32 @@ const DaimoPayProviderWithoutSolana = ({
     customTheme ?? {},
   );
   const [ckLang, setLang] = useState<Languages>("en-US");
-  const [open, setOpen] = useState<boolean>(false);
+  const [open, setOpenState] = useState<boolean>(false);
+  const setOpen = (open: boolean, meta?: Record<string, any>) => {
+    setOpenState(open);
+    trpc.nav.mutate({
+      action: open ? "navOpenPay" : "navClosePay",
+      orderId: daimoPayOrder?.id?.toString(),
+      data: meta ?? {},
+    });
+  };
   const [connector, setConnector] = useState<ContextValue["connector"]>({
     id: "",
   });
   const [solanaConnector, setSolanaConnector] = useState<
     SolanaWalletName | undefined
   >();
-  const [route, setRoute] = useState<ROUTES>(ROUTES.SELECT_METHOD);
+  const [route, setRouteState] = useState<ROUTES>(ROUTES.SELECT_METHOD);
+  const setRoute = (route: ROUTES, data?: Record<string, any>) => {
+    assert(route.startsWith("daimoPay"), () => `Invalid route: ${route}`);
+    const action = route.replace("daimoPay", "nav");
+    trpc.nav.mutate({
+      action,
+      orderId: daimoPayOrder?.id?.toString(),
+      data: data ?? {},
+    });
+    setRouteState(route);
+  };
   const [errorMessage, setErrorMessage] = useState<Error>("");
   const [confirmationMessage, setConfirmationMessage] = useState<
     string | undefined
@@ -261,8 +282,14 @@ const DaimoPayProviderWithoutSolana = ({
 
   const log = debugMode ? console.log : () => {};
 
+  // Track sessions. Each generates separate intent IDs unless using externalId.
+  const [sessionId] = useState(() => crypto.randomUUID().replaceAll("-", ""));
+
   // Connect to the Daimo Pay TRPC API
-  const trpc = useMemo(() => createTrpcClient(payApiUrl), [payApiUrl]);
+  const trpc = useMemo(
+    () => createTrpcClient(payApiUrl, sessionId),
+    [payApiUrl],
+  );
 
   // PaymentInfo is a second, inner context object containing a DaimoPayOrder
   // plus all associated status and callbacks. In order for useContext() and
@@ -320,6 +347,8 @@ const DaimoPayProviderWithoutSolana = ({
 
     paymentState.setModalOptions(modalOptions);
 
+    setOpen(true);
+
     if (
       daimoPayOrder &&
       daimoPayOrder.mode === DaimoPayOrderMode.HYDRATED &&
@@ -332,8 +361,6 @@ const DaimoPayProviderWithoutSolana = ({
     } else {
       setRoute(ROUTES.SELECT_METHOD);
     }
-
-    setOpen(true);
   };
 
   const value = {
@@ -350,6 +377,8 @@ const DaimoPayProviderWithoutSolana = ({
     route,
     setRoute,
     connector,
+    // Daimo Pay context
+    sessionId,
     setConnector,
     solanaConnector,
     setSolanaConnector,

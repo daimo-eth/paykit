@@ -149,7 +149,11 @@ const MultiCurrencySelectAmount: React.FC<{
       },
     });
     paymentState.setChosenUsd(usd);
-    setRoute(nextPage);
+    setRoute(nextPage, {
+      amountUsd: usd,
+      amountUnits,
+      tokenSymbol: balanceToken.symbol,
+    });
   };
 
   return (
