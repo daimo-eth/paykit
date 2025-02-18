@@ -92,7 +92,10 @@ export const DaimoPayModal: React.FC<{
     } else if (context.route === ROUTES.WAITING_EXTERNAL) {
       setPaymentWaitingMessage(undefined);
       if (isDepositFlow) {
-        assert(payParams != null, "payParams cannot be null in deposit flow");
+        assert(
+          payParams != null,
+          "[PAY MODAL] payParams cannot be null in deposit flow",
+        );
         generatePreviewOrder(payParams);
         context.setRoute(ROUTES.SELECT_EXTERNAL_AMOUNT);
       } else {
@@ -101,7 +104,10 @@ export const DaimoPayModal: React.FC<{
       }
     } else if (context.route === ROUTES.PAY_WITH_TOKEN) {
       if (isDepositFlow) {
-        assert(payParams != null, "payParams cannot be null in deposit flow");
+        assert(
+          payParams != null,
+          "[PAY MODAL] payParams cannot be null in deposit flow",
+        );
         generatePreviewOrder(payParams);
         context.setRoute(ROUTES.SELECT_AMOUNT);
       } else {
@@ -112,7 +118,10 @@ export const DaimoPayModal: React.FC<{
       context.setRoute(ROUTES.CONNECTORS);
     } else if (context.route === ROUTES.WAITING_DEPOSIT_ADDRESS) {
       if (isDepositFlow) {
-        assert(payParams != null, "payParams cannot be null in deposit flow");
+        assert(
+          payParams != null,
+          "[PAY MODAL] payParams cannot be null in deposit flow",
+        );
         generatePreviewOrder(payParams);
         context.setRoute(ROUTES.SELECT_DEPOSIT_ADDRESS_AMOUNT);
       } else {
@@ -124,7 +133,10 @@ export const DaimoPayModal: React.FC<{
       context.setRoute(ROUTES.SOLANA_SELECT_TOKEN);
     } else if (context.route === ROUTES.SOLANA_PAY_WITH_TOKEN) {
       if (isDepositFlow) {
-        assert(payParams != null, "payParams cannot be null in deposit flow");
+        assert(
+          payParams != null,
+          "[PAY MODAL] payParams cannot be null in deposit flow",
+        );
         generatePreviewOrder(payParams);
         context.setRoute(ROUTES.SOLANA_SELECT_AMOUNT);
       } else {
@@ -165,7 +177,10 @@ export const DaimoPayModal: React.FC<{
 
   function hide() {
     if (isDepositFlow) {
-      assert(payParams != null, "payParams cannot be null in deposit flow");
+      assert(
+        payParams != null,
+        "[PAY MODAL] payParams cannot be null in deposit flow",
+      );
       generatePreviewOrder(payParams);
     }
     context.setOpen(false);

@@ -32,7 +32,8 @@ export function usePayWithToken({
 
   /** Commit to a token + amount = initiate payment. */
   const payWithToken = async (tokenAmount: DaimoPayTokenAmount) => {
-    assert(!!daimoPayOrder && !!platform);
+    assert(!!daimoPayOrder, "[PAY TOKEN] daimoPayOrder cannot be null");
+    assert(!!platform, "[PAY TOKEN] platform cannot be null");
 
     const { hydratedOrder } = await createOrHydrate({
       order: daimoPayOrder,
@@ -74,7 +75,10 @@ export function usePayWithToken({
         orderId: daimoPayOrder.id.toString(),
         sourceInitiateTxHash: txHash,
         sourceChainId: tokenAmount.token.chainId,
-        sourceFulfillerAddr: assertNotNull(senderAddr),
+        sourceFulfillerAddr: assertNotNull(
+          senderAddr,
+          `[PAY TOKEN] senderAddr cannot be null on order ${daimoPayOrder.id}`,
+        ),
         sourceToken: tokenAmount.token.token,
         sourceAmount: tokenAmount.amount,
       });

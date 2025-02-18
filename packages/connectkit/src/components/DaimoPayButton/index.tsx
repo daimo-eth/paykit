@@ -213,7 +213,7 @@ function DaimoPayButtonCustom(props: DaimoPayButtonCustomProps) {
         chainId: hydOrder.destFinalCallTokenAmount.token.chainId,
         txHash: assertNotNull(
           hydOrder.sourceInitiateTxHash,
-          `source initiate tx hash null on order ${hydOrder.id} when intent status is ${intentStatus}`,
+          `[PAY BUTTON] source initiate tx hash null on order ${hydOrder.id} when intent status is ${intentStatus}`,
         ),
         payment: getDaimoPayOrderView(hydOrder),
       });
@@ -227,7 +227,7 @@ function DaimoPayButtonCustom(props: DaimoPayButtonCustomProps) {
         chainId: hydOrder.destFinalCallTokenAmount.token.chainId,
         txHash: assertNotNull(
           hydOrder.destFastFinishTxHash ?? hydOrder.destClaimTxHash,
-          `dest tx hash null on order ${hydOrder.id} when intent status is ${intentStatus}`,
+          `[PAY BUTTON] dest tx hash null on order ${hydOrder.id} when intent status is ${intentStatus}`,
         ),
         payment: getDaimoPayOrderView(hydOrder),
       };

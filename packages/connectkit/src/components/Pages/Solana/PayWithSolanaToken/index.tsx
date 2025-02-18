@@ -12,9 +12,6 @@ import {
 } from "../../../Common/Modal/styles";
 
 import { assert } from "@daimo/common";
-import { motion } from "framer-motion";
-import { css } from "styled-components";
-import styled from "../../../../styles/styled";
 import Button from "../../../Common/Button";
 import PaymentBreakdown from "../../../Common/PaymentBreakdown";
 import TokenLogoSpinner from "../../../Spinners/TokenLogoSpinner";
@@ -41,7 +38,10 @@ const PayWithSolanaToken: React.FC = () => {
   const handleTransfer = async () => {
     try {
       setPayState(PayState.RequestingPayment);
-      assert(!!selectedSolanaTokenOption, "No token option selected");
+      assert(
+        !!selectedSolanaTokenOption,
+        "[PAY SOLANA] No token option selected",
+      );
       await payWithSolanaToken(selectedSolanaTokenOption.required.token.token);
 
       setPayState(PayState.RequestSuccessful);
@@ -92,7 +92,7 @@ const PayWithSolanaToken: React.FC = () => {
             onClick={() => {
               assert(
                 payParams != null,
-                "payParams cannot be null in deposit flow",
+                "[PAY SOLANA] payParams cannot be null in deposit flow",
               );
               generatePreviewOrder(payParams);
               setRoute(ROUTES.SELECT_METHOD);

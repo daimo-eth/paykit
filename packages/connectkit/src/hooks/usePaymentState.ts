@@ -193,10 +193,10 @@ export function usePaymentState({
     refundAddress?: string;
     externalPaymentOption?: ExternalPaymentOptions;
   }) => {
-    assert(!!platform, "missing platform");
+    assert(!!platform, "[CREATE/HYDRATE] missing platform");
 
     if (payParams == null) {
-      log(`[CHECKOUT] hydrating existing order ${order.id}`);
+      log(`[CREATE/HYDRATE] hydrating existing order ${order.id}`);
       return await trpc.hydrateOrder.query({
         id: order.id.toString(),
         chosenFinalTokenAmount: order.destFinalCallTokenAmount.amount,
@@ -206,7 +206,7 @@ export function usePaymentState({
       });
     }
 
-    log(`[CHECKOUT] creating+hydrating new order ${order.id}`);
+    log(`[CREATE/HYDRATE] creating+hydrating new order ${order.id}`);
     // Update units, if isDepositFlow then the user may have changed the amount.
     const toUnits = formatUnits(
       BigInt(order.destFinalCallTokenAmount.amount),
@@ -271,15 +271,19 @@ export function usePaymentState({
   };
 
   const payWithExternal = async (option: ExternalPaymentOptions) => {
-    assert(!!daimoPayOrder && !!platform);
+    assert(!!daimoPayOrder, "[PAY EXTERNAL] daimoPayOrder cannot be null");
+    assert(!!platform, "[PAY EXTERNAL] platform cannot be null");
     const { hydratedOrder, externalPaymentOptionData } = await createOrHydrate({
       order: daimoPayOrder,
       externalPaymentOption: option,
     });
-    assert(!!externalPaymentOptionData, "missing externalPaymentOptionData");
+    assert(
+      !!externalPaymentOptionData,
+      "[PAY EXTERNAL] missing externalPaymentOptionData",
+    );
 
     log(
-      `[CHECKOUT] Hydrated order: ${JSON.stringify(
+      `[PAY EXTERNAL] Hydrated order: ${JSON.stringify(
         hydratedOrder,
       )}, checking out with external payment: ${option}`,
     );
@@ -293,14 +297,14 @@ export function usePaymentState({
   const payWithDepositAddress = async (
     option: DepositAddressPaymentOptions,
   ) => {
-    assert(!!daimoPayOrder);
+    assert(!!daimoPayOrder, "[PAY DEPOSIT ADDRESS] missing daimoPayOrder");
     const { hydratedOrder } = await createOrHydrate({
       order: daimoPayOrder,
     });
     setDaimoPayOrder(hydratedOrder);
 
     log(
-      `[CHECKOUT] Hydrated order: ${JSON.stringify(
+      `[PAY DEPOSIT ADDRESS] Hydrated order: ${JSON.stringify(
         hydratedOrder,
       )}, checking out with deposit address: ${option}`,
     );
@@ -308,7 +312,10 @@ export function usePaymentState({
     const depositAddressOption = await trpc.getDepositAddressOptionData.query({
       input: option,
       usdRequired: daimoPayOrder.destFinalCallTokenAmount.usd,
-      toAddress: assertNotNull(hydratedOrder.intentAddr),
+      toAddress: assertNotNull(
+        hydratedOrder.intentAddr,
+        `[PAY DEPOSIT ADDRESS] missing intentAddr on order ${hydratedOrder.id}`,
+      ),
     });
     return depositAddressOption;
   };
@@ -330,7 +337,7 @@ export function usePaymentState({
   /** User picked a different deposit amount. */
   const setChosenUsd = (usd: number) => {
     log(`[CHECKOUT] Setting chosen USD amount to ${usd}`);
-    assert(!!daimoPayOrder);
+    assert(!!daimoPayOrder, "[SET CHOSEN USD] daimoPayOrder cannot be null");
     const token = daimoPayOrder.destFinalCallTokenAmount.token;
     const tokenAmount = parseUnits(
       (usd / token.usd).toString(),
@@ -373,7 +380,7 @@ export function usePaymentState({
 
   /** Called whenever params change. */
   const setPayParams = async (payParams: PayParams | undefined) => {
-    assert(payParams != null);
+    assert(payParams != null, "[SET PAY PARAMS] payParams cannot be null");
     setPayParamsState(payParams);
     setIsDepositFlow(payParams.toUnits == null);
 

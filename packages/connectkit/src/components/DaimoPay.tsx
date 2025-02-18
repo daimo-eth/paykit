@@ -285,7 +285,7 @@ const DaimoPayProviderWithoutSolana = ({
     const { intentStatus } = daimoPayOrder;
     let intervalMs = 0;
     if (intentStatus === DaimoPayIntentStatus.UNPAID) {
-      intervalMs = 2500; // additional, faster polling in WaitingOther
+      intervalMs = 2000; // additional, faster polling in WaitingOther
     } else if (intentStatus === DaimoPayIntentStatus.STARTED) {
       intervalMs = 300; // poll fast from payment started to payment completed
     } else {
