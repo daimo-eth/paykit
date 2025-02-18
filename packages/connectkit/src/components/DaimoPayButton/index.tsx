@@ -7,7 +7,8 @@ import {
   assertNotNull,
   DaimoPayIntentStatus,
   DaimoPayOrderMode,
-  DaimoPayOrderStatusSource,
+  DaimoPayUserMetadata,
+  getDaimoPayOrderView,
   PaymentBouncedEvent,
   PaymentCompletedEvent,
   PaymentStartedEvent,
@@ -64,6 +65,14 @@ type PayButtonPaymentProps =
        * Preferred tokens. These appear first in the token list.
        */
       preferredTokens?: { chain: number; address: Address }[];
+      /**
+       * External ID. E.g. a correlation ID.
+       */
+      externalId?: string;
+      /**
+       * Developer metadata. E.g. correlation ID.
+       * */
+      metadata?: DaimoPayUserMetadata;
     }
   | {
       /** The payment ID, generated via the Daimo Pay API. Replaces params above. */
@@ -154,6 +163,8 @@ function DaimoPayButtonCustom(props: DaimoPayButtonCustomProps) {
           paymentOptions: props.paymentOptions,
           preferredChains: props.preferredChains,
           preferredTokens: props.preferredTokens,
+          externalId: props.externalId,
+          metadata: props.metadata,
         }
       : null;
   let payId = "payId" in props ? props.payId : null;
@@ -178,9 +189,8 @@ function DaimoPayButtonCustom(props: DaimoPayButtonCustomProps) {
   const { onPaymentStarted, onPaymentCompleted, onPaymentBounced } = props;
 
   const order = paymentState.daimoPayOrder;
+  const intentStatus = order?.intentStatus;
   const hydOrder = order?.mode === DaimoPayOrderMode.HYDRATED ? order : null;
-  const isStarted =
-    hydOrder?.sourceStatus !== DaimoPayOrderStatusSource.WAITING_PAYMENT;
 
   // Functions to show and hide the modal
   const { children, closeOnSuccess } = props;
@@ -191,33 +201,44 @@ function DaimoPayButtonCustom(props: DaimoPayButtonCustomProps) {
   };
   const hide = () => context.setOpen(false);
 
-  useEffect(() => {
-    if (hydOrder == null || !isStarted) return;
-    onPaymentStarted?.({
-      paymentId: writeDaimoPayOrderID(hydOrder.id),
-      type: "payment_started",
-      chainId: assertNotNull(hydOrder.sourceTokenAmount).token.chainId,
-      txHash: assertNotNull(hydOrder.sourceInitiateTxHash),
-    });
-  }, [isStarted]);
-
+  // Emit event handlers when payment status changes
   useEffect(() => {
     if (hydOrder == null) return;
-    if (hydOrder.intentStatus === DaimoPayIntentStatus.PENDING) return;
+    if (intentStatus === DaimoPayIntentStatus.UNPAID) return;
 
-    const commonFields = {
-      paymentId: writeDaimoPayOrderID(hydOrder.id),
-      chainId: assertNotNull(hydOrder.destFinalCallTokenAmount).token.chainId,
-      txHash: assertNotNull(
-        hydOrder.destFastFinishTxHash ?? hydOrder.destClaimTxHash,
-      ),
-    };
-    if (hydOrder.intentStatus === DaimoPayIntentStatus.SUCCESSFUL) {
-      onPaymentCompleted?.({ type: "payment_completed", ...commonFields });
-    } else if (hydOrder.intentStatus === DaimoPayIntentStatus.REFUNDED) {
-      onPaymentBounced?.({ type: "payment_bounced", ...commonFields });
+    if (intentStatus === DaimoPayIntentStatus.STARTED) {
+      onPaymentStarted?.({
+        type: DaimoPayIntentStatus.STARTED,
+        paymentId: writeDaimoPayOrderID(hydOrder.id),
+        chainId: hydOrder.destFinalCallTokenAmount.token.chainId,
+        txHash: assertNotNull(
+          hydOrder.sourceInitiateTxHash,
+          `[PAY BUTTON] source initiate tx hash null on order ${hydOrder.id} when intent status is ${intentStatus}`,
+        ),
+        payment: getDaimoPayOrderView(hydOrder),
+      });
+    } else if (
+      intentStatus === DaimoPayIntentStatus.COMPLETED ||
+      intentStatus === DaimoPayIntentStatus.BOUNCED
+    ) {
+      const event = {
+        type: intentStatus,
+        paymentId: writeDaimoPayOrderID(hydOrder.id),
+        chainId: hydOrder.destFinalCallTokenAmount.token.chainId,
+        txHash: assertNotNull(
+          hydOrder.destFastFinishTxHash ?? hydOrder.destClaimTxHash,
+          `[PAY BUTTON] dest tx hash null on order ${hydOrder.id} when intent status is ${intentStatus}`,
+        ),
+        payment: getDaimoPayOrderView(hydOrder),
+      };
+
+      if (intentStatus === DaimoPayIntentStatus.COMPLETED) {
+        onPaymentCompleted?.(event as PaymentCompletedEvent);
+      } else if (intentStatus === DaimoPayIntentStatus.BOUNCED) {
+        onPaymentBounced?.(event as PaymentBouncedEvent);
+      }
     }
-  }, [hydOrder?.intentStatus]);
+  }, [hydOrder?.id, intentStatus]);
 
   useEffect(() => {
     if (props.defaultOpen) {

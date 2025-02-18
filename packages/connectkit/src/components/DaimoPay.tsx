@@ -282,12 +282,12 @@ const DaimoPayProviderWithoutSolana = ({
     // Order just updated...
     if (daimoPayOrder?.mode !== DaimoPayOrderMode.HYDRATED) return;
 
-    const { sourceStatus, intentStatus } = daimoPayOrder;
+    const { intentStatus } = daimoPayOrder;
     let intervalMs = 0;
-    if (sourceStatus === DaimoPayOrderStatusSource.WAITING_PAYMENT) {
-      intervalMs = 2500; // additional, faster polling in WaitingOther
-    } else if (intentStatus === DaimoPayIntentStatus.PENDING) {
-      intervalMs = 300; // poll fast from (payment initiated) to (finished)
+    if (intentStatus === DaimoPayIntentStatus.UNPAID) {
+      intervalMs = 2000; // additional, faster polling in WaitingOther
+    } else if (intentStatus === DaimoPayIntentStatus.STARTED) {
+      intervalMs = 300; // poll fast from payment started to payment completed
     } else {
       return;
     }

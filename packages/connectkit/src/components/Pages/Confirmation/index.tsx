@@ -36,7 +36,7 @@ const Confirmation: React.FC = () => {
         const txHash =
           daimoPayOrder.destFastFinishTxHash ?? daimoPayOrder.destClaimTxHash;
         const chainId = daimoPayOrder.destFinalCallTokenAmount.token.chainId;
-        assert(txHash != null, `Dest ${destStatus}, but missing txHash`);
+        assert(txHash != null, `[CONFIRMATION] dest status: ${destStatus}, but missing txHash`);
         const txURL = getChainExplorerTxUrl(chainId, txHash);
 
         paymentState.onSuccess({ txHash, txURL });

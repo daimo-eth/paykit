@@ -30,8 +30,9 @@ export function usePayWithSolanaToken({
   const wallet = useWallet();
 
   const payWithSolanaToken = async (inputToken: SolanaPublicKey) => {
-    assert(!!wallet.publicKey, "No wallet connected");
-    assert(!!platform && !!daimoPayOrder);
+    assert(!!wallet.publicKey, "[PAY SOLANA] No wallet connected");
+    assert(!!daimoPayOrder, "[PAY SOLANA] daimoPayOrder cannot be null");
+    assert(!!platform, "[PAY SOLANA] platform cannot be null");
 
     const orderId = daimoPayOrder.id;
     const { hydratedOrder } = await createOrHydrate({
@@ -48,7 +49,10 @@ export function usePayWithSolanaToken({
       try {
         const serializedTx = await trpc.getSolanaSwapAndBurnTx.query({
           orderId: orderId.toString(),
-          userPublicKey: assertNotNull(wallet.publicKey).toString(),
+          userPublicKey: assertNotNull(
+            wallet.publicKey,
+            "[PAY SOLANA] wallet.publicKey cannot be null",
+          ).toString(),
           inputTokenMint: inputToken,
         });
         const tx = VersionedTransaction.deserialize(hexToBytes(serializedTx));
