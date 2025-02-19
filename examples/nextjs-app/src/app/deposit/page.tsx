@@ -2,11 +2,14 @@
 
 import { baseUSDC } from "@daimo/contract";
 import { DaimoPayButton } from "@daimo/pay";
+import { useState } from "react";
 import { getAddress } from "viem";
 import { Code, Text, TextLink } from "../../shared/tailwind-catalyst/text";
 import { APP_ID, Container, DAIMO_ADDRESS, printEvent } from "../shared";
 
 export default function DemoDeposit() {
+  const [txHash, setTxHash] = useState<string | null>(null);
+
   return (
     <Container>
       <Text>
@@ -23,8 +26,18 @@ export default function DemoDeposit() {
         intent="Deposit"
         preferredChains={[10]} /* Show assets on Optimism first. */
         onPaymentStarted={printEvent}
-        onPaymentCompleted={printEvent}
+        onPaymentCompleted={(e) => {
+          printEvent(e);
+          setTxHash(e.txHash);
+        }}
       />
+      {txHash && (
+        <Text>
+          <TextLink href={`https://basescan.org/tx/${txHash}`} target="_blank">
+            Success ↗
+          </TextLink>
+        </Text>
+      )}
       <Text>
         <TextLink
           href="https://github.com/daimo-eth/paykit/blob/main/examples/nextjs-app/src/app/deposit"

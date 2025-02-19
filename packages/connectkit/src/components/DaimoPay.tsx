@@ -1,5 +1,4 @@
 import {
-  assert,
   DaimoPayIntentStatus,
   DaimoPayOrder,
   DaimoPayOrderMode,
@@ -245,8 +244,8 @@ const DaimoPayProviderWithoutSolana = ({
   >();
   const [route, setRouteState] = useState<ROUTES>(ROUTES.SELECT_METHOD);
   const setRoute = (route: ROUTES, data?: Record<string, any>) => {
-    assert(route.startsWith("daimoPay"), () => `Invalid route: ${route}`);
-    const action = route.replace("daimoPay", "nav");
+    const action = route.replace("daimoPay", "");
+    log(`[SET ROUTE] ${action} ${daimoPayOrder?.id} ${debugJson(data ?? {})}`);
     trpc.nav.mutate({
       action,
       orderId: daimoPayOrder?.id?.toString(),
