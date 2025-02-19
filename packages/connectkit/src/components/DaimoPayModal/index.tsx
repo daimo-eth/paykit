@@ -17,12 +17,13 @@ import { getAppName } from "../../defaultConfig";
 import { useChainIsSupported } from "../../hooks/useChainIsSupported";
 import { DaimoPayThemeProvider } from "../DaimoPayThemeProvider/DaimoPayThemeProvider";
 import Confirmation from "../Pages/Confirmation";
+import { OtherDevice } from "../Pages/OtherDevice";
 import PayWithToken from "../Pages/PayWithToken";
 import SelectAmount from "../Pages/SelectAmount";
 import SelectDepositAddressAmount from "../Pages/SelectDepositAddressAmount";
 import SelectDepositAddressChain from "../Pages/SelectDepositAddressChain";
 import SelectExternalAmount from "../Pages/SelectExternalAmount";
-import SelectMethod from "../Pages/SelectMethod";
+import { SelectMethod } from "../Pages/SelectMethod";
 import SelectToken from "../Pages/SelectToken";
 import ConnectorSolana from "../Pages/Solana/ConnectorSolana";
 import ConnectSolana from "../Pages/Solana/ConnectSolana";
@@ -151,6 +152,7 @@ export const DaimoPayModal: React.FC<{
 
   const pages: Record<ROUTES, React.ReactNode> = {
     [ROUTES.SELECT_METHOD]: <SelectMethod />,
+    [ROUTES.OTHER_DEVICE]: <OtherDevice />,
     [ROUTES.SELECT_TOKEN]: <SelectToken />,
     [ROUTES.SELECT_AMOUNT]: <SelectAmount />,
     [ROUTES.SELECT_EXTERNAL_AMOUNT]: <SelectExternalAmount />,

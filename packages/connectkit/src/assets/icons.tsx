@@ -200,6 +200,30 @@ export const RetryIcon = ({ ...props }) => (
   </svg>
 );
 
+export const ShareOtherDeviceIcon = () => (
+  <svg
+    width="128"
+    height="128"
+    viewBox="0 0 128 128"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M64 64L112 16M112 16V52M112 16H76"
+      stroke="#888888"
+      stroke-width="10"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M64 29H32C27.5817 29 24 32.5817 24 37V96C24 100.418 27.5817 104 32 104H91C95.4183 104 99 100.418 99 96V64"
+      stroke="#888888"
+      stroke-width="10"
+      stroke-linecap="round"
+    />
+  </svg>
+);
+
 export const CopyToClipboardIcon = ({ ...props }) => (
   <svg
     aria-hidden="true"

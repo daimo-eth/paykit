@@ -13,7 +13,7 @@ import {
   OptionsContainer,
 } from "./styles";
 
-interface Option {
+export interface Option {
   id: string;
   title: string;
   subtitle?: string;
