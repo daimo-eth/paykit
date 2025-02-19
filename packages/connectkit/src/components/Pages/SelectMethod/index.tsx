@@ -1,6 +1,8 @@
 import {
+  assertNotNull,
   DepositAddressPaymentOptionMetadata,
   getAddressContraction,
+  writeDaimoPayOrderID,
 } from "@daimo/common";
 import { useWallet } from "@solana/wallet-adapter-react";
 import React from "react";
@@ -175,14 +177,20 @@ function getDepositAddressOption(depositAddressOptions: {
 }
 
 function getOtherDeviceOption() {
-  const { setRoute } = usePayContext();
+  const { paymentState } = usePayContext();
+  const payment = assertNotNull(paymentState.daimoPayOrder, "missing payment");
+  const payId = writeDaimoPayOrderID(payment.id);
+  const url = `https://pay.daimo.com/checkout?id=${payId}`;
 
   return {
     id: "otherDevice",
     title: "Pay on another device",
     icons: [<ShareOtherDeviceIcon />],
     onClick: () => {
-      setRoute(ROUTES.OTHER_DEVICE);
+      window.navigator.share({
+        title: "Pay on another device",
+        text: url,
+      });
     },
     disabled: false,
   };
