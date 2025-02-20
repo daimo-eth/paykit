@@ -92,4 +92,5 @@ export type PaymentOption =
   | "Binance"
   | "RampNetwork"
   | "Solana"
-  | "ExternalChains";
+  | "ExternalChains"
+  | "Lemon";
