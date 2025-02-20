@@ -12,6 +12,7 @@ const DEFAULT_EXTERNAL_PAYMENT_OPTIONS = [
   ExternalPaymentOptions.Binance,
   ExternalPaymentOptions.Daimo,
   ExternalPaymentOptions.RampNetwork,
+  ExternalPaymentOptions.Lemon,
 ];
 
 export function useExternalPaymentOptions({
