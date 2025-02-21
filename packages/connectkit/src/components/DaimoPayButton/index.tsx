@@ -66,6 +66,10 @@ type PayButtonPaymentProps =
        */
       preferredTokens?: { chain: number; address: Address }[];
       /**
+       * Payment chains. Only allow payments on these chains.
+       */
+      paymentChains?: number[];
+      /**
        * External ID. E.g. a correlation ID.
        */
       externalId?: string;
@@ -163,6 +167,7 @@ function DaimoPayButtonCustom(props: DaimoPayButtonCustomProps) {
           paymentOptions: props.paymentOptions,
           preferredChains: props.preferredChains,
           preferredTokens: props.preferredTokens,
+          paymentChains: props.paymentChains,
           externalId: props.externalId,
           metadata: props.metadata,
         }
