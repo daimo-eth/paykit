@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import styled from "styled-components";
+import styled from "../../../styles/styled";
 
 export const ChainLogoContainer = styled(motion.div)`
   z-index: 10;

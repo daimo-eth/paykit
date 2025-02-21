@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import styled, { css } from "styled-components";
+import { css } from "styled-components";
+import styled from "../../styles/styled";
 
 export const LoadingContainer = styled(motion.div)`
   display: flex;
