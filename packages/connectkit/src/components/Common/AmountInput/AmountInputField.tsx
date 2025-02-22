@@ -65,6 +65,7 @@ const AmountInputField: React.FC<{
       <InputField
         ref={inputRef}
         type="text"
+        inputMode="decimal"
         value={value}
         onChange={onChange}
         placeholder="0.00"
