@@ -85,7 +85,7 @@ const WaitingExternal: React.FC = () => {
           if (externalURL) window.open(externalURL, "_blank");
         }}
       >
-        Open in New Tab
+        {selectedExternalOption.cta}
       </Button>
     </PageContent>
   );
