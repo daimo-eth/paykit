@@ -92,6 +92,7 @@ const SelectMethod: React.FC = () => {
   } = paymentState;
   const displayName =
     senderEnsName ?? (address ? getAddressContraction(address) : "wallet");
+  const paymentOptions = daimoPayOrder?.metadata.payer?.paymentOptions;
 
   const connectedWalletOption = isConnected
     ? {
@@ -132,9 +133,10 @@ const SelectMethod: React.FC = () => {
   const options = [...walletOptions];
 
   // Solana payment option
-  const includeSolana = daimoPayOrder?.metadata.payer?.paymentOptions?.includes(
-    ExternalPaymentOptions.Solana,
-  );
+  // Include by default if paymentOptions not provided
+  const includeSolana =
+    paymentOptions == null ||
+    paymentOptions.includes(ExternalPaymentOptions.Solana);
   if (includeSolana) {
     const solanaOption = getSolanaOption();
     if (solanaOption) {
@@ -163,10 +165,10 @@ const SelectMethod: React.FC = () => {
   );
 
   // Deposit address options, e.g. Bitcoin, Tron, Zcash, etc.
+  // Include by default if paymentOptions not provided
   const includeDepositAddressOption =
-    daimoPayOrder?.metadata.payer?.paymentOptions?.includes(
-      ExternalPaymentOptions.ExternalChains,
-    );
+    paymentOptions == null ||
+    paymentOptions.includes(ExternalPaymentOptions.ExternalChains);
   if (includeDepositAddressOption) {
     const depositAddressOption = getDepositAddressOption(depositAddressOptions);
     options.push(depositAddressOption);
