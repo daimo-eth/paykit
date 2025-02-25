@@ -2,7 +2,6 @@ import {
   assert,
   assertNotNull,
   DaimoPayOrder,
-  DaimoPayTokenAmount,
   DaimoPayUserMetadata,
   DepositAddressPaymentOptionData,
   DepositAddressPaymentOptionMetadata,
@@ -100,7 +99,7 @@ export interface PaymentState {
     option: DepositAddressPaymentOptionMetadata | undefined,
   ) => void;
   setChosenUsd: (usd: number) => void;
-  payWithToken: (tokenAmount: DaimoPayTokenAmount) => Promise<void>;
+  payWithToken: (walletOption: WalletPaymentOption) => Promise<void>;
   payWithExternal: (option: ExternalPaymentOptions) => Promise<string>;
   payWithDepositAddress: (
     option: DepositAddressPaymentOptions,
@@ -234,7 +233,6 @@ export function usePaymentState({
     daimoPayOrder,
     setDaimoPayOrder,
     createOrHydrate,
-    platform,
     log,
   });
 
@@ -243,7 +241,6 @@ export function usePaymentState({
     daimoPayOrder,
     setDaimoPayOrder,
     createOrHydrate,
-    platform,
     log,
   });
 

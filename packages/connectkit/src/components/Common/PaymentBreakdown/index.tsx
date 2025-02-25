@@ -8,9 +8,9 @@ import { ModalBody } from "../../Common/Modal/styles";
 const PaymentBreakdown: React.FC<{
   paymentOption: WalletPaymentOption;
 }> = ({ paymentOption }) => {
-  const totalUsd = paymentOption.required.usd;
+  const subtotalUsd = paymentOption.required.usd;
   const feesUsd = paymentOption.fees.usd;
-  const subtotalUsd = totalUsd - feesUsd;
+  const totalUsd = subtotalUsd + feesUsd;
 
   return (
     <FeesContainer>

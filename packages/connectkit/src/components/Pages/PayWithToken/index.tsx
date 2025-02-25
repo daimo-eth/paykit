@@ -63,7 +63,7 @@ const PayWithToken: React.FC = () => {
 
     setPayState(PayState.RequestingPayment);
     try {
-      await payWithToken(option.required);
+      await payWithToken(option);
       setPayState(PayState.RequestSuccessful);
       setTimeout(() => {
         setRoute(ROUTES.CONFIRMATION, { event: "wait-pay-with-token" });
@@ -76,7 +76,7 @@ const PayWithToken: React.FC = () => {
         const switchSuccessful = await trySwitchingChain(option, true);
         if (switchSuccessful) {
           try {
-            await payWithToken(option.required);
+            await payWithToken(option);
             return; // Payment successful after switching chain
           } catch (retryError) {
             console.error(

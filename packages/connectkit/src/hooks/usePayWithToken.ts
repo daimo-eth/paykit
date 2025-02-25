@@ -2,8 +2,8 @@ import {
   assert,
   assertNotNull,
   DaimoPayOrder,
-  DaimoPayTokenAmount,
-  PlatformType,
+  debugJson,
+  WalletPaymentOption,
 } from "@daimo/common";
 import { Address, erc20Abi, getAddress, zeroAddress } from "viem";
 import { useSendTransaction, useWriteContract } from "wagmi";
@@ -16,7 +16,6 @@ export function usePayWithToken({
   daimoPayOrder,
   setDaimoPayOrder,
   createOrHydrate,
-  platform,
   log,
 }: {
   trpc: TrpcClient;
@@ -24,16 +23,21 @@ export function usePayWithToken({
   senderAddr: Address | undefined;
   daimoPayOrder: DaimoPayOrder | undefined;
   setDaimoPayOrder: (order: DaimoPayOrder) => void;
-  platform: PlatformType | undefined;
   log: (message: string) => void;
 }) {
   const { writeContractAsync } = useWriteContract();
   const { sendTransactionAsync } = useSendTransaction();
 
   /** Commit to a token + amount = initiate payment. */
-  const payWithToken = async (tokenAmount: DaimoPayTokenAmount) => {
+  const payWithToken = async (walletOption: WalletPaymentOption) => {
     assert(!!daimoPayOrder, "[PAY TOKEN] daimoPayOrder cannot be null");
-    assert(!!platform, "[PAY TOKEN] platform cannot be null");
+
+    const { required, fees } = walletOption;
+    assert(
+      required.token.token === fees.token.token,
+      `[PAY TOKEN] required token ${debugJson(required)} does not match fees token ${debugJson(fees)}`,
+    );
+    const paymentAmount = BigInt(required.amount) + BigInt(fees.amount);
 
     const { hydratedOrder } = await createOrHydrate({
       order: daimoPayOrder,
@@ -41,29 +45,29 @@ export function usePayWithToken({
     });
 
     log(
-      `[CHECKOUT] hydrated order: ${JSON.stringify(
+      `[PAY TOKEN] hydrated order: ${JSON.stringify(
         hydratedOrder,
-      )}, checking out with ${tokenAmount.token.token}`,
+      )}, paying ${paymentAmount} of token ${required.token.token}`,
     );
     setDaimoPayOrder(hydratedOrder);
 
     const txHash = await (async () => {
       try {
-        if (tokenAmount.token.token === zeroAddress) {
+        if (required.token.token === zeroAddress) {
           return await sendTransactionAsync({
             to: hydratedOrder.intentAddr,
-            value: BigInt(tokenAmount.amount),
+            value: paymentAmount,
           });
         } else {
           return await writeContractAsync({
             abi: erc20Abi,
-            address: getAddress(tokenAmount.token.token),
+            address: getAddress(required.token.token),
             functionName: "transfer",
-            args: [hydratedOrder.intentAddr, BigInt(tokenAmount.amount)],
+            args: [hydratedOrder.intentAddr, paymentAmount],
           });
         }
       } catch (e) {
-        console.error(`[CHECKOUT] error sending token: ${e}`);
+        console.error(`[PAY TOKEN] error sending token: ${e}`);
         throw e;
       }
     })();
@@ -72,13 +76,13 @@ export function usePayWithToken({
       await trpc.processSourcePayment.mutate({
         orderId: daimoPayOrder.id.toString(),
         sourceInitiateTxHash: txHash,
-        sourceChainId: tokenAmount.token.chainId,
+        sourceChainId: required.token.chainId,
         sourceFulfillerAddr: assertNotNull(
           senderAddr,
           `[PAY TOKEN] senderAddr cannot be null on order ${daimoPayOrder.id}`,
         ),
-        sourceToken: tokenAmount.token.token,
-        sourceAmount: tokenAmount.amount,
+        sourceToken: required.token.token,
+        sourceAmount: paymentAmount.toString(),
       });
       // TODO: update order immediately, do not wait for polling.
     }
