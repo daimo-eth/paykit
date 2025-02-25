@@ -5,6 +5,7 @@ import { PageContent } from "../../Common/Modal/styles";
 
 import {
   DepositAddressPaymentOptionMetadata,
+  ExternalPaymentOptions,
   getAddressContraction,
 } from "@daimo/common";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -83,6 +84,7 @@ const SelectMethod: React.FC = () => {
 
   const { setRoute, paymentState, log } = usePayContext();
   const {
+    daimoPayOrder,
     setSelectedExternalOption,
     externalPaymentOptions,
     depositAddressOptions,
@@ -90,6 +92,7 @@ const SelectMethod: React.FC = () => {
   } = paymentState;
   const displayName =
     senderEnsName ?? (address ? getAddressContraction(address) : "wallet");
+  const paymentOptions = daimoPayOrder?.metadata.payer?.paymentOptions;
 
   const connectedWalletOption = isConnected
     ? {
@@ -127,12 +130,22 @@ const SelectMethod: React.FC = () => {
     )}`,
   );
 
-  const solanaOption = getSolanaOption();
-  const depositAddressOption = getDepositAddressOption(depositAddressOptions);
+  const options = [...walletOptions];
 
-  const options = [
-    ...walletOptions,
-    ...(solanaOption ? [solanaOption] : []),
+  // Solana payment option
+  // Include by default if paymentOptions not provided
+  const includeSolana =
+    paymentOptions == null ||
+    paymentOptions.includes(ExternalPaymentOptions.Solana);
+  if (includeSolana) {
+    const solanaOption = getSolanaOption();
+    if (solanaOption) {
+      options.push(solanaOption);
+    }
+  }
+
+  // External payment options, e.g. Binance, Coinbase, etc.
+  options.push(
     ...(externalPaymentOptions.options ?? []).map((option) => ({
       id: option.id,
       title: option.cta,
@@ -149,8 +162,17 @@ const SelectMethod: React.FC = () => {
       disabled: option.disabled,
       subtitle: option.message,
     })),
-    ...(depositAddressOption ? [depositAddressOption] : []),
-  ];
+  );
+
+  // Deposit address options, e.g. Bitcoin, Tron, Zcash, etc.
+  // Include by default if paymentOptions not provided
+  const includeDepositAddressOption =
+    paymentOptions == null ||
+    paymentOptions.includes(ExternalPaymentOptions.ExternalChains);
+  if (includeDepositAddressOption) {
+    const depositAddressOption = getDepositAddressOption(depositAddressOptions);
+    options.push(depositAddressOption);
+  }
 
   return (
     <PageContent>

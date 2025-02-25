@@ -60,6 +60,8 @@ export interface PayParams {
   preferredChains?: number[];
   /** Preferred tokens. These appear first in the token list. */
   preferredTokens?: { chain: number; address: Address }[];
+  /** Only allow payments on these EVM chains. */
+  evmChains?: number[];
   /** External ID. E.g. a correlation ID. */
   externalId?: string;
   /** Developer metadata. E.g. correlation ID. */
@@ -165,6 +167,7 @@ export function usePaymentState({
     destChainId: daimoPayOrder?.destFinalCallTokenAmount.token.chainId,
     preferredChains: daimoPayOrder?.metadata.payer?.preferredChains,
     preferredTokens: daimoPayOrder?.metadata.payer?.preferredTokens,
+    evmChains: daimoPayOrder?.metadata.payer?.evmChains,
     isDepositFlow,
     log,
   });
@@ -409,6 +412,7 @@ export function usePaymentState({
           paymentOptions: payParams.paymentOptions,
           preferredChains: payParams.preferredChains,
           preferredTokens: payParams.preferredTokens,
+          evmChains: payParams.evmChains,
         },
       },
       externalId: payParams.externalId,

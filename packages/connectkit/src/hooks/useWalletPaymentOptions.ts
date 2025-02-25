@@ -11,6 +11,7 @@ export function useWalletPaymentOptions({
   destChainId,
   preferredChains,
   preferredTokens,
+  evmChains,
   isDepositFlow,
   log,
 }: {
@@ -20,6 +21,7 @@ export function useWalletPaymentOptions({
   destChainId: number | undefined;
   preferredChains: number[] | undefined;
   preferredTokens: { chain: number; address: string }[] | undefined;
+  evmChains: number[] | undefined;
   isDepositFlow: boolean;
   log: (msg: string) => void;
 }) {
@@ -40,6 +42,7 @@ export function useWalletPaymentOptions({
           destChainId,
           preferredChains,
           preferredTokens,
+          evmChains,
         });
 
         // Filter out chains we don't support yet.

@@ -86,4 +86,10 @@ export type DaimoPayModalOptions = {
 // TODO: for now, these match ExternalPaymentOptions. In future, we can add
 // higher level categories like "Solana", "BitcoinEtc", "Card".
 /** Additional payment options. Onchain payments are always enabled. */
-export type PaymentOption = "Daimo" | "Coinbase" | "Binance" | "RampNetwork";
+export type PaymentOption =
+  | "Daimo"
+  | "Coinbase"
+  | "Binance"
+  | "RampNetwork"
+  | "Solana"
+  | "ExternalChains";

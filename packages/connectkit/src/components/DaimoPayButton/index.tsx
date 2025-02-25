@@ -66,6 +66,10 @@ type PayButtonPaymentProps =
        */
       preferredTokens?: { chain: number; address: Address }[];
       /**
+       * Only allow payments on these EVM chains.
+       */
+      evmChains?: number[];
+      /**
        * External ID. E.g. a correlation ID.
        */
       externalId?: string;
@@ -163,6 +167,7 @@ function DaimoPayButtonCustom(props: DaimoPayButtonCustomProps) {
           paymentOptions: props.paymentOptions,
           preferredChains: props.preferredChains,
           preferredTokens: props.preferredTokens,
+          evmChains: props.evmChains,
           externalId: props.externalId,
           metadata: props.metadata,
         }
