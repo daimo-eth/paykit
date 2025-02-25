@@ -2,7 +2,6 @@ import {
   assert,
   assertNotNull,
   DaimoPayOrder,
-  PlatformType,
   SolanaPublicKey,
 } from "@daimo/common";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
@@ -16,14 +15,12 @@ export function usePayWithSolanaToken({
   daimoPayOrder,
   setDaimoPayOrder,
   createOrHydrate,
-  platform,
   log,
 }: {
   trpc: TrpcClient;
   daimoPayOrder: DaimoPayOrder | undefined;
   setDaimoPayOrder: (order: DaimoPayOrder) => void;
   createOrHydrate: CreateOrHydrateFn;
-  platform: PlatformType | undefined;
   log: (message: string) => void;
 }) {
   const { connection } = useConnection();
@@ -32,7 +29,6 @@ export function usePayWithSolanaToken({
   const payWithSolanaToken = async (inputToken: SolanaPublicKey) => {
     assert(!!wallet.publicKey, "[PAY SOLANA] No wallet connected");
     assert(!!daimoPayOrder, "[PAY SOLANA] daimoPayOrder cannot be null");
-    assert(!!platform, "[PAY SOLANA] platform cannot be null");
 
     const orderId = daimoPayOrder.id;
     const { hydratedOrder } = await createOrHydrate({

@@ -241,7 +241,6 @@ export function usePaymentState({
     daimoPayOrder,
     setDaimoPayOrder,
     createOrHydrate,
-    platform,
     log,
   });
 
