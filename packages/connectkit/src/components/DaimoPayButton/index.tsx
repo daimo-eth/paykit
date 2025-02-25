@@ -98,7 +98,7 @@ type PayButtonCommonProps = PayButtonPaymentProps & {
   confirmationMessage?: string;
 };
 
-type DaimoPayButtonProps = PayButtonCommonProps & {
+export type DaimoPayButtonProps = PayButtonCommonProps & {
   /** Light mode, dark mode, or auto. */
   mode?: Mode;
   /** Named theme. See docs for options. */
@@ -109,7 +109,7 @@ type DaimoPayButtonProps = PayButtonCommonProps & {
   disabled?: boolean;
 };
 
-type DaimoPayButtonCustomProps = PayButtonCommonProps & {
+export type DaimoPayButtonCustomProps = PayButtonCommonProps & {
   /** Custom renderer */
   children: (renderProps: {
     show: () => void;
