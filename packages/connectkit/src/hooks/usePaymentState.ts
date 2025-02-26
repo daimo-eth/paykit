@@ -120,12 +120,14 @@ export function usePaymentState({
   setDaimoPayOrder,
   setOpen,
   log,
+  redirectReturnUrl,
 }: {
   trpc: TrpcClient;
   daimoPayOrder: DaimoPayOrder | undefined;
   setDaimoPayOrder: (o: DaimoPayOrder) => void;
   setOpen: (showModal: boolean, meta?: Record<string, any>) => void;
   log: (...args: any[]) => void;
+  redirectReturnUrl?: string;
 }): PaymentState {
   // Browser state.
   const [platform, setPlatform] = useState<PlatformType>();
@@ -205,6 +207,7 @@ export function usePaymentState({
         platform,
         refundAddress,
         externalPaymentOption,
+        redirectReturnUrl,
       });
     }
 
@@ -227,6 +230,7 @@ export function usePaymentState({
       platform,
       refundAddress,
       externalPaymentOption,
+      redirectReturnUrl,
     });
   };
 
