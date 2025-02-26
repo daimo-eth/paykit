@@ -56,6 +56,8 @@ export interface PayParams {
   intent?: string;
   /** Payment options. By default, all are enabled. */
   paymentOptions?: PaymentOption[];
+  /** Redirect URL for external payment options (Coinbase, Binance, RampNetwork). */
+  externalPaymentOptionRedirectUrl?: string;
   /** Preferred chain IDs. */
   preferredChains?: number[];
   /** Preferred tokens. These appear first in the token list. */
@@ -418,6 +420,8 @@ export function usePaymentState({
           preferredTokens: payParams.preferredTokens,
           evmChains: payParams.evmChains,
         },
+        externalPaymentOptionRedirectUrl:
+          payParams.externalPaymentOptionRedirectUrl,
       },
       externalId: payParams.externalId,
       userMetadata: payParams.metadata,

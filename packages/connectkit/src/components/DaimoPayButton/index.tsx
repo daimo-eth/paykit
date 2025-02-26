@@ -58,6 +58,10 @@ type PayButtonPaymentProps =
        */
       paymentOptions?: PaymentOption[];
       /**
+       * Redirect URL for external payment options (Coinbase, Binance, RampNetwork).
+       */
+      externalPaymentOptionRedirectUrl?: string;
+      /**
        * Preferred chain IDs. Assets on these chains will appear first.
        */
       preferredChains?: number[];
@@ -167,6 +171,8 @@ function DaimoPayButtonCustom(props: DaimoPayButtonCustomProps) {
           toCallData: props.toCallData,
           intent: props.intent,
           paymentOptions: props.paymentOptions,
+          externalPaymentOptionRedirectUrl:
+            props.externalPaymentOptionRedirectUrl,
           preferredChains: props.preferredChains,
           preferredTokens: props.preferredTokens,
           evmChains: props.evmChains,
