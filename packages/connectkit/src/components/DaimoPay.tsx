@@ -118,6 +118,11 @@ type ContextValue = {
   setConfirmationMessage: React.Dispatch<
     React.SetStateAction<string | undefined>
   >;
+  /** Redirect URL to return to the app. E.g. after Coinbase, Binance, RampNetwork. */
+  redirectReturnUrl?: string;
+  setRedirectReturnUrl: React.Dispatch<
+    React.SetStateAction<string | undefined>
+  >;
 } & useConnectCallbackProps;
 
 /** Meant for internal use. This will be non-exported in a future SDK version. */
@@ -257,6 +262,9 @@ const DaimoPayProviderWithoutSolana = ({
   const [confirmationMessage, setConfirmationMessage] = useState<
     string | undefined
   >(undefined);
+  const [redirectReturnUrl, setRedirectReturnUrl] = useState<
+    string | undefined
+  >(undefined);
 
   const [resize, onResize] = useState<number>(0);
 
@@ -312,6 +320,7 @@ const DaimoPayProviderWithoutSolana = ({
     setDaimoPayOrder,
     setOpen,
     log,
+    redirectReturnUrl,
   });
 
   // When a payment is in progress, poll for status updates. Do this regardless
@@ -387,6 +396,8 @@ const DaimoPayProviderWithoutSolana = ({
     errorMessage,
     confirmationMessage,
     setConfirmationMessage,
+    redirectReturnUrl,
+    setRedirectReturnUrl,
     debugMode,
     log,
     displayError: (message: string | React.ReactNode | null, code?: any) => {

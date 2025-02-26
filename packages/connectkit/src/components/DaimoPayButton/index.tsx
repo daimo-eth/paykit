@@ -58,10 +58,6 @@ type PayButtonPaymentProps =
        */
       paymentOptions?: PaymentOption[];
       /**
-       * Redirect URL for external payment options (Coinbase, Binance, RampNetwork).
-       */
-      externalPaymentOptionRedirectUrl?: string;
-      /**
        * Preferred chain IDs. Assets on these chains will appear first.
        */
       preferredChains?: number[];
@@ -100,6 +96,8 @@ type PayButtonCommonProps = PayButtonPaymentProps & {
   defaultOpen?: boolean;
   /** Custom message to display on confirmation page. */
   confirmationMessage?: string;
+  /** Redirect URL to return to the app. E.g. after Coinbase, Binance, RampNetwork. */
+  redirectReturnUrl?: string;
 };
 
 export type DaimoPayButtonProps = PayButtonCommonProps & {
@@ -169,8 +167,6 @@ function DaimoPayButtonCustom(props: DaimoPayButtonCustomProps) {
           toCallData: props.toCallData,
           intent: props.intent,
           paymentOptions: props.paymentOptions,
-          externalPaymentOptionRedirectUrl:
-            props.externalPaymentOptionRedirectUrl,
           preferredChains: props.preferredChains,
           preferredTokens: props.preferredTokens,
           evmChains: props.evmChains,
@@ -195,6 +191,13 @@ function DaimoPayButtonCustom(props: DaimoPayButtonCustomProps) {
       setConfirmationMessage(props.confirmationMessage);
     }
   }, [props.confirmationMessage, setConfirmationMessage]);
+
+  const { setRedirectReturnUrl } = context;
+  useEffect(() => {
+    if (props.redirectReturnUrl) {
+      setRedirectReturnUrl(props.redirectReturnUrl);
+    }
+  }, [props.redirectReturnUrl, setRedirectReturnUrl]);
 
   // Payment events: call these three event handlers.
   const { onPaymentStarted, onPaymentCompleted, onPaymentBounced } = props;
