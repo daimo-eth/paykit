@@ -23,7 +23,12 @@ import Tooltip from "../../Common/Tooltip";
 
 import SquircleSpinner from "../../Spinners/SquircleSpinner";
 
-import { AlertIcon, RetryIconCircle, TickIcon } from "../../../assets/icons";
+import {
+  AlertIcon,
+  ExternalLinkIcon,
+  RetryIconCircle,
+  TickIcon,
+} from "../../../assets/icons";
 import { useConnect } from "../../../hooks/useConnect";
 import useLocales from "../../../hooks/useLocales";
 import { detectBrowser, isWalletConnectConnector } from "../../../utils";
@@ -404,6 +409,9 @@ const ConnectWithInjector: React.FC<{
                       ? locales.injectionScreen_connecting_injected_p
                       : locales.injectionScreen_connecting_p}
                   </ModalBody>
+                  <Button icon={<ExternalLinkIcon />} onClick={runConnect}>
+                    Connect {walletInfo.name}
+                  </Button>
                 </ModalContent>
               </Content>
             )}
