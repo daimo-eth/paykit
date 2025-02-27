@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { keyframes } from "styled-components";
 import CrepeIcon from "../../../assets/crepe";
 import styled from "../../../styles/styled";
+import { daimoPayVersion } from "../../../utils/exports";
 
 const PoweredByFooter = ({ supportUrl }: { supportUrl?: string } = {}) => {
   const [supportVisible, setSupportVisible] = useState(false);
@@ -21,7 +22,9 @@ const PoweredByFooter = ({ supportUrl }: { supportUrl?: string } = {}) => {
       <TextButton
         onClick={() => {
           window.open(
-            supportVisible ? supportUrl : "https://pay.daimo.com?ref=paykit",
+            supportVisible
+              ? supportUrl
+              : `https://pay.daimo.com?ref=paykit-v${daimoPayVersion}`,
             "_blank",
           );
         }}

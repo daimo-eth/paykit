@@ -1,22 +1,21 @@
 import { DaimoPayOrder, writeDaimoPayOrderID } from "@daimo/common";
+import { daimoPayVersion } from "./exports";
 
 export function getSupportUrl(
   daimoPayOrder: DaimoPayOrder | undefined,
   screen: string,
 ) {
-  const encodedOrderId =
+  const payId =
     daimoPayOrder == null ? null : writeDaimoPayOrderID(daimoPayOrder.id);
+
   const email = "support@daimo.com";
-  const subject = `Support with Daimo Pay Id ${encodedOrderId}`;
+  const subject = `Support${payId ? ` #${payId}` : ""}`;
+  let body = [
+    `Transaction: ${screen}`,
+    `Version: ${daimoPayVersion}`,
+    ``,
+    `Tell us how we can help`,
+  ].join("\n");
 
-  let body = "";
-  if (daimoPayOrder != null) {
-    body += `Id: ${encodedOrderId}\n`;
-    body += `Org Id: ${daimoPayOrder.orgId}\n`;
-  }
-  body += `Support requested on ${screen} screen at ${new Date().toISOString()}\n\n`;
-  body += "Please explain the issue you are experiencing:\n\n";
-
-  const mailtoUrl = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  return mailtoUrl;
+  return `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
