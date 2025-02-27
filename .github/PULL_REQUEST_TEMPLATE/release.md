@@ -13,5 +13,5 @@ title: "Release: [VERSION]"
 - [ ] Test live demo locally.
 - [ ] Publish `@daimo/{common, contract}` if necessary.
 - [ ] Publish `@daimo/pay@<version>` to npm.
-- [ ] Update example app to point to new version.
-- [ ] Update package.json to `<version>-dev`.
+- [ ] Update example app to point to new version. Ensure it works.
+- [ ] Update package.json to <version + 1>-dev.
