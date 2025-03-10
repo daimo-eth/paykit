@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 
 import {
   ModalContent,
@@ -8,9 +8,9 @@ import {
 
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Phantom, Solflare } from "../../../../assets/logos";
+import { isMobile } from "../../../../utils";
 import Button from "../../../Common/Button";
 import OptionsList from "../../../Common/OptionsList";
-import { OrderHeader } from "../../../Common/OrderHeader";
 import { ROUTES, usePayContext } from "../../../DaimoPay";
 interface Option {
   id: string;
@@ -24,10 +24,6 @@ const ConnectSolana: React.FC = () => {
   const { setSolanaConnector, setRoute } = usePayContext();
   const solanaWallets = useWallet();
 
-  const isOnIOS = useMemo(() => {
-    return /iPad|iPhone/.test(navigator.userAgent);
-  }, []);
-
   const options = solanaWallets.wallets.map((wallet) => ({
     id: wallet.adapter.name,
     title: `${wallet.adapter.name}`,
@@ -35,6 +31,7 @@ const ConnectSolana: React.FC = () => {
       <SquircleIcon icon={wallet.adapter.icon} alt={wallet.adapter.name} />,
     ],
     onClick: async () => {
+      console.log("wallet.adapter.name ", wallet.adapter.name);
       setSolanaConnector(wallet.adapter.name);
       if (solanaWallets.connected) {
         await solanaWallets.disconnect();
@@ -76,7 +73,6 @@ const ConnectSolana: React.FC = () => {
           "_blank",
         ),
     },
-    // TODO: Add backpack when deeplink works
     // {
     //   id: "backpack",
     //   title: "Open in Backpack",
@@ -95,10 +91,13 @@ const ConnectSolana: React.FC = () => {
   ];
 
   return (
-    <PageContent>
-      <OrderHeader minified />
-
-      {solanaWallets.wallets.length === 0 && !isOnIOS && (
+    <PageContent
+      style={{
+        height: "100%",
+      }}
+    >
+      {/* No wallets on desktop */}
+      {solanaWallets.wallets.length === 0 && !isMobile() && (
         <ModalContent
           style={{
             display: "flex",
@@ -121,19 +120,29 @@ const ConnectSolana: React.FC = () => {
         </ModalContent>
       )}
 
-      {isOnIOS && solanaWallets.wallets.length === 0 && (
-        <ModalContent
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 16,
-          }}
-        >
-          <ModalH1>Open this page and complete in your wallet</ModalH1>
-          <OptionsList options={defaultOptions} />
-        </ModalContent>
-      )}
-      <OptionsList options={options} />
+      {/* Mobile wallet instructions - shown when no wallets or using mobile adapter */}
+      {isMobile() &&
+        (solanaWallets.wallets.length === 0 ||
+          (solanaWallets.wallets.length > 0 &&
+            solanaWallets.wallets[0].adapter.name ===
+              "Mobile Wallet Adapter")) && (
+          <ModalContent
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 16,
+            }}
+          >
+            <ModalH1>Open this page and complete in your wallet</ModalH1>
+            <OptionsList options={defaultOptions} />
+          </ModalContent>
+        )}
+
+      {/* Show wallet options when not on mobile adapter */}
+      {solanaWallets.wallets.length > 0 &&
+        solanaWallets.wallets[0].adapter.name !== "Mobile Wallet Adapter" && (
+          <OptionsList options={options} />
+        )}
     </PageContent>
   );
 };
