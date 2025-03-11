@@ -133,7 +133,6 @@ const ConnectSolana: React.FC = () => {
               gap: 16,
             }}
           >
-            <ModalH1>Open this page and complete in your wallet</ModalH1>
             <OptionsList options={defaultOptions} />
           </ModalContent>
         )}
