@@ -7,7 +7,7 @@ import {
 } from "../../../Common/Modal/styles";
 
 import { useWallet } from "@solana/wallet-adapter-react";
-import { Phantom, Solflare } from "../../../../assets/logos";
+import { Backpack, Phantom, Solflare } from "../../../../assets/logos";
 import { isMobile } from "../../../../utils";
 import Button from "../../../Common/Button";
 import OptionsList from "../../../Common/OptionsList";
@@ -73,21 +73,21 @@ const ConnectSolana: React.FC = () => {
           "_blank",
         ),
     },
-    // {
-    //   id: "backpack",
-    //   title: "Open in Backpack",
-    //   icons: [
-    //     <SquircleIcon
-    //       icon={(props) => <Backpack {...props} background />}
-    //       alt="Backpack"
-    //     />,
-    //   ],
-    //   onClick: () =>
-    //     window.open(
-    //       `https://backpack.app/ul/v1/browse/${encodeURIComponent(window.location.href)}?ref=${encodeURIComponent(window.location.origin)}`,
-    //       "_blank",
-    //     ),
-    // },
+    {
+      id: "backpack",
+      title: "Open in Backpack",
+      icons: [
+        <SquircleIcon
+          icon={(props) => <Backpack {...props} background />}
+          alt="Backpack"
+        />,
+      ],
+      onClick: () =>
+        window.open(
+          `https://backpack.app/ul/v1/wallet/browse/${encodeURIComponent(window.location.href)}?ref=${encodeURIComponent(window.location.origin)}`,
+          "_blank",
+        ),
+    },
   ];
 
   return (
