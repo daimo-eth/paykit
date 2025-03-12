@@ -223,6 +223,7 @@ function DaimoPayButtonCustom(props: DaimoPayButtonCustomProps) {
     if (intentStatus === DaimoPayIntentStatus.STARTED) {
       onPaymentStarted?.({
         type: DaimoPayIntentStatus.STARTED,
+        isTestEvent: false,
         paymentId: writeDaimoPayOrderID(hydOrder.id),
         chainId: hydOrder.destFinalCallTokenAmount.token.chainId,
         txHash: assertNotNull(
@@ -237,6 +238,7 @@ function DaimoPayButtonCustom(props: DaimoPayButtonCustomProps) {
     ) {
       const event = {
         type: intentStatus,
+        isTestEvent: false,
         paymentId: writeDaimoPayOrderID(hydOrder.id),
         chainId: hydOrder.destFinalCallTokenAmount.token.chainId,
         txHash: assertNotNull(
