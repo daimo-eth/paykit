@@ -7,7 +7,12 @@ import {
 } from "../../../Common/Modal/styles";
 
 import { useWallet } from "@solana/wallet-adapter-react";
-import { Backpack, Phantom, Solflare } from "../../../../assets/logos";
+import {
+  Backpack,
+  Phantom,
+  Solflare,
+  SquircleIcon,
+} from "../../../../assets/logos";
 import { isMobile } from "../../../../utils";
 import Button from "../../../Common/Button";
 import OptionsList from "../../../Common/OptionsList";
@@ -84,7 +89,7 @@ const ConnectSolana: React.FC = () => {
       ],
       onClick: () =>
         window.open(
-          `https://backpack.app/ul/v1/wallet/browse/${encodeURIComponent(window.location.href)}?ref=${encodeURIComponent(window.location.origin)}`,
+          `https://backpack.app/ul/v1/browse/${encodeURIComponent(window.location.href)}?ref=${encodeURIComponent(window.location.origin)}`,
           "_blank",
         ),
     },
@@ -133,6 +138,7 @@ const ConnectSolana: React.FC = () => {
               gap: 16,
             }}
           >
+            <ModalH1>Open this page and complete in your wallet</ModalH1>
             <OptionsList options={defaultOptions} />
           </ModalContent>
         )}
@@ -143,27 +149,6 @@ const ConnectSolana: React.FC = () => {
           <OptionsList options={options} />
         )}
     </PageContent>
-  );
-};
-
-const SquircleIcon = ({
-  icon,
-  alt,
-}: {
-  icon: string | React.ComponentType<any>;
-  alt: string;
-}) => {
-  const IconComponent =
-    typeof icon === "string" ? (
-      <img src={icon} alt={alt} />
-    ) : (
-      React.createElement(icon)
-    );
-
-  return (
-    <div style={{ borderRadius: "22.5%", overflow: "hidden" }}>
-      {IconComponent}
-    </div>
   );
 };
 

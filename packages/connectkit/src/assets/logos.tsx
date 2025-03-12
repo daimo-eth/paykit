@@ -1,3 +1,4 @@
+import React from "react";
 import { isFamily, isRainbow, isZerion } from "../utils/wallets";
 
 export const Mock = ({ ...props }) => (
@@ -1359,6 +1360,27 @@ const Fordefi = ({ ...props }) => (
   </svg>
 );
 
+export const SquircleIcon = ({
+  icon,
+  alt,
+}: {
+  icon: string | React.ComponentType<any>;
+  alt: string;
+}) => {
+  const IconComponent =
+    typeof icon === "string" ? (
+      <img src={icon} alt={alt} />
+    ) : (
+      React.createElement(icon)
+    );
+
+  return (
+    <div style={{ borderRadius: "22.5%", overflow: "hidden" }}>
+      {IconComponent}
+    </div>
+  );
+};
+
 export default {
   Mock,
   Injected,
@@ -1390,4 +1412,7 @@ export default {
   Fordefi,
   TokenPocket,
   Talisman,
+  SquircleIcon,
+  Backpack,
+  Solflare,
 };
