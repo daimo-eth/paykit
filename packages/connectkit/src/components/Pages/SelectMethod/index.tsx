@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { ROUTES, usePayContext } from "../../DaimoPay";
 
 import { PageContent } from "../../Common/Modal/styles";
@@ -13,10 +13,7 @@ import { Connector, useAccount, useDisconnect } from "wagmi";
 import { Bitcoin, Solana, Tron, Zcash } from "../../../assets/chains";
 import { Coinbase, MetaMask, Rabby, Rainbow } from "../../../assets/logos";
 import useIsMobile from "../../../hooks/useIsMobile";
-import {
-  WalletConfigProps,
-  walletConfigs,
-} from "../../../wallets/walletConfigs";
+import { walletConfigs } from "../../../wallets/walletConfigs";
 import OptionsList from "../../Common/OptionsList";
 import { OrderHeader } from "../../Common/OrderHeader";
 import PoweredByFooter from "../../Common/PoweredByFooter";
@@ -84,10 +81,10 @@ const SelectMethod: React.FC = () => {
   const isMobile = useIsMobile();
 
   const { address, chain, isConnected, connector } = useAccount();
-  const { setRoute, paymentState, log } = usePayContext();
+  const { setRoute, paymentState, wcWallet, setWcWallet, log } =
+    usePayContext();
 
   // Extract the currently connect WalletConnect wallet
-  const [wcWallet, setWcWallet] = useState<WalletConfigProps>();
   useEffect(() => {
     connector?.getProvider()?.then((p: any) => {
       let name = p.session?.peer?.metadata?.name;

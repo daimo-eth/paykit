@@ -37,6 +37,7 @@ import {
   Theme,
 } from "../types";
 import { createTrpcClient } from "../utils/trpc";
+import { WalletConfigProps } from "../wallets/walletConfigs";
 import { DaimoPayModal } from "./DaimoPayModal";
 import { SolanaContextProvider, SolanaWalletName } from "./contexts/solana";
 import { Web3ContextProvider } from "./contexts/web3";
@@ -90,6 +91,10 @@ type ContextValue = {
   setRoute: (route: ROUTES, data?: Record<string, any>) => void;
   connector: Connector;
   setConnector: React.Dispatch<React.SetStateAction<Connector>>;
+  wcWallet: WalletConfigProps | undefined;
+  setWcWallet: React.Dispatch<
+    React.SetStateAction<WalletConfigProps | undefined>
+  >;
   errorMessage: Error;
   debugMode?: boolean;
   log: (...props: any) => void;
@@ -244,6 +249,7 @@ const DaimoPayProviderWithoutSolana = ({
   const [connector, setConnector] = useState<ContextValue["connector"]>({
     id: "",
   });
+  const [wcWallet, setWcWallet] = useState<WalletConfigProps>();
   const [solanaConnector, setSolanaConnector] = useState<
     SolanaWalletName | undefined
   >();
@@ -385,6 +391,8 @@ const DaimoPayProviderWithoutSolana = ({
     route,
     setRoute,
     connector,
+    wcWallet,
+    setWcWallet,
     // Daimo Pay context
     sessionId,
     setConnector,

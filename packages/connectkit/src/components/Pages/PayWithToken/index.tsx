@@ -4,17 +4,12 @@ import { ROUTES, usePayContext } from "../../DaimoPay";
 import { ModalContent, ModalH1, PageContent } from "../../Common/Modal/styles";
 
 import { WalletPaymentOption } from "@daimo/common";
-import { useAccount, useChainId, useSwitchChain } from "wagmi";
+import { useChainId, useSwitchChain } from "wagmi";
 import { ExternalLinkIcon } from "../../../assets/icons";
 import useIsMobile from "../../../hooks/useIsMobile";
-import {
-  WalletConfigProps,
-  walletConfigs,
-} from "../../../wallets/walletConfigs";
 import Button from "../../Common/Button";
 import PaymentBreakdown from "../../Common/PaymentBreakdown";
 import TokenLogoSpinner from "../../Spinners/TokenLogoSpinner";
-
 enum PayState {
   RequestingPayment = "Requesting Payment",
   SwitchingChain = "Switching Chain",
@@ -24,7 +19,8 @@ enum PayState {
 
 const PayWithToken: React.FC = () => {
   const isMobile = useIsMobile();
-  const { triggerResize, paymentState, setRoute, log } = usePayContext();
+  const { triggerResize, paymentState, setRoute, log, wcWallet } =
+    usePayContext();
   const { selectedTokenOption, payWithToken } = paymentState;
   const [payState, setPayState] = useState<PayState>(
     PayState.RequestingPayment,
@@ -32,22 +28,6 @@ const PayWithToken: React.FC = () => {
 
   const walletChainId = useChainId();
   const { switchChainAsync } = useSwitchChain();
-  const { connector } = useAccount();
-
-  const [wcWallet, setWcWallet] = useState<WalletConfigProps>();
-  useEffect(() => {
-    connector?.getProvider()?.then((p: any) => {
-      let name = p.session?.peer?.metadata?.name;
-      if (p.isCoinbaseWallet) name = "Coinbase Wallet";
-      if (name == null) name = "Unknown";
-      const wallet = Object.values(walletConfigs).find(
-        (c) => name.includes(c.name) || name.includes(c.shortName),
-      );
-      log(`[SELECT_METHOD] wcWallet: ${name} > ${wallet?.name}`);
-      setWcWallet(wallet);
-    });
-  }, [connector]);
-
   const trySwitchingChain = async (
     option: WalletPaymentOption,
     forceSwitch: boolean = false,
@@ -86,11 +66,6 @@ const PayWithToken: React.FC = () => {
     setPayState(PayState.RequestingPayment);
     try {
       await payWithToken(option);
-      if (isMobile) {
-        if (wcWallet) {
-          window.open(wcWallet.getWalletConnectDeeplink?.(""), "_blank");
-        }
-      }
       setPayState(PayState.RequestSuccessful);
       setTimeout(() => {
         setRoute(ROUTES.CONFIRMATION, { event: "wait-pay-with-token" });
@@ -125,9 +100,16 @@ const PayWithToken: React.FC = () => {
     if (!selectedTokenOption) return;
 
     // Give user time to see the UI before opening
-    transferTimeout = setTimeout(() => {
-      handleTransfer(selectedTokenOption);
-    }, 100);
+    if (wcWallet && isMobile) {
+      transferTimeout = setTimeout(() => {
+        window.open(wcWallet?.getWalletConnectDeeplink?.(""), "_blank");
+        handleTransfer(selectedTokenOption);
+      }, 800);
+    } else {
+      transferTimeout = setTimeout(() => {
+        handleTransfer(selectedTokenOption);
+      }, 100);
+    }
     return () => {
       clearTimeout(transferTimeout);
     };
@@ -136,7 +118,6 @@ const PayWithToken: React.FC = () => {
   useEffect(() => {
     triggerResize();
   }, [payState]);
-
   return (
     <PageContent>
       {selectedTokenOption && (
@@ -147,12 +128,12 @@ const PayWithToken: React.FC = () => {
         {selectedTokenOption && (
           <PaymentBreakdown paymentOption={selectedTokenOption} />
         )}
-        {payState === PayState.RequestingPayment && isMobile && wcWallet && (
+        {payState === PayState.RequestingPayment && wcWallet && (
           <Button
             icon={<ExternalLinkIcon />}
-            onClick={() =>
-              window.open(wcWallet.getWalletConnectDeeplink?.(""), "_blank")
-            }
+            onClick={() => {
+              window.open(wcWallet.getWalletConnectDeeplink?.(""), "_blank");
+            }}
           >
             Pay with {wcWallet.name}
           </Button>

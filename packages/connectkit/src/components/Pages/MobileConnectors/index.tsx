@@ -62,6 +62,7 @@ const MobileConnectors: React.FC = () => {
     }) ?? [];
 
   const connectWallet = (wallet: WalletConfigProps) => {
+    context.setWcWallet(wallet);
     const uri = wallet.getWalletConnectDeeplink?.(wcUri!);
     log(`[MobileConnectors] clicked ${wallet.name}: ${uri}`);
     // Using open(.., '_blank') to open the wallet connect modal.
