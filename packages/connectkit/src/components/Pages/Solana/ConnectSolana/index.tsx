@@ -17,6 +17,7 @@ import { isMobile } from "../../../../utils";
 import Button from "../../../Common/Button";
 import OptionsList from "../../../Common/OptionsList";
 import { ROUTES, usePayContext } from "../../../DaimoPay";
+
 interface Option {
   id: string;
   title: string;
@@ -25,8 +26,9 @@ interface Option {
   onClick: () => void;
   disabled?: boolean;
 }
+
 const ConnectSolana: React.FC = () => {
-  const { setSolanaConnector, setRoute } = usePayContext();
+  const { setSolanaConnector, setRoute, log } = usePayContext();
   const solanaWallets = useWallet();
 
   const options = solanaWallets.wallets.map((wallet) => ({
@@ -36,7 +38,7 @@ const ConnectSolana: React.FC = () => {
       <SquircleIcon icon={wallet.adapter.icon} alt={wallet.adapter.name} />,
     ],
     onClick: async () => {
-      console.log("wallet.adapter.name ", wallet.adapter.name);
+      log("wallet.adapter.name ", wallet.adapter.name);
       setSolanaConnector(wallet.adapter.name);
       if (solanaWallets.connected) {
         await solanaWallets.disconnect();
@@ -138,7 +140,6 @@ const ConnectSolana: React.FC = () => {
               gap: 16,
             }}
           >
-            <ModalH1>Open this page and complete in your wallet</ModalH1>
             <OptionsList options={defaultOptions} />
           </ModalContent>
         )}

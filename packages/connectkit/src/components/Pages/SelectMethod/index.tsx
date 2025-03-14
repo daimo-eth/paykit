@@ -19,105 +19,6 @@ import { OrderHeader } from "../../Common/OrderHeader";
 import PoweredByFooter from "../../Common/PoweredByFooter";
 import WalletChainLogo from "../../Common/WalletChainLogo";
 
-function getConnectedWalletOptions() {
-  const {
-    address,
-    chain,
-    isConnected: isEthConnected,
-    connector,
-  } = useAccount();
-  const {
-    connected: isSolanaConnected,
-    wallet: solanaWallet,
-    publicKey,
-  } = useWallet();
-  const { paymentState } = usePayContext();
-  const { senderEnsName } = paymentState;
-  const { setRoute } = usePayContext();
-
-  const showChainLogo = isEthConnected && isSolanaConnected;
-
-  const connectedOptions: {
-    id: string;
-    title: string;
-    icons: JSX.Element[];
-    onClick: () => void;
-  }[] = [];
-
-  if (isEthConnected) {
-    const ethWalletDisplayName =
-      senderEnsName ?? (address ? getAddressContraction(address) : "wallet");
-
-    const connectedEthWalletOption = {
-      id: "connectedWallet",
-      title: `Pay with ${ethWalletDisplayName}`,
-      icons:
-        connector && connector.icon
-          ? [
-              <WalletChainLogo
-                walletIcon={connector.icon}
-                walletName={connector.name}
-                chainLogo={showChainLogo && <Ethereum />}
-              />,
-            ]
-          : [
-              <WalletChainLogo
-                walletIcon={<MetaMask />}
-                walletName="Default wallet icon"
-                chainLogo={showChainLogo && <Ethereum />}
-              />,
-            ],
-      onClick: () => {
-        setRoute(ROUTES.SELECT_TOKEN, {
-          event: "click-wallet",
-          walletId: connector?.id,
-          chainId: chain?.id,
-          address: address,
-        });
-      },
-    };
-    connectedOptions.push(connectedEthWalletOption);
-  }
-
-  if (isSolanaConnected) {
-    const solWalletDisplayName = getAddressContraction(
-      publicKey?.toBase58() ?? "",
-    );
-
-    const connectedSolWalletOption = {
-      id: "connectedSolanaWallet",
-      title: `Pay with ${solWalletDisplayName}`,
-      icons: solanaWallet?.adapter.icon
-        ? [
-            <WalletChainLogo
-              walletIcon={solanaWallet.adapter.icon}
-              walletName={solanaWallet.adapter.name}
-              chainLogo={showChainLogo && <Solana />}
-            />,
-          ]
-        : [
-            <WalletChainLogo
-              walletIcon={<Solana />}
-              walletName="Default wallet icon"
-              chainLogo={null}
-            />,
-          ],
-      onClick: () => {
-        setRoute(ROUTES.SOLANA_SELECT_TOKEN, {
-          event: "click-wallet",
-          walletId: solanaWallet?.adapter.name,
-          chainId: "solana",
-          address: publicKey?.toBase58(),
-        });
-      },
-    };
-
-    connectedOptions.push(connectedSolWalletOption);
-  }
-
-  return connectedOptions;
-}
-
 // Get 3 icons, skipping the one that is already connected
 function getBestUnconnectedWalletIcons(connector: Connector | undefined) {
   const icons: JSX.Element[] = [];
@@ -183,9 +84,29 @@ const SelectMethod: React.FC = () => {
     return /iPad|iPhone/.test(navigator.userAgent);
   }, []);
 
-  const { address, chain, isConnected, connector } = useAccount();
+  const {
+    address,
+    chain,
+    isConnected: isEthConnected,
+    connector,
+  } = useAccount();
+  const {
+    connected: isSolanaConnected,
+    wallet: solanaWallet,
+    publicKey,
+  } = useWallet();
   const { setRoute, paymentState, wcWallet, setWcWallet, log } =
     usePayContext();
+  const { disconnectAsync } = useDisconnect();
+
+  const {
+    daimoPayOrder,
+    setSelectedExternalOption,
+    externalPaymentOptions,
+    depositAddressOptions,
+    senderEnsName,
+  } = paymentState;
+  const paymentOptions = daimoPayOrder?.metadata.payer?.paymentOptions;
 
   // Extract the currently connect WalletConnect wallet
   useEffect(() => {
@@ -201,30 +122,44 @@ const SelectMethod: React.FC = () => {
     });
   }, [connector]);
 
-  const { disconnectAsync } = useDisconnect();
+  const getConnectedWalletOptions = () => {
+    const showChainLogo = isEthConnected && isSolanaConnected;
 
-  const {
-    daimoPayOrder,
-    setSelectedExternalOption,
-    externalPaymentOptions,
-    depositAddressOptions,
-  } = paymentState;
-  const paymentOptions = daimoPayOrder?.metadata.payer?.paymentOptions;
+    const connectedOptions: {
+      id: string;
+      title: string;
+      icons: JSX.Element[];
+      onClick: () => void;
+    }[] = [];
 
-  const connectedWalletOption = isConnected
-    ? {
+    if (isEthConnected) {
+      const ethWalletDisplayName =
+        senderEnsName ?? (address ? getAddressContraction(address) : "wallet");
+
+      let walletIcon: JSX.Element;
+      if (connector?.icon) {
+        walletIcon = <img src={connector.icon} alt={connector.name} />;
+      } else if (wcWallet?.icon) {
+        walletIcon = (
+          <div style={{ borderRadius: "22.5%", overflow: "hidden" }}>
+            {wcWallet.icon}
+          </div>
+        );
+      } else {
+        walletIcon = <MetaMask />;
+      }
+
+      const connectedEthWalletOption = {
         id: "connectedWallet",
-        title: `Pay with ${displayName}`,
-        icons:
-          connector && connector.icon
-            ? [connector.icon]
-            : wcWallet?.icon
-              ? [
-                  <div style={{ borderRadius: "22.5%", overflow: "hidden" }}>
-                    {wcWallet.icon}
-                  </div>,
-                ]
-              : [<MetaMask />],
+        title: `Pay with ${ethWalletDisplayName}`,
+        icons: [
+          <WalletChainLogo
+            key="eth"
+            walletIcon={walletIcon}
+            walletName={connector?.name || "Wallet"}
+            chainLogo={showChainLogo ? <Ethereum /> : null}
+          />,
+        ],
         onClick: () => {
           setRoute(ROUTES.SELECT_TOKEN, {
             event: "click-wallet",
@@ -233,8 +168,49 @@ const SelectMethod: React.FC = () => {
             address: address,
           });
         },
-      }
-    : null;
+      };
+      connectedOptions.push(connectedEthWalletOption);
+    }
+
+    if (isSolanaConnected) {
+      const solWalletDisplayName = getAddressContraction(
+        publicKey?.toBase58() ?? "",
+      );
+
+      const connectedSolWalletOption = {
+        id: "connectedSolanaWallet",
+        title: `Pay with ${solWalletDisplayName}`,
+        icons: solanaWallet?.adapter.icon
+          ? [
+              <WalletChainLogo
+                walletIcon={solanaWallet.adapter.icon}
+                walletName={solanaWallet.adapter.name}
+                chainLogo={showChainLogo && <Solana />}
+              />,
+            ]
+          : [
+              <WalletChainLogo
+                walletIcon={<Solana />}
+                walletName="Default wallet icon"
+                chainLogo={null}
+              />,
+            ],
+        onClick: () => {
+          setRoute(ROUTES.SOLANA_SELECT_TOKEN, {
+            event: "click-wallet",
+            walletId: solanaWallet?.adapter.name,
+            chainId: "solana",
+            address: publicKey?.toBase58(),
+          });
+        },
+      };
+
+      connectedOptions.push(connectedSolWalletOption);
+    }
+
+    return connectedOptions;
+  };
+
   // Solana payment option
   // Include by default if paymentOptions not provided
   const includeSolana =
@@ -249,7 +225,10 @@ const SelectMethod: React.FC = () => {
   const connectedWalletOptions = getConnectedWalletOptions();
   const unconnectedWalletOption = {
     id: "unconnectedWallet",
-    title: isConnected ? `Pay with another wallet` : `Pay with wallet`,
+    title:
+      isEthConnected || isSolanaConnected
+        ? `Pay with another wallet`
+        : `Pay with wallet`,
     icons: getBestUnconnectedWalletIcons(connector),
     onClick: async () => {
       await disconnectAsync();
