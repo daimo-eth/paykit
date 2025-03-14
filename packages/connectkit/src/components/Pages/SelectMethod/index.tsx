@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { ROUTES, usePayContext } from "../../DaimoPay";
 
 import { PageContent } from "../../Common/Modal/styles";
@@ -17,7 +17,6 @@ import OptionsList from "../../Common/OptionsList";
 import { OrderHeader } from "../../Common/OrderHeader";
 import PoweredByFooter from "../../Common/PoweredByFooter";
 
-// Get 3 icons, skipping the one that is already connected
 function getBestUnconnectedWalletIcons(connector: Connector | undefined) {
   const icons: JSX.Element[] = [];
   const strippedId = connector?.id.toLowerCase(); // some connector ids can have weird casing and or suffixes and prefixes
@@ -35,11 +34,11 @@ function getBestUnconnectedWalletIcons(connector: Connector | undefined) {
   return icons;
 }
 
-function getSolanaOption() {
+function getSolanaOption(isOnIOS: boolean) {
   const { wallets } = useWallet();
   const { setRoute } = usePayContext();
 
-  if (wallets.length === 0) return null;
+  if (wallets.length === 0 && !isOnIOS) return null;
 
   return {
     id: "solana",
@@ -78,6 +77,9 @@ function getDepositAddressOption(depositAddressOptions: {
 
 const SelectMethod: React.FC = () => {
   const isMobile = useIsMobile();
+  const isOnIOS = useMemo(() => {
+    return /iPad|iPhone/.test(navigator.userAgent);
+  }, []);
 
   const { address, chain, isConnected, connector } = useAccount();
   const { disconnectAsync } = useDisconnect();
@@ -138,7 +140,7 @@ const SelectMethod: React.FC = () => {
     paymentOptions == null ||
     paymentOptions.includes(ExternalPaymentOptions.Solana);
   if (includeSolana) {
-    const solanaOption = getSolanaOption();
+    const solanaOption = getSolanaOption(isOnIOS);
     if (solanaOption) {
       options.push(solanaOption);
     }
