@@ -100,13 +100,16 @@ const PayWithToken: React.FC = () => {
   useEffect(() => {
     if (!selectedTokenOption) return;
 
-    // Give user time to see the UI before opening
+    // Give user time to see the UI before opening on mobile
     if (wcWallet && isMobile) {
       transferTimeout = setTimeout(() => {
         window.open(wcWallet?.getWalletConnectDeeplink?.(""), "_blank");
         handleTransfer(selectedTokenOption);
       }, 800);
-    } else {
+    }
+
+    // On desktop, open the wallet connect modal immediately
+    else {
       transferTimeout = setTimeout(() => {
         handleTransfer(selectedTokenOption);
       }, 100);
@@ -133,9 +136,7 @@ const PayWithToken: React.FC = () => {
         {payState === PayState.RequestingPayment && wcWallet && isMobile && (
           <Button
             icon={<ExternalLinkIcon />}
-            onClick={() => {
-              window.open(wcWallet.getWalletConnectDeeplink?.(""), "_blank");
-            }}
+            href={wcWallet.getWalletConnectDeeplink?.("")}
           >
             Pay with {wcWallet.name}
           </Button>
