@@ -132,7 +132,7 @@ export const OptionIcon = styled(motion.div)`
   right: 20px;
   width: 32px;
   height: 32px;
-  overflow: hidden;
+  overflow: visible;
   svg,
   img {
     display: block;

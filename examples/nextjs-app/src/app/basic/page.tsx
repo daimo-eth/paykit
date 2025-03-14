@@ -1,6 +1,6 @@
 "use client";
 
-import { bscUSDT } from "@daimo/contract";
+import { baseUSDC } from "@daimo/contract";
 import { DaimoPayButton } from "@daimo/pay";
 import { getAddress } from "viem";
 import { Text, TextLink } from "../../shared/tailwind-catalyst/text";
@@ -16,10 +16,10 @@ export default function DemoBasic() {
       <div />
       <DaimoPayButton
         appId={APP_ID}
-        toChain={bscUSDT.chainId}
+        toChain={baseUSDC.chainId}
         toAddress={DAIMO_ADDRESS}
         toUnits="0.12" /* $0.12 USDC */
-        toToken={getAddress(bscUSDT.token)}
+        toToken={getAddress(baseUSDC.token)}
         onPaymentStarted={printEvent}
         onPaymentCompleted={printEvent}
       />

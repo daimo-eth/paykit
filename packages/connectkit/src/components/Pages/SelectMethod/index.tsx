@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { ROUTES, usePayContext } from "../../DaimoPay";
 
 import { PageContent } from "../../Common/Modal/styles";
@@ -10,14 +10,16 @@ import {
 } from "@daimo/common";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connector, useAccount, useDisconnect } from "wagmi";
-import { Bitcoin, Solana, Tron, Zcash } from "../../../assets/chains";
+import { Bitcoin, Ethereum, Solana, Tron, Zcash } from "../../../assets/chains";
 import { Coinbase, MetaMask, Rabby, Rainbow } from "../../../assets/logos";
 import useIsMobile from "../../../hooks/useIsMobile";
 import { walletConfigs } from "../../../wallets/walletConfigs";
 import OptionsList from "../../Common/OptionsList";
 import { OrderHeader } from "../../Common/OrderHeader";
 import PoweredByFooter from "../../Common/PoweredByFooter";
+import WalletChainLogo from "../../Common/WalletChainLogo";
 
+// Get 3 icons, skipping the one that is already connected
 function getBestUnconnectedWalletIcons(connector: Connector | undefined) {
   const icons: JSX.Element[] = [];
   const strippedId = connector?.id.toLowerCase(); // some connector ids can have weird casing and or suffixes and prefixes
@@ -82,9 +84,29 @@ const SelectMethod: React.FC = () => {
     return /iPad|iPhone/.test(navigator.userAgent);
   }, []);
 
-  const { address, chain, isConnected, connector } = useAccount();
+  const {
+    address,
+    chain,
+    isConnected: isEthConnected,
+    connector,
+  } = useAccount();
+  const {
+    connected: isSolanaConnected,
+    wallet: solanaWallet,
+    publicKey,
+  } = useWallet();
   const { setRoute, paymentState, wcWallet, setWcWallet, log } =
     usePayContext();
+  const { disconnectAsync } = useDisconnect();
+
+  const {
+    daimoPayOrder,
+    setSelectedExternalOption,
+    externalPaymentOptions,
+    depositAddressOptions,
+    senderEnsName,
+  } = paymentState;
+  const paymentOptions = daimoPayOrder?.metadata.payer?.paymentOptions;
 
   // Extract the currently connect WalletConnect wallet
   useEffect(() => {
@@ -100,33 +122,44 @@ const SelectMethod: React.FC = () => {
     });
   }, [connector]);
 
-  const { disconnectAsync } = useDisconnect();
+  const getConnectedWalletOptions = () => {
+    const showChainLogo = isEthConnected && isSolanaConnected;
 
-  const {
-    daimoPayOrder,
-    setSelectedExternalOption,
-    externalPaymentOptions,
-    depositAddressOptions,
-    senderEnsName,
-  } = paymentState;
-  const displayName =
-    senderEnsName ?? (address ? getAddressContraction(address) : "wallet");
-  const paymentOptions = daimoPayOrder?.metadata.payer?.paymentOptions;
+    const connectedOptions: {
+      id: string;
+      title: string;
+      icons: JSX.Element[];
+      onClick: () => void;
+    }[] = [];
 
-  const connectedWalletOption = isConnected
-    ? {
+    if (isEthConnected) {
+      const ethWalletDisplayName =
+        senderEnsName ?? (address ? getAddressContraction(address) : "wallet");
+
+      let walletIcon: JSX.Element;
+      if (connector?.icon) {
+        walletIcon = <img src={connector.icon} alt={connector.name} />;
+      } else if (wcWallet?.icon) {
+        walletIcon = (
+          <div style={{ borderRadius: "22.5%", overflow: "hidden" }}>
+            {wcWallet.icon}
+          </div>
+        );
+      } else {
+        walletIcon = <MetaMask />;
+      }
+
+      const connectedEthWalletOption = {
         id: "connectedWallet",
-        title: `Pay with ${displayName}`,
-        icons:
-          connector && connector.icon
-            ? [connector.icon]
-            : wcWallet?.icon
-              ? [
-                  <div style={{ borderRadius: "22.5%", overflow: "hidden" }}>
-                    {wcWallet.icon}
-                  </div>,
-                ]
-              : [<MetaMask />],
+        title: `Pay with ${ethWalletDisplayName}`,
+        icons: [
+          <WalletChainLogo
+            key="eth"
+            walletIcon={walletIcon}
+            walletName={connector?.name || "Wallet"}
+            chainLogo={showChainLogo ? <Ethereum /> : null}
+          />,
+        ],
         onClick: () => {
           setRoute(ROUTES.SELECT_TOKEN, {
             event: "click-wallet",
@@ -135,12 +168,67 @@ const SelectMethod: React.FC = () => {
             address: address,
           });
         },
-      }
-    : null;
+      };
+      connectedOptions.push(connectedEthWalletOption);
+    }
 
+    if (isSolanaConnected) {
+      const solWalletDisplayName = getAddressContraction(
+        publicKey?.toBase58() ?? "",
+      );
+
+      const connectedSolWalletOption = {
+        id: "connectedSolanaWallet",
+        title: `Pay with ${solWalletDisplayName}`,
+        icons: solanaWallet?.adapter.icon
+          ? [
+              <WalletChainLogo
+                walletIcon={solanaWallet.adapter.icon}
+                walletName={solanaWallet.adapter.name}
+                chainLogo={showChainLogo && <Solana />}
+              />,
+            ]
+          : [
+              <WalletChainLogo
+                walletIcon={<Solana />}
+                walletName="Default wallet icon"
+                chainLogo={null}
+              />,
+            ],
+        onClick: () => {
+          setRoute(ROUTES.SOLANA_SELECT_TOKEN, {
+            event: "click-wallet",
+            walletId: solanaWallet?.adapter.name,
+            chainId: "solana",
+            address: publicKey?.toBase58(),
+          });
+        },
+      };
+
+      connectedOptions.push(connectedSolWalletOption);
+    }
+
+    return connectedOptions;
+  };
+
+  // Solana payment option
+  // Include by default if paymentOptions not provided
+  const includeSolana =
+    paymentOptions == null ||
+    paymentOptions.includes(ExternalPaymentOptions.Solana);
+  // Deposit address options, e.g. Bitcoin, Tron, Zcash, etc.
+  // Include by default if paymentOptions not provided
+  const includeDepositAddressOption =
+    paymentOptions == null ||
+    paymentOptions.includes(ExternalPaymentOptions.ExternalChains);
+
+  const connectedWalletOptions = getConnectedWalletOptions();
   const unconnectedWalletOption = {
     id: "unconnectedWallet",
-    title: isConnected ? `Pay with another wallet` : `Pay with wallet`,
+    title:
+      isEthConnected || isSolanaConnected
+        ? `Pay with another wallet`
+        : `Pay with wallet`,
     icons: getBestUnconnectedWalletIcons(connector),
     onClick: async () => {
       await disconnectAsync();
@@ -148,9 +236,16 @@ const SelectMethod: React.FC = () => {
     },
   };
 
-  const walletOptions = connectedWalletOption
-    ? [connectedWalletOption, unconnectedWalletOption]
-    : [unconnectedWalletOption];
+  const options: {
+    id: string;
+    title: string;
+    subtitle?: string;
+    icons: (React.ReactNode | string)[];
+    onClick: () => void;
+    disabled?: boolean;
+  }[] = [];
+  options.push(...connectedWalletOptions);
+  options.push(unconnectedWalletOption);
 
   log(
     `[SELECT_METHOD] loading: ${externalPaymentOptions.loading}, options: ${JSON.stringify(
@@ -158,13 +253,6 @@ const SelectMethod: React.FC = () => {
     )}`,
   );
 
-  const options = [...walletOptions];
-
-  // Solana payment option
-  // Include by default if paymentOptions not provided
-  const includeSolana =
-    paymentOptions == null ||
-    paymentOptions.includes(ExternalPaymentOptions.Solana);
   if (includeSolana) {
     const solanaOption = getSolanaOption(isOnIOS);
     if (solanaOption) {
@@ -192,11 +280,6 @@ const SelectMethod: React.FC = () => {
     })),
   );
 
-  // Deposit address options, e.g. Bitcoin, Tron, Zcash, etc.
-  // Include by default if paymentOptions not provided
-  const includeDepositAddressOption =
-    paymentOptions == null ||
-    paymentOptions.includes(ExternalPaymentOptions.ExternalChains);
   if (includeDepositAddressOption) {
     const depositAddressOption = getDepositAddressOption(depositAddressOptions);
     options.push(depositAddressOption);
