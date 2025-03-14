@@ -1,8 +1,11 @@
 "use client";
 
-import { PaymentCompletedEvent, PaymentStartedEvent } from "@daimo/common";
 import { arbitrum, getChainExplorerByChainId } from "@daimo/contract";
-import { DaimoPayButton } from "@daimo/pay";
+import {
+  DaimoPayButton,
+  DaimoPayCompletedEvent,
+  DaimoPayStartedEvent,
+} from "@daimo/pay";
 import { useState } from "react";
 import { encodeFunctionData, parseAbi, zeroAddress } from "viem";
 import { useReadContract } from "wagmi";
@@ -32,11 +35,11 @@ export default function DemoContract() {
   const [successUrl, setSuccessUrl] = useState<string>();
 
   // Reload on successful action
-  const onStart = (e: PaymentStartedEvent) => {
+  const onStart = (e: DaimoPayStartedEvent) => {
     printEvent(e);
     setSuccessUrl(undefined);
   };
-  const onSuccess = (e: PaymentCompletedEvent) => {
+  const onSuccess = (e: DaimoPayCompletedEvent) => {
     printEvent(e);
     setSuccessUrl(`${getChainExplorerByChainId(e.chainId)}/tx/${e.txHash}`);
     refetch();

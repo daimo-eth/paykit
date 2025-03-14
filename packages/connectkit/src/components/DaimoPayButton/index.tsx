@@ -7,11 +7,11 @@ import {
   assertNotNull,
   DaimoPayIntentStatus,
   DaimoPayOrderMode,
+  DaimoPayOrderView,
   DaimoPayUserMetadata,
   getDaimoPayOrderView,
   PaymentBouncedEvent,
   PaymentCompletedEvent,
-  PaymentStartedEvent,
   writeDaimoPayOrderID,
 } from "@daimo/common";
 import { AnimatePresence, Variants } from "framer-motion";
@@ -21,6 +21,48 @@ import { ResetContainer } from "../../styles";
 import { CustomTheme, Mode, PaymentOption, Theme } from "../../types";
 import ThemedButton, { ThemeContainer } from "../Common/ThemedButton";
 
+// TODO: decouple from @daimo/common
+/** Payment details and status. */
+export type DaimoPayment = DaimoPayOrderView;
+/** Passed to both `onPayment*` event handlers and webhooks. */
+export type DaimoPayEvent = {
+  /**
+   * A payment is started once the user has sent payment. Completed means
+   * the payment was sent on the destination chain and custom contract call,
+   * if any, was successful. Bounced means that a destination contract call
+   * reverted and funds were refunded.
+   */
+  type: "payment_started" | "payment_completed" | "payment_bounced";
+  /**
+   * The unique ID for this payment.
+   */
+  paymentId: string;
+  /**
+   * The chain for this event--source chain for payment_started, destination
+   * chain for payment_completed/payment_bounced.
+   */
+  chainId: number;
+  /**
+   * The transaction hash for this event. Hex for all EVM events, Base58 for
+   * payment_started on Solana.
+   */
+  txHash: Hex | string;
+  /**
+   * Payment details.
+   */
+  payment: DaimoPayment;
+};
+export type DaimoPayStartedEvent = DaimoPayEvent & {
+  type: "payment_started";
+};
+export type DaimoPayCompletedEvent = DaimoPayEvent & {
+  type: "payment_completed";
+};
+export type DaimoPayBouncedEvent = DaimoPayEvent & {
+  type: "payment_bounced";
+};
+
+/** Props for DaimoPayButton. */
 type PayButtonPaymentProps =
   | {
       /**
@@ -85,11 +127,11 @@ type PayButtonPaymentProps =
 
 type PayButtonCommonProps = PayButtonPaymentProps & {
   /** Called when user sends payment and transaction is seen on chain */
-  onPaymentStarted?: (event: PaymentStartedEvent) => void;
+  onPaymentStarted?: (event: DaimoPayStartedEvent) => void;
   /** Called when destination transfer or call completes successfully */
-  onPaymentCompleted?: (event: PaymentCompletedEvent) => void;
+  onPaymentCompleted?: (event: DaimoPayCompletedEvent) => void;
   /** Called when destination call reverts and funds are refunded */
-  onPaymentBounced?: (event: PaymentBouncedEvent) => void;
+  onPaymentBounced?: (event: DaimoPayBouncedEvent) => void;
   /** Automatically close the modal after a successful payment. */
   closeOnSuccess?: boolean;
   /** Open the modal by default. */

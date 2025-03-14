@@ -8,9 +8,14 @@ export { default as getDefaultConfig } from "./defaultConfig";
 
 // Pay button
 export {
+  DaimoPayBouncedEvent,
   DaimoPayButton,
   DaimoPayButtonCustomProps,
   DaimoPayButtonProps,
+  DaimoPayCompletedEvent,
+  DaimoPayEvent,
+  DaimoPayment,
+  DaimoPayStartedEvent,
 } from "./components/DaimoPayButton";
 
 // Hooks to track payment status + UI status.
@@ -18,19 +23,6 @@ export { useDaimoPayStatus } from "./hooks/useDaimoPayStatus";
 
 // TODO: replace with useDaimoPay() more comprehensive status.
 // export { useModal as useDaimoPayModal } from "./hooks/useModal";
-
-// TODO: decouple from @daimo/common
-import {
-  DaimoPayOrderView,
-  PaymentBouncedEvent,
-  PaymentCompletedEvent,
-  PaymentStartedEvent,
-} from "@daimo/common";
-export type DaimoPayment = DaimoPayOrderView;
-export type DaimoPayEvent =
-  | PaymentStartedEvent
-  | PaymentCompletedEvent
-  | PaymentBouncedEvent;
 
 // For convenience, export components to show connected account.
 export { default as Avatar } from "./components/Common/Avatar";
