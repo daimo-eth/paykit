@@ -28,6 +28,7 @@ const PayWithToken: React.FC = () => {
 
   const walletChainId = useChainId();
   const { switchChainAsync } = useSwitchChain();
+
   const trySwitchingChain = async (
     option: WalletPaymentOption,
     forceSwitch: boolean = false,
@@ -118,6 +119,7 @@ const PayWithToken: React.FC = () => {
   useEffect(() => {
     triggerResize();
   }, [payState]);
+
   return (
     <PageContent>
       {selectedTokenOption && (

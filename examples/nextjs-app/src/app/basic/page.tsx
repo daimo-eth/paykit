@@ -18,7 +18,7 @@ export default function DemoBasic() {
         appId={APP_ID}
         toChain={baseUSDC.chainId}
         toAddress={DAIMO_ADDRESS}
-        toUnits="0.06" /* $0.12 USDC */
+        toUnits="0.12" /* $0.12 USDC */
         toToken={getAddress(baseUSDC.token)}
         onPaymentStarted={printEvent}
         onPaymentCompleted={printEvent}
