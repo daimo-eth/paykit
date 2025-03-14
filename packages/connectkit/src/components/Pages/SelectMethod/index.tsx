@@ -115,7 +115,6 @@ const SelectMethod: React.FC = () => {
     ? {
         id: "connectedWallet",
         title: `Pay with ${displayName}`,
-        // TODO: show the actual
         icons:
           connector && connector.icon
             ? [connector.icon]

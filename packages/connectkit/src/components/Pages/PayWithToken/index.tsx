@@ -128,7 +128,7 @@ const PayWithToken: React.FC = () => {
         {selectedTokenOption && (
           <PaymentBreakdown paymentOption={selectedTokenOption} />
         )}
-        {payState === PayState.RequestingPayment && wcWallet && (
+        {payState === PayState.RequestingPayment && wcWallet && isMobile && (
           <Button
             icon={<ExternalLinkIcon />}
             onClick={() => {
