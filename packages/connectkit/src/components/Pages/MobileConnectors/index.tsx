@@ -41,6 +41,7 @@ const MoreIcon = (
 
 const MobileConnectors: React.FC = () => {
   const context = usePayContext();
+  const { log, paymentState } = context;
   const locales = useLocales();
 
   const {
@@ -61,9 +62,13 @@ const MobileConnectors: React.FC = () => {
     }) ?? [];
 
   const connectWallet = (wallet: WalletConfigProps) => {
+    context.setWcWallet(wallet);
     const uri = wallet.getWalletConnectDeeplink?.(wcUri!);
-    if (uri) window.location.href = uri;
-    //if (uri) window.open(uri, '_blank');
+    log(`[MobileConnectors] clicked ${wallet.name}: ${uri}`);
+    // Using open(.., '_blank') to open the wallet connect modal.
+    // Previously, we used window.location.href = uri, but this closes the dapp
+    // (losing state) if there's no deeplink handler for the URI.
+    if (uri) window.open(uri, "_blank");
   };
 
   return (

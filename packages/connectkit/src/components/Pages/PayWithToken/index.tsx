@@ -5,10 +5,11 @@ import { ModalContent, ModalH1, PageContent } from "../../Common/Modal/styles";
 
 import { WalletPaymentOption } from "@daimo/common";
 import { useChainId, useSwitchChain } from "wagmi";
+import { ExternalLinkIcon } from "../../../assets/icons";
+import useIsMobile from "../../../hooks/useIsMobile";
 import Button from "../../Common/Button";
 import PaymentBreakdown from "../../Common/PaymentBreakdown";
 import TokenLogoSpinner from "../../Spinners/TokenLogoSpinner";
-
 enum PayState {
   RequestingPayment = "Requesting Payment",
   SwitchingChain = "Switching Chain",
@@ -17,7 +18,9 @@ enum PayState {
 }
 
 const PayWithToken: React.FC = () => {
-  const { triggerResize, paymentState, setRoute, log } = usePayContext();
+  const isMobile = useIsMobile();
+  const { triggerResize, paymentState, setRoute, log, wcWallet } =
+    usePayContext();
   const { selectedTokenOption, payWithToken } = paymentState;
   const [payState, setPayState] = useState<PayState>(
     PayState.RequestingPayment,
@@ -93,13 +96,24 @@ const PayWithToken: React.FC = () => {
   };
 
   let transferTimeout: any; // Prevent double-triggering in React dev strict mode.
+
   useEffect(() => {
     if (!selectedTokenOption) return;
 
-    // Give user time to see the UI before opening
-    transferTimeout = setTimeout(() => {
-      handleTransfer(selectedTokenOption);
-    }, 100);
+    // Give user time to see the UI before opening on mobile
+    if (wcWallet && isMobile) {
+      transferTimeout = setTimeout(() => {
+        window.open(wcWallet?.getWalletConnectDeeplink?.(""), "_blank");
+        handleTransfer(selectedTokenOption);
+      }, 800);
+    }
+
+    // On desktop, open the wallet connect modal immediately
+    else {
+      transferTimeout = setTimeout(() => {
+        handleTransfer(selectedTokenOption);
+      }, 100);
+    }
     return () => {
       clearTimeout(transferTimeout);
     };
@@ -118,6 +132,14 @@ const PayWithToken: React.FC = () => {
         <ModalH1>{payState}</ModalH1>
         {selectedTokenOption && (
           <PaymentBreakdown paymentOption={selectedTokenOption} />
+        )}
+        {payState === PayState.RequestingPayment && wcWallet && isMobile && (
+          <Button
+            icon={<ExternalLinkIcon />}
+            href={wcWallet.getWalletConnectDeeplink?.("")}
+          >
+            Pay with {wcWallet.name}
+          </Button>
         )}
         {payState === PayState.RequestCancelled && (
           <Button

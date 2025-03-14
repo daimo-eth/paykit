@@ -127,6 +127,7 @@ const ConnectorItem = ({
                 }
                 context.setRoute(ROUTES.CONNECT);
                 context.setConnector({ id: wallet.id });
+                context.setWcWallet(wallet);
               }
             }
       }

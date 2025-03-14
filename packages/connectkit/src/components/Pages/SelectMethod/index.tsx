@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect } from "react";
 import { ROUTES, usePayContext } from "../../DaimoPay";
 
 import { PageContent } from "../../Common/Modal/styles";
@@ -13,6 +13,7 @@ import { Connector, useAccount, useDisconnect } from "wagmi";
 import { Bitcoin, Solana, Tron, Zcash } from "../../../assets/chains";
 import { Coinbase, MetaMask, Rabby, Rainbow } from "../../../assets/logos";
 import useIsMobile from "../../../hooks/useIsMobile";
+import { walletConfigs } from "../../../wallets/walletConfigs";
 import OptionsList from "../../Common/OptionsList";
 import { OrderHeader } from "../../Common/OrderHeader";
 import PoweredByFooter from "../../Common/PoweredByFooter";
@@ -82,9 +83,25 @@ const SelectMethod: React.FC = () => {
   }, []);
 
   const { address, chain, isConnected, connector } = useAccount();
+  const { setRoute, paymentState, wcWallet, setWcWallet, log } =
+    usePayContext();
+
+  // Extract the currently connect WalletConnect wallet
+  useEffect(() => {
+    connector?.getProvider()?.then((p: any) => {
+      let name = p.session?.peer?.metadata?.name;
+      if (p.isCoinbaseWallet) name = "Coinbase Wallet";
+      if (name == null) name = "Unknown";
+      const wallet = Object.values(walletConfigs).find(
+        (c) => c.name === name || name.includes(c.shortName),
+      );
+      log(`[SELECT_METHOD] wcWallet: ${wallet?.name} ${wallet != null}`, p);
+      setWcWallet(wallet);
+    });
+  }, [connector]);
+
   const { disconnectAsync } = useDisconnect();
 
-  const { setRoute, paymentState, log } = usePayContext();
   const {
     daimoPayOrder,
     setSelectedExternalOption,
@@ -100,7 +117,16 @@ const SelectMethod: React.FC = () => {
     ? {
         id: "connectedWallet",
         title: `Pay with ${displayName}`,
-        icons: connector && connector.icon ? [connector.icon] : [<MetaMask />],
+        icons:
+          connector && connector.icon
+            ? [connector.icon]
+            : wcWallet?.icon
+              ? [
+                  <div style={{ borderRadius: "22.5%", overflow: "hidden" }}>
+                    {wcWallet.icon}
+                  </div>,
+                ]
+              : [<MetaMask />],
         onClick: () => {
           setRoute(ROUTES.SELECT_TOKEN, {
             event: "click-wallet",
