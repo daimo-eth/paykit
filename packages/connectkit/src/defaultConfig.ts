@@ -9,6 +9,7 @@ import {
   Chain,
   linea,
   mainnet,
+  mantle,
   optimism,
   polygon,
   sepolia,
@@ -55,6 +56,7 @@ export const REQUIRED_CHAINS: CreateConfigParameters["chains"] = [
   baseSepolia,
   worldchain,
   blast,
+  mantle,
 ];
 
 /** Daimo Pay recommended config, for use with wagmi's createConfig(). */
