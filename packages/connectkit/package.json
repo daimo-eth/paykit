@@ -1,7 +1,7 @@
 {
   "name": "@daimo/pay",
   "private": false,
-  "version": "1.5.2-dev",
+  "version": "1.6.1-dev",
   "author": "Daimo",
   "homepage": "https://pay.daimo.com",
   "license": "BSD-2-Clause license",
@@ -40,8 +40,8 @@
     "crypto"
   ],
   "dependencies": {
-    "@daimo/common": "1.5.0",
-    "@daimo/contract": "1.5.0",
+    "@daimo/common": "1.6.0",
+    "@daimo/contract": "1.6.0",
     "@solana/wallet-adapter-base": "^0.9.23",
     "@solana/wallet-adapter-react": "^0.15.35",
     "@solana/web3.js": "^1.95.4",
