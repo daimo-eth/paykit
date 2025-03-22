@@ -1,24 +1,20 @@
 import type { Metadata } from "next";
 import { type ReactNode } from "react";
-
 import { StyledComponentsRegistry } from "../styles/StyledComponentsRegistry";
 import "../styles/tailwind.css";
-import NavButtons from "./nav-buttons";
+import { LayoutWrapper } from "./layout-wrapper";
 
 export const metadata: Metadata = {
   title: "Daimo Pay Demo",
-  description: "One-click crypto",
+  description: "One-click crypto payments integration demos",
 };
 
-export default function RootLayout(props: { children: ReactNode }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body>
+      <body className="bg-cream-light min-h-screen">
         <StyledComponentsRegistry>
-          <main className="bg-white h-screen w-full max-w-lg m-auto px-4 py-8">
-            <NavButtons />
-            <div className="mt-8">{props.children}</div>
-          </main>
+          <LayoutWrapper>{children}</LayoutWrapper>
         </StyledComponentsRegistry>
       </body>
     </html>

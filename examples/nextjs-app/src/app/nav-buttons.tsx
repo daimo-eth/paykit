@@ -11,14 +11,27 @@ export default function NavButtons() {
 
   const Btn = ({ route, children }: { route: string; children: string }) => (
     <Link href={route}>
-      <Button outline={pathname !== route}>{children}</Button>
+      {pathname === route ? (
+        <span className="inline-flex px-4 py-2 rounded-md bg-green-medium hover:bg-green-dark text-white transition-colors">
+          {children}
+        </span>
+      ) : (
+        <Button
+          outline
+          className="inline-flex px-4 py-2 rounded-md border-green-medium text-green-dark hover:bg-cream-medium"
+        >
+          {children}
+        </Button>
+      )}
     </Link>
   );
 
   return (
     <>
-      <Heading>DaimoPayButton Examples</Heading>
-      <div className="mt-1 text-sm text-gray-500 ">@daimo/pay v{version}</div>
+      <Heading className="text-green-dark">DaimoPayButton Examples</Heading>
+      <div className="mt-1 text-sm text-green-medium">
+        @daimo/pay v{version}
+      </div>
 
       <div className="flex flex-wrap gap-4 mt-10">
         <Btn route="/basic">Basic</Btn>

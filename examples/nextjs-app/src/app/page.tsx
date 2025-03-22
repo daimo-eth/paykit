@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { DemoPageContent } from "./page-content";
 
-export default function DemoButtonPage() {
-  redirect("/basic");
+export default function DemoPage() {
+  return <DemoPageContent />;
 }
