@@ -5,6 +5,7 @@ import { DaimoPayButton } from "@daimo/pay";
 import { useEffect, useState } from "react";
 import { getAddress } from "viem";
 import { Text } from "../../shared/tailwind-catalyst/text";
+import CodeSnippet from "../code-snippet";
 import { ConfigPanel, type PaymentConfig } from "../config-panel";
 import { APP_ID, Container, printEvent } from "../shared";
 
@@ -93,7 +94,7 @@ import { ${tokenVarName} } from "@daimo/contract";
           <Text className="text-lg font-medium text-green-dark mb-2">
             Implementation Code
           </Text>
-          <StyledCodeBlock codeSnippet={codeSnippet} />
+          <CodeSnippet codeSnippet={codeSnippet} />
         </div>
       )}
 
@@ -104,119 +105,5 @@ import { ${tokenVarName} } from "@daimo/contract";
         onConfirm={(paymentConfig) => setConfig(paymentConfig as PaymentConfig)}
       />
     </Container>
-  );
-}
-
-function StyledCodeBlock({ codeSnippet }: { codeSnippet: string }) {
-  const highlightCode = (line: string) => {
-    if (line.trim().startsWith("import")) {
-      const importMatch = line.match(/\{\s*([^}]+)\s*\}/);
-      const pathMatch = line.match(/"([^"]+)"/);
-      return (
-        <span>
-          <span className="text-purple-400">import</span>
-          <span className="text-white"> {"{" + " "}</span>
-          <span className="text-yellow-300">
-            {importMatch ? importMatch[1] : ""}
-          </span>
-          <span className="text-white">{" " + "}"} </span>
-          <span className="text-purple-400">from</span>
-          <span className="text-green-400">
-            {" "}
-            &quot;{pathMatch ? pathMatch[1] : ""}&quot;
-          </span>
-          <span className="text-white">;</span>
-        </span>
-      );
-    }
-    if (line.includes("<DaimoPayButton")) {
-      return <span className="text-purple-400">{line}</span>;
-    }
-    if (line.includes("appId=")) {
-      const valueMatch = line.match(/=([^,]+)/);
-      return (
-        <span>
-          <span className="text-cyan-300">appId</span>
-          <span className="text-white">=</span>
-          <span className="text-green-400">
-            {valueMatch ? valueMatch[1] : ""}
-          </span>
-        </span>
-      );
-    }
-    if (line.includes("toChain=")) {
-      const valueMatch = line.match(/=([^,]+)/);
-      return (
-        <span>
-          <span className="text-cyan-300">toChain</span>
-          <span className="text-white">=</span>
-          <span className="text-orange-400">
-            {valueMatch ? valueMatch[1] : ""}
-          </span>
-        </span>
-      );
-    }
-    if (line.includes("toAddress=")) {
-      const valueMatch = line.match(/=([^,]+)/);
-      return (
-        <span>
-          <span className="text-cyan-300">toAddress</span>
-          <span className="text-white">=</span>
-          <span className="text-orange-400">
-            {valueMatch ? valueMatch[1] : ""}
-          </span>
-        </span>
-      );
-    }
-    if (line.includes("toUnits=")) {
-      const valueMatch = line.match(/=([^,]+)/);
-      return (
-        <span>
-          <span className="text-cyan-300">toUnits</span>
-          <span className="text-white">=</span>
-          <span className="text-green-400">
-            {valueMatch ? valueMatch[1] : ""}
-          </span>
-        </span>
-      );
-    }
-    if (line.includes("toToken=")) {
-      const valueMatch = line.match(/=([^,]+)/);
-      return (
-        <span>
-          <span className="text-cyan-300">toToken</span>
-          <span className="text-white">=</span>
-          <span className="text-orange-400">
-            {valueMatch ? valueMatch[1] : ""}
-          </span>
-        </span>
-      );
-    }
-    if (line.includes("getAddress")) {
-      return (
-        <span>
-          <span className="text-yellow-300">getAddress</span>
-          <span className="text-white">{line.replace("getAddress", "")}</span>
-        </span>
-      );
-    }
-    return <span className="text-white">{line}</span>;
-  };
-
-  return (
-    <div className="bg-[#1e1e1e] rounded-lg px-6 py-4 text-white overflow-x-auto scrollbar-none mt-4 max-w-full border border-gray-700">
-      <pre className="font-mono text-sm md:text-base">
-        <code>
-          {codeSnippet.split("\n").map((line, index) => (
-            <div key={index} className="flex group">
-              <span className="text-gray-500 w-8 text-right pr-3 select-none group-hover:text-gray-400">
-                {index + 1}
-              </span>
-              <span className="ml-4 flex-1">{highlightCode(line)}</span>
-            </div>
-          ))}
-        </code>
-      </pre>
-    </div>
   );
 }

@@ -5,6 +5,7 @@ import { DaimoPayButton } from "@daimo/pay";
 import { useEffect, useState } from "react";
 import { getAddress } from "viem";
 import { Text, TextLink } from "../../shared/tailwind-catalyst/text";
+import CodeSnippet from "../code-snippet";
 import { ConfigPanel, type DepositConfig } from "../config-panel";
 import { APP_ID, Container, printEvent } from "../shared";
 
@@ -52,11 +53,8 @@ import { ${tokenVarName} } from "@daimo/contract";
   }, [config]);
 
   return (
-    <Container className="max-w-4xl mx-auto p-6 bg-cream-light shadow-lg rounded-lg">
+    <Container className="max-w-full mx-auto p-6 bg-cream-light shadow-lg rounded-lg">
       <div className="mb-8">
-        <Text className="text-2xl font-bold mb-2 text-green-dark text-center">
-          Daimo Deposit Demo
-        </Text>
         <Text className="text-lg text-gray-700 mb-4 text-center">
           Onboard users to your app using the tokens they already own on other
           chains. Users can customize their deposit amount.
@@ -116,20 +114,7 @@ import { ${tokenVarName} } from "@daimo/contract";
           <Text className="text-lg font-medium text-green-dark mb-2">
             Implementation Code
           </Text>
-          <div className="bg-[#1e1e1e] rounded-lg px-6 py-4 text-white overflow-x-auto scrollbar-none mt-4 max-w-full border border-green-medium">
-            <pre className="font-mono text-sm md:text-base">
-              <code>
-                {codeSnippet.split("\n").map((line, index) => (
-                  <div key={index} className="flex group">
-                    <span className="text-gray-500 w-8 text-right pr-3 select-none group-hover:text-gray-400">
-                      {index + 1}
-                    </span>
-                    <span className="ml-4 flex-1">{highlightCode(line)}</span>
-                  </div>
-                ))}
-              </code>
-            </pre>
-          </div>
+          <CodeSnippet codeSnippet={codeSnippet} />
         </div>
       )}
 
@@ -141,100 +126,4 @@ import { ${tokenVarName} } from "@daimo/contract";
       />
     </Container>
   );
-}
-
-// Helper function to highlight code syntax
-function highlightCode(line: string) {
-  if (line.trim().startsWith("import")) {
-    const importMatch = line.match(/\{\s*([^}]+)\s*\}/);
-    const pathMatch = line.match(/"([^"]+)"/);
-    return (
-      <span>
-        <span className="text-purple-400">import</span>
-        <span className="text-white"> {"{" + " "}</span>
-        <span className="text-yellow-300">
-          {importMatch ? importMatch[1] : ""}
-        </span>
-        <span className="text-white">{" " + "}"} </span>
-        <span className="text-purple-400">from</span>
-        <span className="text-green-400">
-          {" "}
-          &quot;{pathMatch ? pathMatch[1] : ""}&quot;
-        </span>
-        <span className="text-white">;</span>
-      </span>
-    );
-  }
-  if (line.includes("<DaimoPayButton")) {
-    return <span className="text-purple-400">{line}</span>;
-  }
-  if (line.includes("appId=")) {
-    const valueMatch = line.match(/=([^,]+)/);
-    return (
-      <span>
-        <span className="text-cyan-300">appId</span>
-        <span className="text-white">=</span>
-        <span className="text-green-400">
-          {valueMatch ? valueMatch[1] : ""}
-        </span>
-      </span>
-    );
-  }
-  if (line.includes("toChain=")) {
-    const valueMatch = line.match(/=([^,]+)/);
-    return (
-      <span>
-        <span className="text-cyan-300">toChain</span>
-        <span className="text-white">=</span>
-        <span className="text-orange-400">
-          {valueMatch ? valueMatch[1] : ""}
-        </span>
-      </span>
-    );
-  }
-  if (line.includes("toAddress=")) {
-    const valueMatch = line.match(/=([^,]+)/);
-    return (
-      <span>
-        <span className="text-cyan-300">toAddress</span>
-        <span className="text-white">=</span>
-        <span className="text-orange-400">
-          {valueMatch ? valueMatch[1] : ""}
-        </span>
-      </span>
-    );
-  }
-  if (line.includes("toToken=")) {
-    const valueMatch = line.match(/=([^,]+)/);
-    return (
-      <span>
-        <span className="text-cyan-300">toToken</span>
-        <span className="text-white">=</span>
-        <span className="text-orange-400">
-          {valueMatch ? valueMatch[1] : ""}
-        </span>
-      </span>
-    );
-  }
-  if (line.includes("intent=")) {
-    const valueMatch = line.match(/=([^,]+)/);
-    return (
-      <span>
-        <span className="text-cyan-300">intent</span>
-        <span className="text-white">=</span>
-        <span className="text-green-400">
-          {valueMatch ? valueMatch[1] : ""}
-        </span>
-      </span>
-    );
-  }
-  if (line.includes("getAddress")) {
-    return (
-      <span>
-        <span className="text-yellow-300">getAddress</span>
-        <span className="text-white">{line.replace("getAddress", "")}</span>
-      </span>
-    );
-  }
-  return <span className="text-white">{line}</span>;
 }
