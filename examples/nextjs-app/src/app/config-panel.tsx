@@ -169,7 +169,7 @@ export function ConfigPanel({
           </h2>
           <button
             onClick={onClose}
-            className="p-2 text-green-medium hover:text-green-dark"
+            className="p-2 text-green-dark hover:text-green-medium"
           >
             <XMarkIcon className="h-6 w-6" />
           </button>
@@ -267,7 +267,7 @@ export function ConfigPanel({
 
           <button
             type="submit"
-            className="w-full bg-green-medium text-white py-2 px-4 rounded hover:bg-green-dark transition-colors"
+            className="w-full bg-green-dark text-white py-2 px-4 rounded hover:bg-green-medium transition-colors"
             disabled={!isFormValid()}
           >
             Confirm

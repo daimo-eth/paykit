@@ -12,13 +12,13 @@ export default function NavButtons() {
   const Btn = ({ route, children }: { route: string; children: string }) => (
     <Link href={route}>
       {pathname === route ? (
-        <span className="inline-flex px-4 py-2 rounded-md bg-green-medium hover:bg-green-dark text-white transition-colors">
+        <Button className="inline-flex px-4 py-2 rounded-md bg-green-dark hover:bg-green-medium text-white transition-colors">
           {children}
-        </span>
+        </Button>
       ) : (
         <Button
           outline
-          className="inline-flex px-4 py-2 rounded-md border-green-medium text-green-dark hover:bg-cream-medium"
+          className="inline-flex px-4 py-2 rounded-md border border-green-dark text-green-dark hover:bg-cream-medium"
         >
           {children}
         </Button>

@@ -11,7 +11,7 @@ export function LayoutWrapper({ children }: { children: ReactNode }) {
   return (
     <main
       className={`
-        ${isMain ? "max-w-6xl bg-cream-light" : "max-w-lg bg-cream-light"} 
+        ${isMain ? "max-w-6xl bg-cream-light" : "max-w-3xl bg-cream-light"} 
         h-screen w-full m-auto px-4 py-8
       `}
     >

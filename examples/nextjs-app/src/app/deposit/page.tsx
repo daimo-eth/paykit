@@ -15,7 +15,20 @@ export default function DemoDeposit() {
   const [config, setConfig] = useState<DepositConfig | null>(null);
   const [codeSnippet, setCodeSnippet] = useState("");
 
-  // Generate the code snippet when config changes
+  // Add escape key handler
+  useEffect(() => {
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && isConfigOpen) {
+        setIsConfigOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleEscapeKey);
+    return () => {
+      document.removeEventListener("keydown", handleEscapeKey);
+    };
+  }, [isConfigOpen]);
+
   useEffect(() => {
     if (config) {
       const token = Object.values(foreignTokens).find(
@@ -53,77 +66,70 @@ import { ${tokenVarName} } from "@daimo/contract";
   }, [config]);
 
   return (
-    <Container className="max-w-full mx-auto p-6 bg-cream-light shadow-lg rounded-lg">
-      <div className="mb-8">
-        <Text className="text-lg text-gray-700 mb-4 text-center">
-          Onboard users to your app using the tokens they already own on other
-          chains. Users can customize their deposit amount.
-        </Text>
-      </div>
+    <Container className="max-w-4xl mx-auto p-6">
+      <Text className="text-lg text-gray-700 mb-4">
+        Onboard users to your app using the tokens they already own on other
+        chains. Users can customize their deposit amount.
+      </Text>
 
-      <div className="flex justify-center mb-8">
-        <button
-          onClick={() => setIsConfigOpen(true)}
-          className="bg-green-medium text-white px-6 py-3 rounded-lg hover:bg-green-dark transition-all"
-        >
-          Configure Deposit
-        </button>
-      </div>
+      <div className="flex flex-col items-center gap-8">
+        {config ? (
+          <>
+            <DaimoPayButton
+              appId={APP_ID}
+              toChain={config.chainId}
+              toAddress={getAddress(config.recipientAddress)}
+              toToken={getAddress(config.tokenAddress)}
+              intent="Deposit"
+              onPaymentStarted={printEvent}
+              onPaymentCompleted={(e) => {
+                printEvent(e);
+                setTxHash(e.txHash);
+              }}
+            />
+            {txHash && (
+              <TextLink
+                href={`https://basescan.org/tx/${txHash}`}
+                target="_blank"
+                className="text-green-medium hover:text-green-dark"
+              >
+                Transaction Successful ↗
+              </TextLink>
+            )}
+            <button
+              onClick={() => setIsConfigOpen(true)}
+              className="bg-green-dark text-white px-6 py-3 rounded-lg hover:bg-green-medium transition-all"
+            >
+              Configure Deposit
+            </button>
+          </>
+        ) : (
+          <button
+            onClick={() => setIsConfigOpen(true)}
+            className="bg-green-dark text-white px-6 py-3 rounded-lg hover:bg-green-medium transition-all"
+          >
+            Create a Deposit
+          </button>
+        )}
 
-      <div className="bg-white p-6 rounded-lg shadow-sm mb-8">
-        <div className="flex flex-col items-center">
-          {config ? (
-            <>
-              <Text className="text-green-dark font-medium mb-4">
-                Your deposit is ready!
-              </Text>
-              <DaimoPayButton
-                appId={APP_ID}
-                toChain={config.chainId}
-                toAddress={getAddress(config.recipientAddress)}
-                toToken={getAddress(config.tokenAddress)}
-                intent="Deposit"
-                onPaymentStarted={printEvent}
-                onPaymentCompleted={(e) => {
-                  printEvent(e);
-                  setTxHash(e.txHash);
-                }}
-              />
-              {txHash && (
-                <div className="mt-4">
-                  <TextLink
-                    href={`https://basescan.org/tx/${txHash}`}
-                    target="_blank"
-                    className="inline-flex items-center text-green-medium hover:text-green-dark"
-                  >
-                    Transaction Successful ↗
-                  </TextLink>
-                </div>
-              )}
-            </>
-          ) : (
-            <Text className="text-center text-gray-600">
-              Configure your deposit settings to continue
+        {config && (
+          <div className="w-full">
+            <Text className="text-lg font-medium text-green-dark mb-2">
+              Implementation Code
             </Text>
-          )}
-        </div>
+            <CodeSnippet codeSnippet={codeSnippet} />
+          </div>
+        )}
+
+        <ConfigPanel
+          configType="deposit"
+          isOpen={isConfigOpen}
+          onClose={() => setIsConfigOpen(false)}
+          onConfirm={(depositConfig) =>
+            setConfig(depositConfig as DepositConfig)
+          }
+        />
       </div>
-
-      {config && (
-        <div className="mb-6">
-          <Text className="text-lg font-medium text-green-dark mb-2">
-            Implementation Code
-          </Text>
-          <CodeSnippet codeSnippet={codeSnippet} />
-        </div>
-      )}
-
-      <ConfigPanel
-        configType="deposit"
-        isOpen={isConfigOpen}
-        onClose={() => setIsConfigOpen(false)}
-        onConfirm={(depositConfig) => setConfig(depositConfig as DepositConfig)}
-      />
     </Container>
   );
 }
