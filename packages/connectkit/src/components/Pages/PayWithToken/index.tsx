@@ -3,7 +3,7 @@ import { ROUTES, usePayContext } from "../../DaimoPay";
 
 import { ModalContent, ModalH1, PageContent } from "../../Common/Modal/styles";
 
-import { WalletPaymentOption } from "@daimo/common";
+import { WalletPaymentOption } from "@daimo/pay-common";
 import { useChainId, useSwitchChain } from "wagmi";
 import { ExternalLinkIcon } from "../../../assets/icons";
 import useIsMobile from "../../../hooks/useIsMobile";

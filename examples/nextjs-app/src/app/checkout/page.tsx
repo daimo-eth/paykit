@@ -1,8 +1,11 @@
 "use client";
 
-import { getAddressContraction, PaymentStartedEvent } from "@daimo/common";
 import { DaimoPayButton } from "@daimo/pay";
-import { baseUSDC } from "@daimo/pay-common";
+import {
+  baseUSDC,
+  getAddressContraction,
+  PaymentStartedEvent,
+} from "@daimo/pay-common";
 import { useCallback, useState } from "react";
 import { getAddress } from "viem";
 import { Code, Text, TextLink } from "../../shared/tailwind-catalyst/text";

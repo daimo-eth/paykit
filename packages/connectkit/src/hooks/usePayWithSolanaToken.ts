@@ -3,7 +3,7 @@ import {
   assertNotNull,
   DaimoPayOrder,
   SolanaPublicKey,
-} from "@daimo/common";
+} from "@daimo/pay-common";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { VersionedTransaction } from "@solana/web3.js";
 import { hexToBytes } from "viem";

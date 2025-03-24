@@ -13,7 +13,7 @@ import {
   PaymentBouncedEvent,
   PaymentCompletedEvent,
   writeDaimoPayOrderID,
-} from "@daimo/common";
+} from "@daimo/pay-common";
 import { AnimatePresence, Variants } from "framer-motion";
 import { Address, Hex } from "viem";
 import { PayParams } from "../../hooks/usePaymentState";
@@ -21,7 +21,7 @@ import { ResetContainer } from "../../styles";
 import { CustomTheme, Mode, PaymentOption, Theme } from "../../types";
 import ThemedButton, { ThemeContainer } from "../Common/ThemedButton";
 
-// TODO: decouple from @daimo/common
+// TODO: decouple from @daimo/pay-common
 /** Payment details and status. */
 export type DaimoPayment = DaimoPayOrderView;
 /** Passed to both `onPayment*` event handlers and webhooks. */

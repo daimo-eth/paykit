@@ -1,7 +1,7 @@
 import {
   DaimoPayOrderMode,
   DepositAddressPaymentOptionMetadata,
-} from "@daimo/common";
+} from "@daimo/pay-common";
 import { useEffect, useState } from "react";
 import { TrpcClient } from "../utils/trpc";
 

@@ -5,7 +5,7 @@ import {
   DaimoPayOrderStatusSource,
   debugJson,
   retryBackoff,
-} from "@daimo/common";
+} from "@daimo/pay-common";
 import { Buffer } from "buffer";
 import React, {
   createContext,

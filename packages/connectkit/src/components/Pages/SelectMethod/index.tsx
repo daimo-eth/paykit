@@ -7,7 +7,7 @@ import {
   DepositAddressPaymentOptionMetadata,
   ExternalPaymentOptions,
   getAddressContraction,
-} from "@daimo/common";
+} from "@daimo/pay-common";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connector, useAccount, useDisconnect } from "wagmi";
 import { Bitcoin, Ethereum, Solana, Tron, Zcash } from "../../../assets/chains";

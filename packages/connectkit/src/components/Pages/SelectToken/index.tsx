@@ -3,8 +3,7 @@ import { ROUTES, usePayContext } from "../../DaimoPay";
 
 import { ModalContent, ModalH1, PageContent } from "../../Common/Modal/styles";
 
-import { DaimoPayToken } from "@daimo/common";
-import { getChainName } from "@daimo/pay-common";
+import { DaimoPayToken, getChainName } from "@daimo/pay-common";
 import { formatUsd, roundTokenAmount } from "../../../utils/format";
 import Button from "../../Common/Button";
 import OptionsList from "../../Common/OptionsList";

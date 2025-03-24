@@ -12,8 +12,8 @@ import {
   assert,
   DaimoPayOrderMode,
   DaimoPayOrderStatusDest,
-} from "@daimo/common";
-import { getChainExplorerTxUrl } from "@daimo/pay-common";
+  getChainExplorerTxUrl,
+} from "@daimo/pay-common";
 import { motion } from "framer-motion";
 import { LoadingCircleIcon, TickIcon } from "../../../assets/icons";
 import styled from "../../../styles/styled";

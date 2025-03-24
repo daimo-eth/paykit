@@ -11,7 +11,7 @@ import {
   PageContent,
 } from "../../../Common/Modal/styles";
 
-import { assert } from "@daimo/common";
+import { assert } from "@daimo/pay-common";
 import Button from "../../../Common/Button";
 import PaymentBreakdown from "../../../Common/PaymentBreakdown";
 import TokenLogoSpinner from "../../../Spinners/TokenLogoSpinner";

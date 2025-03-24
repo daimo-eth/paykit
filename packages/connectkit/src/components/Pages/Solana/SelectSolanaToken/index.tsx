@@ -7,7 +7,7 @@ import {
   PageContent,
 } from "../../../Common/Modal/styles";
 
-import { DaimoPayToken } from "@daimo/common";
+import { DaimoPayToken } from "@daimo/pay-common";
 import { formatUsd, roundTokenAmount } from "../../../../utils/format";
 import Button from "../../../Common/Button";
 import OptionsList from "../../../Common/OptionsList";
