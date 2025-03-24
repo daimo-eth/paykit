@@ -94,3 +94,5 @@ export type PaymentOption =
   | "Solana"
   | "ExternalChains"
   | "Lemon";
+
+export type PlatformType = "ios" | "android" | "other";
