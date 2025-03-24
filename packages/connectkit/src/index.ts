@@ -29,6 +29,9 @@ export { default as Avatar } from "./components/Common/Avatar";
 export { default as ChainIcon } from "./components/Common/Chain";
 export { wallets } from "./wallets";
 
+// Constants
+export * from "./constants/chains";
+
 // Export utilities.
 export * from "./utils/exports";
 

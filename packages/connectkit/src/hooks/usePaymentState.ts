@@ -13,7 +13,7 @@ import {
   SolanaPublicKey,
   WalletPaymentOption,
 } from "@daimo/common";
-import { ethereum } from "@daimo/contract";
+import { ethereum } from "../constants/chains";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useCallback, useEffect, useState } from "react";
 import { Address, formatUnits, Hex, parseUnits } from "viem";

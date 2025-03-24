@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { useAccount, useSwitchChain } from "wagmi";
-import { chainConfigs } from "../../../constants/chainConfigs";
+import { chainConfigs } from "../../../constants/chains";
 
 import Alert from "../Alert";
 import {
   ChainButton,
   ChainButtonBg,
   ChainButtonContainer,
-  ChainButtonStatus,
   ChainButtons,
+  ChainButtonStatus,
   ChainIcon,
   ChainLogoContainer,
   ChainLogoSpinner,
@@ -18,7 +18,7 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 import { isCoinbaseWalletConnector, isMobile } from "../../../utils";
 
-import ChainIcons from "../../../assets/chains";
+import { chainToLogo, UnknownChain } from "../../../assets/chains";
 import useLocales from "../../../hooks/useLocales";
 import { usePayContext } from "../../DaimoPay";
 
@@ -86,7 +86,7 @@ const ChainSelectList = ({
       <ChainButtonContainer>
         <ChainButtons>
           {chains.map((x) => {
-            const c = chainConfigs.find((ch) => ch.id === x.id);
+            const c = chainConfigs.find((ch) => ch.chainId === x.id);
             const ch = { ...c, ...x };
             return (
               <ChainButton
@@ -146,7 +146,7 @@ const ChainSelectList = ({
                       </motion.div>
                     </ChainLogoSpinner>
                     <ChainIcon>
-                      {ch.logo ?? <ChainIcons.UnknownChain />}
+                      {ch.chainId ? chainToLogo[ch.chainId] : <UnknownChain />}
                     </ChainIcon>
                   </ChainLogoContainer>
                   {ch.name}

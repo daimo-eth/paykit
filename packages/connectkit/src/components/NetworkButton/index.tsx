@@ -7,7 +7,7 @@ import { useAccount } from "wagmi";
 import useIsMounted from "../../hooks/useIsMounted";
 
 import { motion } from "framer-motion";
-import { chainConfigs } from "../../constants/chainConfigs";
+import { chainConfigs } from "../../constants/chains";
 import Chain from "../Common/Chain";
 import ChainSelectDropdown from "../Common/ChainSelectDropdown";
 import DynamicContainer from "../Common/DynamicContainer";
@@ -58,7 +58,7 @@ const NetworkButton: React.FC<NetworkButtonProps & All> = ({
 
   if (!isMounted) return null;
 
-  const currentChain = chainConfigs.find((c) => c.id === chain?.id);
+  const currentChain = chainConfigs.find((c) => c.chainId === chain?.id);
   return (
     <DaimoPayThemeProvider
       theme={theme ?? context.theme}
