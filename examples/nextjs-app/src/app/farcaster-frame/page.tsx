@@ -1,7 +1,7 @@
 "use client";
 
-import { baseUSDC } from "@daimo/contract";
 import { DaimoPayButton } from "@daimo/pay";
+import { baseUSDC } from "@daimo/pay-common";
 import sdk from "@farcaster/frame-sdk";
 import Link from "next/link";
 import { useEffect, useState } from "react";

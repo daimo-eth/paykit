@@ -1,8 +1,8 @@
 import React from "react";
 
+import { supportedChains } from "@daimo/pay-common";
 import { AnimatePresence } from "framer-motion";
-import Chains from "../../../assets/chains";
-import { chainConfigs } from "../../../constants/chainConfigs";
+import { chainToLogo, UnknownChain } from "../../../assets/chains";
 import { useChainIsSupported } from "../../../hooks/useChainIsSupported";
 import useIsMounted from "../../../hooks/useIsMounted";
 import {
@@ -66,7 +66,7 @@ const Chain: React.FC<{
   const isChainSupported = useChainIsSupported(id);
   const unsupported = controlledUnsupported ?? !isChainSupported;
 
-  const chain = chainConfigs.find((c) => c.id === id);
+  const chain = supportedChains.find((c) => c.chainId === id);
   const isMounted = useIsMounted();
   if (!isMounted)
     return (
@@ -109,13 +109,13 @@ const Chain: React.FC<{
         )}
         {id ? (
           <LogoContainer
-            key={`${chain?.id}-${chain?.name}-${id}`}
+            key={`${chain?.chainId}-${chain?.name}-${id}`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            {chain?.logo ?? <Chains.UnknownChain />}
+            {chain?.chainId ? chainToLogo[chain.chainId] : <UnknownChain />}
           </LogoContainer>
         ) : (
           <LoadingContainer

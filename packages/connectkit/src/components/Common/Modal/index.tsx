@@ -33,7 +33,7 @@ import {
 import useLockBodyScroll from "../../../hooks/useLockBodyScroll";
 import { ROUTES, usePayContext } from "../../DaimoPay";
 
-import { getChainName } from "@daimo/contract";
+import { getChainName } from "@daimo/pay-common";
 import { useTransition } from "react-transition-state";
 import { useAccount, useSwitchChain } from "wagmi";
 import { AuthIcon } from "../../../assets/icons";
@@ -379,9 +379,7 @@ const Modal: React.FC<ModalProps> = ({
         const chainName = getChainName(
           selectedTokenOption.balance.token.chainId,
         );
-        const capitalizedChainName =
-          chainName.charAt(0).toUpperCase() + chainName.slice(1);
-        return `Pay with ${capitalizedChainName} ${selectedTokenOption.balance.token.symbol}`;
+        return `Pay with ${chainName} ${selectedTokenOption.balance.token.symbol}`;
       case ROUTES.CONFIRMATION:
         return "Payment Successful";
     }

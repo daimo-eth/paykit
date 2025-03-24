@@ -1,5 +1,5 @@
 import { DaimoPayEvent } from "@daimo/common";
-import { getChainExplorerByChainId } from "@daimo/contract";
+import { getChainExplorerByChainId } from "@daimo/pay-common";
 
 export const APP_ID = "daimopay-demo";
 

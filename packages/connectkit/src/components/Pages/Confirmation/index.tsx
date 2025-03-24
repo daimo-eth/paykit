@@ -13,7 +13,7 @@ import {
   DaimoPayOrderMode,
   DaimoPayOrderStatusDest,
 } from "@daimo/common";
-import { getChainExplorerTxUrl } from "@daimo/contract";
+import { getChainExplorerTxUrl } from "@daimo/pay-common";
 import { motion } from "framer-motion";
 import { LoadingCircleIcon, TickIcon } from "../../../assets/icons";
 import styled from "../../../styles/styled";
@@ -36,7 +36,10 @@ const Confirmation: React.FC = () => {
         const txHash =
           daimoPayOrder.destFastFinishTxHash ?? daimoPayOrder.destClaimTxHash;
         const chainId = daimoPayOrder.destFinalCallTokenAmount.token.chainId;
-        assert(txHash != null, `[CONFIRMATION] dest status: ${destStatus}, but missing txHash`);
+        assert(
+          txHash != null,
+          `[CONFIRMATION] dest status: ${destStatus}, but missing txHash`,
+        );
         const txURL = getChainExplorerTxUrl(chainId, txHash);
 
         paymentState.onSuccess({ txHash, txURL });
