@@ -26,6 +26,8 @@ export enum TokenLogo {
   MNT = "https://assets.coingecko.com/coins/images/30980/large/Mantle-Logo-mark.png",
 }
 
+/* --------------------- Tokens Constants --------------------- */
+
 //
 // Arbitrum
 //
@@ -85,6 +87,16 @@ export const arbitrumUSDCe: Token = {
   symbol: "USDCe",
   logoURI: TokenLogo.USDC,
 };
+
+const arbitrumTokens: Token[] = [
+  arbitrumETH,
+  arbitrumWETH,
+  arbitrumUSDC,
+  arbitrumAxlUSDC,
+  arbitrumDAI,
+  arbitrumUSDT,
+  arbitrumUSDCe,
+];
 
 //
 // Base Mainnet
@@ -155,6 +167,17 @@ export const baseAxlUSDC: Token = {
   logoURI: TokenLogo.USDC,
 };
 
+const baseTokens: Token[] = [
+  baseETH,
+  baseWETH,
+  baseUSDC,
+  baseEURC,
+  baseUSDbC,
+  baseDAI,
+  baseUSDT,
+  baseAxlUSDC,
+];
+
 //
 // Blast
 //
@@ -178,6 +201,8 @@ export const blastUSDB: Token = {
   symbol: "USDB",
   logoURI: TokenLogo.USDB,
 };
+
+const blastTokens: Token[] = [blastETH, blastWETH, blastUSDB];
 
 //
 // BNB Smart Chain
@@ -225,6 +250,8 @@ export const bscUSDT: Token = {
   symbol: "USDT",
   logoURI: TokenLogo.USDT,
 };
+
+const bscTokens: Token[] = [bscBNB, bscWBNB, bscAxlUSDC, bscUSDC, bscUSDT];
 
 //
 // Ethereum
@@ -277,6 +304,15 @@ export const ethereumEURC: Token = {
   logoURI: TokenLogo.EURC,
 };
 
+const ethereumTokens: Token[] = [
+  ethereumETH,
+  ethereumWETH,
+  ethereumUSDC,
+  ethereumEURC,
+  ethereumDAI,
+  ethereumUSDT,
+];
+
 //
 // Linea
 //
@@ -292,7 +328,7 @@ export const lineaWETH: Token = {
   logoURI: TokenLogo.ETH,
 };
 
-export const lineaBridgedUSDC: Token = {
+export const lineaUSDCe: Token = {
   chainId: 59144,
   token: getAddress("0x176211869cA2b568f2A7D4EE941E073a821EE1ff"),
   decimals: 6,
@@ -318,6 +354,14 @@ export const lineaDAI: Token = {
   symbol: "DAI",
   logoURI: TokenLogo.DAI,
 };
+
+const lineaTokens: Token[] = [
+  lineaETH,
+  lineaWETH,
+  lineaUSDCe,
+  lineaAxlUSDC,
+  lineaDAI,
+];
 
 //
 // Mantle
@@ -365,6 +409,14 @@ export const mantleAxlUSDC: Token = {
   symbol: "axlUSDC",
   logoURI: TokenLogo.USDC,
 };
+
+const mantleTokens: Token[] = [
+  mantleMNT,
+  mantleWMNT,
+  mantleBridgedUSDC,
+  mantleUSDT,
+  mantleAxlUSDC,
+];
 
 //
 // Optimism
@@ -425,6 +477,16 @@ export const optimismUSDCe: Token = {
   symbol: "USDCe",
   logoURI: TokenLogo.USDC,
 };
+
+const optimismTokens = [
+  optimismETH,
+  optimismWETH,
+  optimismUSDC,
+  optimismAxlUSDC,
+  optimismDAI,
+  optimismUSDT,
+  optimismUSDCe,
+];
 
 //
 // Polygon
@@ -500,6 +562,17 @@ export const polygonUSDCe: Token = {
   logoURI: TokenLogo.USDC,
 };
 
+const polygonTokens: Token[] = [
+  polygonPOL,
+  polygonWPOL,
+  polygonWETH,
+  polygonUSDC,
+  polygonAxlUSDC,
+  polygonDAI,
+  polygonUSDT,
+  polygonUSDCe,
+];
+
 //
 // Solana
 //
@@ -530,6 +603,8 @@ export const solanaUSDC: Token = {
   symbol: "USDC",
   logoURI: TokenLogo.USDC,
 };
+
+const solanaTokens: Token[] = [solanaUSDC, solanaWSOL, solanaSOL];
 
 //
 // Worldchain
@@ -563,6 +638,155 @@ export const worldchainWLD: Token = {
   symbol: "WLD",
   logoURI: TokenLogo.WLD,
 };
+
+const worldchainTokens: Token[] = [
+  worldchainETH,
+  worldchainWETH,
+  worldchainUSDCe,
+  worldchainWLD,
+];
+
+export const supportedTokens: Token[] = [
+  ...arbitrumTokens,
+  ...baseTokens,
+  ...blastTokens,
+  ...bscTokens,
+  ...ethereumTokens,
+  ...lineaTokens,
+  ...mantleTokens,
+  ...optimismTokens,
+  ...polygonTokens,
+  ...solanaTokens,
+  ...worldchainTokens,
+];
+
+/* --------------------- Token Utils --------------------- */
+
+// Export tokens for each supported chain
+const tokensByChainId = new Map<number, Token[]>();
+
+for (const token of supportedTokens) {
+  const toks = tokensByChainId.get(token.chainId) || [];
+  tokensByChainId.set(token.chainId, toks);
+  toks.push(token);
+}
+
+/** All supported tokens on a given chain. */
+export function getTokensForChain(chainId: number): Token[] {
+  const ret = tokensByChainId.get(chainId);
+  if (ret == null) throw new Error(`Unsupported chain ${chainId}`);
+  return ret;
+}
+
+/* --------------------- Tokens By Type --------------------- */
+
+enum TokenType {
+  NATIVE = "NATIVE",
+  WRAPPED_NATIVE = "WRAPPED_NATIVE",
+  NATIVE_USDC = "NATIVE_USDC",
+  BRIDGED_USDC = "BRIDGED_USDC",
+  AXL_USDC = "AXL_USDC",
+  DAI = "DAI",
+}
+
+const tokensByChainAndType: Record<
+  number,
+  Partial<Record<TokenType, Token>>
+> = {
+  42161: {
+    [TokenType.NATIVE]: arbitrumETH,
+    [TokenType.WRAPPED_NATIVE]: arbitrumWETH,
+    [TokenType.NATIVE_USDC]: arbitrumUSDC,
+    [TokenType.BRIDGED_USDC]: arbitrumUSDCe,
+    [TokenType.AXL_USDC]: arbitrumAxlUSDC,
+    [TokenType.DAI]: arbitrumDAI,
+  },
+  8453: {
+    [TokenType.NATIVE]: baseETH,
+    [TokenType.WRAPPED_NATIVE]: baseWETH,
+    [TokenType.NATIVE_USDC]: baseUSDC,
+    [TokenType.BRIDGED_USDC]: baseUSDbC,
+    [TokenType.AXL_USDC]: baseAxlUSDC,
+    [TokenType.DAI]: baseDAI,
+  },
+  81457: {
+    [TokenType.NATIVE]: blastETH,
+    [TokenType.WRAPPED_NATIVE]: blastWETH,
+  },
+  56: {
+    [TokenType.NATIVE]: bscBNB,
+    [TokenType.WRAPPED_NATIVE]: bscWBNB,
+    [TokenType.BRIDGED_USDC]: bscUSDC,
+    [TokenType.AXL_USDC]: bscAxlUSDC,
+  },
+  1: {
+    [TokenType.NATIVE]: ethereumETH,
+    [TokenType.WRAPPED_NATIVE]: ethereumWETH,
+    [TokenType.NATIVE_USDC]: ethereumUSDC,
+    [TokenType.DAI]: ethereumDAI,
+  },
+  59144: {
+    [TokenType.NATIVE]: lineaETH,
+    [TokenType.WRAPPED_NATIVE]: lineaWETH,
+    [TokenType.BRIDGED_USDC]: lineaUSDCe,
+    [TokenType.AXL_USDC]: lineaAxlUSDC,
+    [TokenType.DAI]: lineaDAI,
+  },
+  5000: {
+    [TokenType.NATIVE]: mantleMNT,
+    [TokenType.WRAPPED_NATIVE]: mantleWMNT,
+    [TokenType.BRIDGED_USDC]: mantleBridgedUSDC,
+    [TokenType.AXL_USDC]: mantleAxlUSDC,
+  },
+  10: {
+    [TokenType.NATIVE]: optimismETH,
+    [TokenType.WRAPPED_NATIVE]: optimismWETH,
+    [TokenType.NATIVE_USDC]: optimismUSDC,
+    [TokenType.BRIDGED_USDC]: optimismUSDCe,
+    [TokenType.AXL_USDC]: optimismAxlUSDC,
+    [TokenType.DAI]: optimismDAI,
+  },
+  137: {
+    [TokenType.NATIVE]: polygonPOL,
+    [TokenType.WRAPPED_NATIVE]: polygonWPOL,
+    [TokenType.NATIVE_USDC]: polygonUSDC,
+    [TokenType.BRIDGED_USDC]: polygonUSDCe,
+    [TokenType.AXL_USDC]: polygonAxlUSDC,
+    [TokenType.DAI]: polygonDAI,
+  },
+  501: {
+    [TokenType.NATIVE]: solanaSOL,
+    [TokenType.WRAPPED_NATIVE]: solanaWSOL,
+    [TokenType.NATIVE_USDC]: solanaUSDC,
+  },
+  480: {
+    [TokenType.NATIVE]: worldchainETH,
+    [TokenType.WRAPPED_NATIVE]: worldchainWETH,
+    [TokenType.BRIDGED_USDC]: worldchainUSDCe,
+  },
+};
+
+export function getChainNativeToken(chainId: number): Token | undefined {
+  return tokensByChainAndType[chainId][TokenType.NATIVE];
+}
+
+export function getChainWrappedNativeToken(chainId: number): Token | undefined {
+  return tokensByChainAndType[chainId][TokenType.WRAPPED_NATIVE];
+}
+
+export function getChainNativeUSDC(chainId: number): Token | undefined {
+  return tokensByChainAndType[chainId][TokenType.NATIVE_USDC];
+}
+
+export function getChainAxlUSDC(chainId: number): Token | undefined {
+  return tokensByChainAndType[chainId][TokenType.AXL_USDC];
+}
+
+export function getChainDAI(chainId: number): Token | undefined {
+  return tokensByChainAndType[chainId][TokenType.DAI];
+}
+
+/* --------------------- Native Token Utils --------------------- */
 
 function nativeETH(chainId: number): Token {
   return nativeToken({
