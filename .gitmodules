@@ -7,3 +7,6 @@
 [submodule "packages/contract/lib/axelar-gmp-sdk-solidity"]
 	path = packages/contract/lib/axelar-gmp-sdk-solidity
 	url = https://github.com/axelarnetwork/axelar-gmp-sdk-solidity
+[submodule "packages/contract/lib/solmate"]
+	path = packages/contract/lib/solmate
+	url = https://github.com/transmissions11/solmate
