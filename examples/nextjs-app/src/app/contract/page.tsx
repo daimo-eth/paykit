@@ -1,11 +1,11 @@
 "use client";
 
-import { arbitrum, getChainExplorerByChainId } from "@daimo/contract";
 import {
   DaimoPayButton,
   DaimoPayCompletedEvent,
   DaimoPayStartedEvent,
 } from "@daimo/pay";
+import { arbitrum, getChainExplorerByChainId } from "@daimo/pay-common";
 import { useState } from "react";
 import { encodeFunctionData, parseAbi, zeroAddress } from "viem";
 import { useReadContract } from "wagmi";

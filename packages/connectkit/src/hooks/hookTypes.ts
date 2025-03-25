@@ -3,7 +3,7 @@ import {
   DaimoPayOrder,
   ExternalPaymentOptionData,
   ExternalPaymentOptions,
-} from "@daimo/common";
+} from "@daimo/pay-common";
 
 export type CreateOrHydrateFn = (opts: {
   order: DaimoPayOrder;

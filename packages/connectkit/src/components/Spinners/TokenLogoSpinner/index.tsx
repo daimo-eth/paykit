@@ -1,4 +1,4 @@
-import { DaimoPayToken } from "@daimo/common";
+import { DaimoPayToken } from "@daimo/pay-common";
 import { AnimatePresence } from "framer-motion";
 import { chainToLogo } from "../../../assets/chains";
 import CircleSpinner from "../CircleSpinner";

@@ -11,7 +11,7 @@ import {
 import {
   DepositAddressPaymentOptionData,
   getAddressContraction,
-} from "@daimo/common";
+} from "@daimo/pay-common";
 import ScanIconWithLogos from "../../../assets/ScanIconWithLogos";
 import type { TrpcClient } from "../../../utils/trpc";
 import Button from "../../Common/Button";

@@ -1,7 +1,7 @@
 "use client";
 
-import { baseUSDC } from "@daimo/contract";
 import { DaimoPayButton } from "@daimo/pay";
+import { baseUSDC } from "@daimo/pay-common";
 import { getAddress } from "viem";
 import { Text, TextLink } from "../../shared/tailwind-catalyst/text";
 import { APP_ID, Container, DAIMO_ADDRESS, printEvent } from "../shared";

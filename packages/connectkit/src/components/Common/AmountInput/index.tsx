@@ -7,7 +7,7 @@ import {
   PageContent,
 } from "../../Common/Modal/styles";
 
-import { WalletPaymentOption } from "@daimo/common";
+import { WalletPaymentOption } from "@daimo/pay-common";
 import { parseUnits } from "viem";
 import styled from "../../../styles/styled";
 import {

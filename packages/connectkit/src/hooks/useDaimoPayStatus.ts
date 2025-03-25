@@ -1,4 +1,4 @@
-import { DaimoPayIntentStatus, writeDaimoPayOrderID } from "@daimo/common";
+import { DaimoPayIntentStatus, writeDaimoPayOrderID } from "@daimo/pay-common";
 import { usePayContext } from "../components/DaimoPay";
 
 /** Returns the current payment, or undefined if there is none.

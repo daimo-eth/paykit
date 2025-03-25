@@ -1,4 +1,4 @@
-import { BigIntStr, DaimoPayToken } from "@daimo/common";
+import { BigIntStr, DaimoPayToken } from "@daimo/pay-common";
 import { formatUnits } from "viem";
 
 export const USD_DECIMALS = 2;

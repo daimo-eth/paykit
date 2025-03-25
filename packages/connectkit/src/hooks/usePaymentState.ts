@@ -6,14 +6,14 @@ import {
   DepositAddressPaymentOptionData,
   DepositAddressPaymentOptionMetadata,
   DepositAddressPaymentOptions,
+  ethereum,
   ExternalPaymentOptionMetadata,
   ExternalPaymentOptions,
   PlatformType,
   readDaimoPayOrderID,
   SolanaPublicKey,
   WalletPaymentOption,
-} from "@daimo/common";
-import { ethereum } from "@daimo/contract";
+} from "@daimo/pay-common";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useCallback, useEffect, useState } from "react";
 import { Address, formatUnits, Hex, parseUnits } from "viem";

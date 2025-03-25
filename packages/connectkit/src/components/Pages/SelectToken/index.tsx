@@ -3,8 +3,7 @@ import { ROUTES, usePayContext } from "../../DaimoPay";
 
 import { ModalContent, ModalH1, PageContent } from "../../Common/Modal/styles";
 
-import { capitalize, DaimoPayToken } from "@daimo/common";
-import { getChainName } from "@daimo/contract";
+import { DaimoPayToken, getChainName } from "@daimo/pay-common";
 import { formatUsd, roundTokenAmount } from "../../../utils/format";
 import Button from "../../Common/Button";
 import OptionsList from "../../Common/OptionsList";
@@ -22,13 +21,11 @@ const SelectToken: React.FC = () => {
 
   const optionsList =
     walletPaymentOptions.options?.map((option) => {
-      const capitalizedChainName = capitalize(
-        getChainName(option.balance.token.chainId),
-      );
+      const chainName = getChainName(option.balance.token.chainId);
       const titlePrice = isDepositFlow
         ? formatUsd(option.balance.usd)
         : roundTokenAmount(option.required.amount, option.required.token);
-      const title = `${titlePrice} ${option.balance.token.symbol} on ${capitalizedChainName}`;
+      const title = `${titlePrice} ${option.balance.token.symbol} on ${chainName}`;
 
       const balanceStr = `${roundTokenAmount(option.balance.amount, option.balance.token)} ${option.balance.token.symbol}`;
       const subtitle =

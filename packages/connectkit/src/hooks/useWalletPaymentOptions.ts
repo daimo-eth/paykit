@@ -1,6 +1,5 @@
-import { WalletPaymentOption } from "@daimo/common";
+import { supportedChains, WalletPaymentOption } from "@daimo/pay-common";
 import { useEffect, useState } from "react";
-import { supportedChainIds } from "../utils/exports";
 import { TrpcClient } from "../utils/trpc";
 
 /** Wallet payment options. User picks one. */
@@ -47,7 +46,7 @@ export function useWalletPaymentOptions({
 
         // Filter out chains we don't support yet.
         const isSupported = (o: WalletPaymentOption) =>
-          supportedChainIds.has(o.balance.token.chainId);
+          supportedChains.some((c) => c.chainId === o.balance.token.chainId);
         const filteredOptions = newOptions.filter(isSupported);
         if (filteredOptions.length < newOptions.length) {
           log(

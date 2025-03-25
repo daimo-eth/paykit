@@ -1,6 +1,6 @@
 import React from "react";
 
-import { WalletPaymentOption } from "@daimo/common";
+import { WalletPaymentOption } from "@daimo/pay-common";
 import defaultTheme from "../../../constants/defaultTheme";
 import styled from "../../../styles/styled";
 import { ModalBody } from "../../Common/Modal/styles";

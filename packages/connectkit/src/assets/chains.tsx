@@ -1,17 +1,15 @@
 import {
   arbitrum,
   base,
-  baseSepolia,
   blast,
   bsc,
   ethereum,
-  ethereumSepolia,
   linea,
   mantle,
   optimism,
   polygon,
   worldchain,
-} from "@daimo/contract";
+} from "@daimo/pay-common";
 
 type Logo = {
   testnet?: boolean;
@@ -71,7 +69,8 @@ const KnownChain = ({ testnet, ...props }: Logo) => (
     </defs>
   </svg>
 );
-const UnknownChain = ({ testnet, ...props }: Logo) => {
+
+export const UnknownChain = ({ testnet, ...props }: Logo) => {
   return <KnownChain testnet {...props} />;
 };
 
@@ -1138,43 +1137,14 @@ const Mantle = ({ testnet, ...props }: { testnet?: boolean }) => (
 );
 
 export const chainToLogo = {
-  [ethereum.chainId]: <Ethereum />,
   [arbitrum.chainId]: <Arbitrum />,
   [base.chainId]: <Base />,
+  [blast.chainId]: <Blast />,
+  [bsc.chainId]: <BinanceSmartChain />,
+  [ethereum.chainId]: <Ethereum />,
+  [linea.chainId]: <Linea />,
+  [mantle.chainId]: <Mantle />,
   [optimism.chainId]: <Optimism />,
   [polygon.chainId]: <Polygon />,
-  [ethereumSepolia.chainId]: <Ethereum />,
-  [baseSepolia.chainId]: <Base />,
-  [linea.chainId]: <Linea />,
-  [bsc.chainId]: <BinanceSmartChain />,
   [worldchain.chainId]: <Worldchain />,
-  [blast.chainId]: <Blast />,
-  [mantle.chainId]: <Mantle />,
-};
-
-export default {
-  UnknownChain,
-  Base,
-  Ethereum,
-  Polygon,
-  Optimism,
-  Arbitrum,
-  Aurora,
-  Avalanche,
-  Celo,
-  Telos,
-  Gnosis,
-  Evmos,
-  BinanceSmartChain,
-  Foundry: KnownChain,
-  Sepolia: KnownChain,
-  Taraxa: KnownChain,
-  zkSync: KnownChain,
-  Flare: KnownChain,
-  Canto,
-  Fantom,
-  Filecoin,
-  Metis,
-  IoTeX,
-  Zora,
 };

@@ -1,4 +1,4 @@
-import { DaimoPayOrder, writeDaimoPayOrderID } from "@daimo/common";
+import { DaimoPayOrder, writeDaimoPayOrderID } from "@daimo/pay-common";
 import { daimoPayVersion } from "./exports";
 
 export function getSupportUrl(

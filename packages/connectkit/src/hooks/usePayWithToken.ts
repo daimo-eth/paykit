@@ -4,7 +4,7 @@ import {
   DaimoPayOrder,
   debugJson,
   WalletPaymentOption,
-} from "@daimo/common";
+} from "@daimo/pay-common";
 import { Address, erc20Abi, getAddress, zeroAddress } from "viem";
 import { useSendTransaction, useWriteContract } from "wagmi";
 import { TrpcClient } from "../utils/trpc";

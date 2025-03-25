@@ -12,7 +12,7 @@ import Onboarding from "../Pages/Onboarding";
 import SwitchNetworks from "../Pages/SwitchNetworks";
 import ConnectUsing from "./ConnectUsing";
 
-import { assert } from "@daimo/common";
+import { assert } from "@daimo/pay-common";
 import { getAppName } from "../../defaultConfig";
 import { useChainIsSupported } from "../../hooks/useChainIsSupported";
 import { DaimoPayThemeProvider } from "../DaimoPayThemeProvider/DaimoPayThemeProvider";
