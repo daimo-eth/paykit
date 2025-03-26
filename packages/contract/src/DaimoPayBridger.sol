@@ -6,7 +6,7 @@ import "openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol";
 
 import "./TokenUtils.sol";
-import "../interfaces/IDaimoPayBridger.sol";
+import "./interfaces/IDaimoPayBridger.sol";
 
 /// @title Bridger which multiplexes between different bridging protocols
 /// @author The Daimo team

@@ -5,9 +5,9 @@ import "openzeppelin-contracts/contracts/access/Ownable2Step.sol";
 import "openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol";
 
-import "../interfaces/IDaimoPayBridger.sol";
-import "../../vendor/cctp/ITokenMinter.sol";
-import "../../vendor/cctp/ICCTPTokenMessenger.sol";
+import "./interfaces/IDaimoPayBridger.sol";
+import "../vendor/cctp/ITokenMinter.sol";
+import "../vendor/cctp/ICCTPTokenMessenger.sol";
 
 /// @title Bridger implementation for Circle's Cross-Chain Transfer Protocol (CCTP)
 /// @author The Daimo team

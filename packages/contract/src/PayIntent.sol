@@ -5,7 +5,7 @@ import "openzeppelin-contracts/contracts/proxy/utils/Initializable.sol";
 import "openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol";
 
 import "./TokenUtils.sol";
-import "../interfaces/IDaimoPayBridger.sol";
+import "./interfaces/IDaimoPayBridger.sol";
 
 /// @dev Represents an intended call: "make X of token Y show up on chain Z,
 ///      then [optionally] use it to do an arbitrary contract call".

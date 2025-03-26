@@ -3,7 +3,7 @@ pragma solidity ^0.8.12;
 
 import "openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
 
-import "../pay/TokenUtils.sol";
+import "../TokenUtils.sol";
 
 /// @notice Bridges assets automatically. Specifically, it lets any market maker
 /// initiate a bridge transaction to another chain.

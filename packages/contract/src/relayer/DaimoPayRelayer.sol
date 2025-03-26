@@ -5,8 +5,8 @@ import "openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
-import "./DaimoPay.sol";
-import "./TokenUtils.sol";
+import "../DaimoPay.sol";
+import "../TokenUtils.sol";
 
 /*
  * Relayer contract that funds completes DaimoPay intents.

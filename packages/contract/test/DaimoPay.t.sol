@@ -5,16 +5,16 @@ import "forge-std/Test.sol";
 import {GasInfo} from "@axelar-network/contracts/interfaces/IAxelarGasService.sol";
 import {IERC20} from "openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
 
-import "../../src/pay/DaimoPay.sol";
-import "../../src/pay/DaimoPayBridger.sol";
-import "../../src/pay/DaimoPayCCTPBridger.sol";
-import "../../src/pay/DaimoPayAcrossBridger.sol";
-import "../../src/pay/DaimoPayAxelarBridger.sol";
-import "../dummy/DaimoDummyUSDC.sol";
+import "../src/DaimoPay.sol";
+import "../src/DaimoPayBridger.sol";
+import "../src/DaimoPayCCTPBridger.sol";
+import "../src/DaimoPayAcrossBridger.sol";
+import "../src/DaimoPayAxelarBridger.sol";
+import "./dummy/DaimoDummyUSDC.sol";
 
-address constant BASE_INTENT_ADDR = 0x62bd346d7D099Ff5b363B3032F58F8F7B6e2B5a2;
-address constant LINEA_INTENT_ADDR = 0x92E52dA739b7e465036e5919e7f0170b39A8D02F;
-address constant BSC_INTENT_ADDR = 0x4343063B8dAD76dA045E0Ec1d963C932B39e2576;
+address constant BASE_INTENT_ADDR = 0xc04F86d683cF8f9C16239024afeCaB9794cB9A69;
+address constant LINEA_INTENT_ADDR = 0x1b42980e79afEad65FF95DE02A3C74189cBb0650;
+address constant BSC_INTENT_ADDR = 0xD0226bb8F1508A6c600C230237B2E2c7a1Cf5E4A;
 
 contract DaimoPayTest is Test {
     // Daimo Pay contracts
@@ -246,7 +246,7 @@ contract DaimoPayTest is Test {
             nonce: _nonce
         });
         address actualBnbIntentAddr = intentFactory.getIntentAddress(bnbIntent);
-        console.log("actual bnb intent addr:", actualBnbIntentAddr);
+        console.log("actual bsc intent addr:", actualBnbIntentAddr);
 
         assertEq(actualBaseIntentAddr, BASE_INTENT_ADDR);
         assertEq(actualLineaIntentAddr, LINEA_INTENT_ADDR);

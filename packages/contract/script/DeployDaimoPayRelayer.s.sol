@@ -4,7 +4,7 @@ pragma solidity ^0.8.13;
 import "forge-std/Script.sol";
 import "forge-std/console2.sol";
 
-import "../src/DaimoPayRelayer.sol";
+import "../src/relayer/DaimoPayRelayer.sol";
 import "./Constants.s.sol";
 
 contract DeployDaimoPayRelayer is Script {

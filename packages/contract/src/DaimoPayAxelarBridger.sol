@@ -9,7 +9,7 @@ import "openzeppelin-contracts/contracts/access/Ownable2Step.sol";
 import "openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol";
 
-import "../interfaces/IDaimoPayBridger.sol";
+import "./interfaces/IDaimoPayBridger.sol";
 
 /// @title Bridger implementation for Axelar Protocol
 /// @author The Daimo team
