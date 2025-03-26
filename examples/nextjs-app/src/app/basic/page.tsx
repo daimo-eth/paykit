@@ -1,7 +1,7 @@
 "use client";
 
-import * as foreignTokens from "@daimo/contract";
 import { DaimoPayButton } from "@daimo/pay";
+import * as foreignTokens from "@daimo/pay-common";
 import { useEffect, useState } from "react";
 import { getAddress } from "viem";
 import { Text } from "../../shared/tailwind-catalyst/text";
@@ -48,7 +48,7 @@ export default function DemoBasic() {
           )?.[0] || token.symbol;
 
         const snippet = `
-import { ${tokenVarName} } from "@daimo/contract";
+import { ${tokenVarName} } from "@daimo/pay-common";
 
 <DaimoPayButton
   appId="${APP_ID}"

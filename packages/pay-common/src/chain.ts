@@ -1,70 +1,82 @@
 export type Chain = {
+  type: "evm" | "solana";
   chainId: number;
   name: string;
   cctpDomain: number | null;
 };
 
 export const arbitrum: Chain = {
+  type: "evm",
   chainId: 42161,
   name: "Arbitrum",
   cctpDomain: 3,
 };
 
 export const base: Chain = {
+  type: "evm",
   chainId: 8453,
   name: "Base",
   cctpDomain: 6,
 };
 
 export const blast: Chain = {
+  type: "evm",
   chainId: 81457,
   name: "Blast",
   cctpDomain: null,
 };
 
 export const bsc: Chain = {
+  type: "evm",
   chainId: 56,
   name: "BNB Smart Chain",
   cctpDomain: null,
 };
 
 export const ethereum: Chain = {
+  type: "evm",
   chainId: 1,
   name: "Ethereum",
   cctpDomain: 0,
 };
 
 export const linea: Chain = {
+  type: "evm",
   chainId: 59144,
   name: "Linea",
   cctpDomain: null,
 };
 
 export const mantle: Chain = {
+  type: "evm",
   chainId: 5000,
   name: "Mantle",
   cctpDomain: null,
 };
 
 export const optimism: Chain = {
+  type: "evm",
   chainId: 10,
   name: "Optimism",
   cctpDomain: 2,
 };
 
 export const polygon: Chain = {
+  type: "evm",
   chainId: 137,
   name: "Polygon",
   cctpDomain: 7,
 };
 
 export const solana: Chain = {
+  type: "solana",
   chainId: 101,
   name: "Solana",
   cctpDomain: 5,
 };
 
 export const worldchain: Chain = {
+  type: "evm",
   chainId: 480,
   name: "Worldchain",
   cctpDomain: null,

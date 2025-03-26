@@ -1,6 +1,6 @@
 "use client";
 
-import * as foreignTokens from "@daimo/contract";
+import * as foreignTokens from "@daimo/pay-common";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useCallback, useState } from "react";
 import { isAddress } from "viem";
